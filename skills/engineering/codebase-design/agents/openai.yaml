@@ -1,0 +1,5 @@
+interface:
+  display_name: "Codebase Design"
+  short_description: "用于 deep-module 设计的词汇"
+policy:
+  allow_implicit_invocation: false

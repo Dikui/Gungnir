@@ -1,0 +1,5 @@
+interface:
+  display_name: "Git Guardrails for Claude Code"
+  short_description: "阻止危险的 git commands"
+policy:
+  allow_implicit_invocation: false
