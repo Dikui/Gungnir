@@ -20,7 +20,7 @@ Skills 按 bucket folder 组织在 `skills/` 下：
 
 ## 翻译刷新
 
-从 `mattpocock/skills` 刷新上游内容时，改文件前先使用 `.skills/translate-skill/SKILL.md`。本仓库采用 skill-guided content localization，不做 Git fork-sync：保留简体中文本地化身份，安装命令保持指向 `vinvcn/mattpocock-skills-zh-CN`，不要导入上游 repository-management state。
+从 `mattpocock/skills` 刷新上游内容时，改文件前先使用 `.skills/translate-skill/SKILL.md`。本仓库采用 skill-guided content localization，不做 Git fork-sync：保留简体中文本地化身份，安装命令保持指向 `vinvcn/mattpocock-skills-zh-CN`，不要导入上游 repository-management state。翻译术语以 [翻译术语表](./TRANSLATION-GLOSSARY.md) 为准：刷新与本地化时优先采用已决定的译法；未决定的术语先按 [贡献指南](./CONTRIBUTING.md) 的流程提出请求，决定后再落地。
 
 ## 同步记录
 

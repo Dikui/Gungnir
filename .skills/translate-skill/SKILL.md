@@ -112,6 +112,18 @@ consistent with existing repo tone
 
 Keep common engineering terms in English when the English term is standard among developers or when translating it would reduce clarity.
 
+## Term reference
+
+Check `TRANSLATION-GLOSSARY.md` at the repo root.
+
+For decided terms, use the recorded translation exactly.
+
+Before keeping or coining a recurring rendering, check the glossary.
+
+If the term is undecided, request a decision via `CONTRIBUTING.md`.
+
+Ordinary prose translation is otherwise unchanged.
+
 ## Workflow for a single file
 
 When translating one file:
