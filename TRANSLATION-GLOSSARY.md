@@ -14,8 +14,8 @@
 
 | 英文术语 | 来源引用 | 建议译法 | 状态 | 关联 issue/PR | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| `ASD-STE100 Simplified Technical English` | `skills/productivity/wait-what/SKILL.md:7`；`docs/productivity/wait-what.md:23` | 平实的中文（待讨论） | `requested` | [#34](https://github.com/vinvcn/mattpocock-skills-zh-CN/issues/34) | — |
-| `plain English`（含大小写变体 `Plain English`） | `skills/engineering/ask-matt/SKILL.md:84`；`skills/engineering/improve-codebase-architecture/SKILL.md:47`；`skills/engineering/improve-codebase-architecture/HTML-REPORT.md:108` | 平实的中文（待讨论） | `requested` | —（同类排查；背景见 [#34](https://github.com/vinvcn/mattpocock-skills-zh-CN/issues/34)） | 既有分歧译法（均不含字面术语）：`docs/engineering/improve-codebase-architecture.md:38`（平实的英文）、`docs/engineering/domain-modeling.md:70`（平白的英文描述）、`docs/engineering/grill-with-docs.md:41`（平白英文展开式）、`docs/productivity/wait-what.md:3`（朴素英语）、`README.md:256`（用平实的语言重新表述）、`skills/productivity/README.md:13`（以直白的语言） |
+| `ASD-STE100 Simplified Technical English` | `skills/productivity/wait-what/SKILL.md:7`；`docs/productivity/wait-what.md:23` | `ASD-STE100 简化技术英语` | `requested` | [#34](https://github.com/vinvcn/mattpocock-skills-zh-CN/issues/34) | 建议理由：`ASD-STE100` 是规范代码（标识符，按仓库保留规则不译）；「简化技术英语」是该 controlled-language 标准的通用中文名。两处原句可直接替换：「用 ASD-STE100 简化技术英语来说」「ASD-STE100 简化技术英语 设定语域」。同类第三处字面出现见 `dsh-plugin/skills/wait-what/SKILL.md:7`，落地 PR 应一并处理。 |
+| `plain English`（含大小写变体 `Plain English`） | `skills/engineering/ask-matt/SKILL.md:84`；`skills/engineering/improve-codebase-architecture/SKILL.md:47`；`skills/engineering/improve-codebase-architecture/HTML-REPORT.md:108` | `平实的语言` | `requested` | —（同类排查；背景见 [#34](https://github.com/vinvcn/mattpocock-skills-zh-CN/issues/34)） | 建议理由：本仓库产出为中文，直译「平实的英文」会误导（agent 并非用英文复述）；「平实的语言」语言中立，与 README 既有描述「用平实的语言重新表述」一致，三处原句可直接替换。既有分歧译法（均不含字面术语）：`docs/engineering/improve-codebase-architecture.md:38`（平实的英文）、`docs/engineering/domain-modeling.md:70`（平白的英文描述）、`docs/engineering/grill-with-docs.md:41`（平白英文展开式）、`docs/productivity/wait-what.md:3`（朴素英语）、`README.md:258`（用平实的语言重新表述）、`skills/productivity/README.md:13`（以直白的语言） |
 
 ## 如何更新本表
 
