@@ -1,0 +1,11 @@
+interface:
+  display_name: "Canvas"
+  short_description: "根据需求共创产品框架图，协同调整并导出供后续设计参考的 Markdown"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "canvas"
+      description: "连接本地 Canvas 服务，读取、修改和导出共享画布"
+      transport: "stdio"
+policy:
+  allow_implicit_invocation: false

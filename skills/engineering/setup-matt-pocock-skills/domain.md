@@ -10,6 +10,14 @@ Engineering skills 探索 codebase 时，应如何消费这个 repo 的 domain d
 
 如果这些文件不存在，**静默继续**。不要标记缺失；不要提前建议创建。`/domain-modeling` skill（经由 `/grill-with-docs` 和 `/improve-codebase-architecture` 调用）会在 terms 或 decisions 实际被解决时懒创建它们。
 
+## Product architecture (optional)
+
+产品框架图通常位于 `docs/architecture.md`，可由 Canvas 导出；如项目已登记其他路径，沿用该路径。初始化时发现已有图，在本节登记实际文件的相对链接（默认路径在本文件中为 `../architecture.md`）。未发现图时，不生成链接或占位文件，静默继续。
+
+分析模块职责、交互关系、核心流程或结构变更时，按需读取框架图，并结合相关需求、ADR、代码和测试。图是当前设计参考，不表示全部已实现，也不取代这些资料。若当前分析发现冲突，沿用任务自身的反馈流程指出差异，不静默覆盖。
+
+读取图不要求调用 Canvas skill，也不要求连接画布服务。只有用户明确调用时才进入 Canvas 共创；不增加所有 skills 必读、持续检查、固定审查或后台同步流程。
+
 ## File structure
 
 Single-context repo（大多数 repos）：

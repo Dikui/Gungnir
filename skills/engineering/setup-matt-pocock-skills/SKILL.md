@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 - **Issue tracker** - issues 存放在哪里（默认 GitHub；也原生支持 local markdown）
 - **Triage labels** - 五个 canonical triage roles 使用的字符串
-- **Domain docs** - `CONTEXT.md` 与 ADRs 的位置，以及读取它们的 consumer rules
+- **Domain docs** - `CONTEXT.md`、ADRs 与已有产品框架图的位置，以及读取它们的 consumer rules
 
 这是 prompt-driven skill，不是确定性脚本。先探索，展示发现，与用户确认，然后写入。
 
@@ -25,6 +25,7 @@ disable-model-invocation: true
 - repo root 的 `CONTEXT.md` 和 `CONTEXT-MAP.md`
 - `docs/adr/` 以及任何 `src/*/docs/adr/` directories
 - `docs/agents/` - 这个 skill 之前是否已经输出过内容？
+- 项目规则或 domain docs 已登记的产品框架图，以及默认位置 `docs/architecture.md`（如存在）
 - `.scratch/` - 表明已经在使用 local-markdown issue tracker 约定
 - 是否已安装 `triage` skill（本 skill 旁边有 `triage` folder，或 available skills 中存在 `triage`）？这决定 Section B 是否运行。
 - Monorepo signals：`pnpm-workspace.yaml`、`package.json` 的 `workspaces` field，或已有内容且各自带 `src/` 的 `packages/*`。只有真正的大型 multi-package repo 才算；没有这些 signal 就是 single-context，几乎所有 repo 都如此。
@@ -59,6 +60,8 @@ disable-model-invocation: true
 **Section C - Domain docs.** 默认 **single-context**：repo root 下一个 `CONTEXT.md` + `docs/adr/`。这适合几乎所有 repo，直接写入，无需提问。
 
 只有 exploration 找到 monorepo signals 时，才提供 **multi-context**（root 下 `CONTEXT-MAP.md` 指向每个 context 的 `CONTEXT.md` files），并确认用户想要哪种 layout。
+
+如果发现已有产品框架图，在 `docs/agents/domain.md` 中保留或登记它的实际路径与适用场景；用户已指定自定义路径时沿用，不另建副本。没有图时不创建占位文件、不要求接入 Canvas。已有规则文件直接登记图的，也保留其入口。
 
 ### 3. Confirm and edit
 
@@ -96,7 +99,7 @@ Block：
 
 ### Domain docs
 
-[one-line summary of layout - "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+[one-line summary of layout - "single-context" or "multi-context"]. 涉及业务或架构设计时，参阅 `docs/agents/domain.md` 中的资料入口与按需读取规则。
 ```
 
 只有安装了 `triage` 且 Section B 实际运行时，才包含 `### Triage labels` sub-block 并写入 `docs/agents/triage-labels.md`；否则两者都省略。

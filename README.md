@@ -115,7 +115,41 @@ claude plugin install mattpocock-skills@mattpocock
 - **[skills.sh](https://skills.sh/vinvcn/mattpocock-skills-zh-CN)** 会把 skills 复制进项目，方便你修改、定制，把它们变成自己的东西。
 - **Plugin** 把它们作为受管理的只读 bundle 安装，随新版本发布统一更新——是订阅而不是 fork，适合只想直接使用并持续跟进更新的用户。
 
-> 使用 Codex 或其他 agent？[skills.sh installer](https://skills.sh/vinvcn/mattpocock-skills-zh-CN) 已经可以把这些 skills 安装到 Codex 和其他兼容 Agent Skills 的 harnesses；目前尚未提供原生 Codex plugin。
+> 使用 Codex 或其他 agent？[skills.sh installer](https://skills.sh/vinvcn/mattpocock-skills-zh-CN) 可安装纯 skills。需要 Canvas MCP 时，使用下面的完整插件包。
+
+### Skills + Canvas 完整插件
+
+完整包包含公开 skills、Canvas MCP 和已构建画板；需要 Node.js 22+，不依赖本机另一个 Canvas 仓库，也无需手工填写 MCP 路径或启动服务。客户端原有的插件启用和工具授权仍适用。
+
+从本仓库构建安装包（发布者执行）：
+
+```sh
+npm ci --prefix canvas
+npm run build --prefix canvas
+node scripts/package-plugin.mjs
+```
+
+输出在 `dist/`；打包只包含 plugin manifest 登记的公开 skills，不发布 `in-progress` 或 `deprecated`。重新打包时传入新的输出目录，避免混入旧文件。安装包包含前端和独立服务 bundle，不包含 `node_modules`，安装后无需下载 npm 依赖。
+
+在 Codex 安装本地完整包：
+
+```sh
+codex plugin marketplace add /absolute/path/to/Gungnir/dist
+codex plugin add mattpocock-skills@gungnir-local
+```
+
+Claude Code 可使用同一输出目录作为 marketplace：
+
+```sh
+claude plugin marketplace add /absolute/path/to/Gungnir/dist
+claude plugin install mattpocock-skills@gungnir-local
+```
+
+安装后开启新会话，显式调用 `$canvas`（Claude Code 使用对应插件命令）。MCP 会打开当前项目登记的结构图，默认 `docs/architecture.md`；不存在时显示空画布。结束 skill 前自动保存回项目文件，也可点击「保存到项目」。外部文件修改会触发冲突提示，不会被静默覆盖。画布草稿保存在用户缓存目录，和插件版本分离；同一项目同时只允许一个 MCP 进程编辑。
+
+直接从源码 marketplace 安装 Claude Code 插件时，启动入口首次通过 npm 准备环境并构建（需联网）；预构建完整包可避免首次启动等待。只复制 skill 的安装方式不附带 MCP。
+
+开发验收：`npm test --prefix canvas`（先 build）；包括现有画布测试和项目 Markdown/MCP 主路径、外部修改冲突测试。
 
 ### 为什么这些 Skills 存在
 
@@ -228,6 +262,7 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 **User-invoked**
 
 - **[ask-matt](./skills/engineering/ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
+- **[canvas](./skills/engineering/canvas/SKILL.md)** - 根据需求、边界和测试场景共创产品框架图，支持人工与 AI 协同调整，并导出 Markdown 供设计任务按需参考。完整插件自带 Canvas MCP，按项目加载并保存 Markdown。
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[triage](./skills/engineering/triage/SKILL.md)** - 通过 triage roles state machine 推进 issues。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** - 扫描 codebase 中的 deepening opportunities，生成可视化 HTML report，然后围绕你选中的候选项继续 grilling。

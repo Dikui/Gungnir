@@ -20,6 +20,7 @@
   ],
   "skills": [
     "./skills/engineering/ask-matt",
+    "./skills/engineering/canvas",
     "./skills/engineering/code-review",
     "./skills/engineering/codebase-design",
     "./skills/engineering/diagnosing-bugs",
@@ -48,5 +49,6 @@
     "./skills/misc/migrate-to-shoehorn",
     "./skills/misc/scaffold-exercises",
     "./skills/misc/setup-pre-commit"
-  ]
+  ],
+  "mcpServers": "./.mcp.json"
 }
