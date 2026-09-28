@@ -44,7 +44,7 @@ Report 使用 **Tailwind via CDN** 做 layout/styling，用 **Mermaid via CDN** 
 
 - **Files** - 涉及哪些 files/modules
 - **Problem** - 当前 architecture 为什么造成 friction
-- **Solution** - 会改变什么，用 plain English 描述
+- **Solution** - 会改变什么，用平实的语言描述
 - **Benefits** - 用 locality 与 leverage 解释收益，以及 tests 如何改善
 - **Before / After diagram** - side-by-side，自绘，说明 shallowness 与 deepening
 - **Recommendation strength** - `Strong`、`Worth exploring`、`Speculative` 之一，渲染为 badge

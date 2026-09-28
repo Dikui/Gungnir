@@ -81,7 +81,7 @@ disable-model-invocation: true
 - **`/research`** - 把阅读工作委托给 **background agent**：它对照 **primary sources** 调研问题，然后在 repo 中留下带引用的 Markdown 文件。你可以在它阅读时继续工作。产物应带入 `/grill-with-docs` 的 main flow；research 提供思考材料，但不取代思考。
 - **`/to-questionnaire`** - 当阻塞你的东西不在你的头脑或 codebase 里，而在 **别人的** 头脑里时，这个 skill 会写一份问卷让他们填写。它是 `/grill-me` 的反向：它不访问你关于 subject，而是访问你关于 **send**——发给谁、你需要拿回什么——并把问题对准 gap。拿回来的东西是 `/grill-with-docs` 或 `/to-spec` 的素材。
 - **`/wizard`** - 用于只有 **human** 能完成的步骤：provisioning infrastructure、设置 credentials 或 CI secrets、在陌生的第三方 dashboard 中点击操作、运行一次性 migration 或 cutover。它生成一个交互式 bash script，打开每个 URL、捕获每个值，并写入 `.env` 和 GitHub secrets——这样该过程就不再需要你每次向 agent 重新解释。它是 model-invoked 的，所以 agent 一遇到只有你能通过的墙就会伸手够它。如果 agent 自己能做，它就应该自己做；这个 skill 用于 human 真正在 loop 中的场景。
-- **`/wait-what`** - 对没有落地的消息的纠正。在对话中途、任何其他 skill 内部使用它，agent 会用你缺失的 context、以 plain English、用 `CONTEXT.md` vocabulary 重新表述它刚说的话。它事后生效；`/grill-with-docs` 是前置的解法，因为早早就共同约定的共享语言才是阻止 jargon 出现的根本。
+- **`/wait-what`** - 对没有落地的消息的纠正。在对话中途、任何其他 skill 内部使用它，agent 会用你缺失的 context、以平实的语言、用 `CONTEXT.md` vocabulary 重新表述它刚说的话。它事后生效；`/grill-with-docs` 是前置的解法，因为早早就共同约定的共享语言才是阻止 jargon 出现的根本。
 - **`/teach`** - 使用当前目录作为 stateful workspace，跨多个 sessions 学习一个概念。
 - **`/writing-for-agents`** - 编写 agents 消费的文档的 reference：skills、AGENTS.md、被指向的 docs。
 
