@@ -3,91 +3,88 @@ name: translate-skill
 description: 将 mattpocock/skills 的内容翻译、刷新或复核到简体中文本地化仓库 vinvcn/mattpocock-skills-zh-CN 时使用这个项目级 skill。适用于 skill files、README content、CLAUDE.md、CONTEXT.md、docs，以及其他需要保留行为关键 identifiers 的上游用户可见内容。
 ---
 
-# Translate Skill
+# 翻译 skill
 
-Use this skill to translate upstream `mattpocock/skills` content into Simplified Chinese for `vinvcn/mattpocock-skills-zh-CN`.
+使用这个 skill 把上游 `mattpocock/skills` 的内容翻译成简体中文，用于 `vinvcn/mattpocock-skills-zh-CN`。
 
-This skill is for **content localization**, not Git synchronization.
+这个 skill 用于**内容本地化**，不是 Git 同步。
 
-## Operating principle
+## 操作原则
 
-Translate user-facing English prose into natural Simplified Chinese while preserving all behavior-critical content exactly.
+把用户可见的英文说明性文字翻译成自然的简体中文，同时原样保留所有行为关键内容。
 
-The target repo is an independent Simplified Chinese localized edition. It should receive translated content, not upstream repository metadata.
+目标仓库是一个独立的简体中文本地化版本。它应接收翻译后的内容，而不是上游的仓库元数据。
 
-## What to translate
+## 翻译哪些内容
 
-Translate natural-language prose, including:
+翻译自然语言文本，包括：
 
 ```text
-README explanations
+README 说明
 skill instructions
 skill descriptions
-user-facing frontmatter prompts
-agent-facing guidance
-maintainer-facing guidance
-docs prose
-examples that are written as prose
+用户可见的 frontmatter prompts
+面向 agent 的指引
+面向维护者的指引
+docs 说明性文字
+以说明性文字写成的示例
 ```
 
-## What to preserve exactly
+## 原样保留哪些内容
 
-Do not translate or rewrite:
+不要翻译或改写：
 
 ```text
-directory names
-skill names
+目录名
+skill 名称
 slash commands
-CLI commands
-code blocks
+CLI 命令
+代码块
 inline code
-file paths
-package names
+文件路径
+package 名
 tool identifiers
 API identifiers
-environment variable names
+环境变量名
 frontmatter keys
 JSON/YAML/TOML keys
-Markdown link URLs
-behavior-critical labels
+Markdown 链接 URL
+行为关键 labels
 ```
 
-Preserve Markdown structure, heading levels, list nesting, tables, link targets, relative paths, and code fences.
+保持 Markdown 结构、标题层级、列表嵌套、表格、链接目标、相对路径和 code fences 不变。
 
-## Repository-path localization
+## 仓库路径本地化
 
-When translating user-facing installation examples, replace the upstream repo path:
+翻译用户可见的安装示例时，把上游仓库路径：
 
 ```text
 mattpocock/skills
 ```
 
-with the localized repo path:
+替换为本地化仓库路径：
 
 ```text
 vinvcn/mattpocock-skills-zh-CN
 ```
 
-Only make this replacement where the command or prose is telling users how to install or use the localized repo.
+只有当命令或说明性文字是在告诉用户如何安装或使用本地化仓库时，才做这个替换。
 
-Do not remove attribution to the upstream project.
+不要移除对上游项目的署名。
 
-## Frontmatter rules
+## Frontmatter 规则
 
-Preserve frontmatter keys exactly.
+原样保留 frontmatter keys。
 
-Classify each frontmatter value by meaning, not just by field name:
+按含义而不仅是字段名，对每个 frontmatter 值分类：
 
-- Keep `name` values unchanged.
-- Translate user-facing or agent-facing natural-language prose into Simplified Chinese. This
-  includes `description` and `argument-hint` values.
-- Keep identifiers, commands, paths, package names, URLs, tool names, booleans, numbers, and
-  other typed configuration values unchanged.
-- Within a translatable value, preserve embedded slash commands, inline code, placeholders,
-  paths, URLs, package names, tool names, and other behavior-critical spans exactly.
-- Flag ambiguous values rather than guessing.
+- 保持 `name` 值不变。
+- 把用户可见或面向 agent 的自然语言文本翻译成简体中文，包括 `description` 和 `argument-hint` 的值。
+- 保持 identifiers、命令、路径、package 名、URL、工具名、布尔值、数字和其他有类型的配置值不变。
+- 在可翻译的值内部，原样保留内嵌的 slash commands、inline code、占位符、路径、URL、package 名、工具名和其他行为关键片段。
+- 对有歧义的值打复核标记，不要猜测。
 
-Example:
+示例：
 
 ```yaml
 ---
@@ -98,58 +95,53 @@ argument-hint: "你想学习什么？"
 ---
 ```
 
-## Translation style
+## 翻译风格
 
-Use Simplified Chinese that is:
+使用满足以下要求的简体中文：
 
 ```text
-natural
-developer-friendly
-concise
-accurate
-consistent with existing repo tone
+自然
+对开发者友好
+简洁
+准确
+与本仓库现有语气一致
 ```
 
-Keep common engineering terms in English when the English term is standard among developers or when translating it would reduce clarity.
+如果某个常见工程术语在开发者中是标准说法，或者翻译它会降低清晰度，就把它保留为英文。
 
-## Term reference
+## 术语参考
 
-Check `TRANSLATION-GLOSSARY.md` at the repo root.
+查阅仓库根目录的 `TRANSLATION-GLOSSARY.md`。
 
-For decided terms, use the recorded translation exactly.
+对已决定的术语，严格使用记录的译法。
 
-Before keeping or coining a recurring rendering, check the glossary.
 
-If the term is undecided, request a decision via `CONTRIBUTING.md`.
+## 单文件工作流
 
-Ordinary prose translation is otherwise unchanged.
+翻译单个文件时：
 
-## Workflow for a single file
+1. 确认文件路径和文件类型。
+2. 把文件归类为可翻译的自然语言文本、混合内容、config/metadata 或不可翻译。
+3. 翻译前先保护行为关键片段。
+4. 只翻译自然语言文本。
+5. 原样恢复被保护的片段。
+6. 检查命令、代码块、路径、URL、identifiers 和 frontmatter keys 保持不变。
+7. 检查本地化后的安装命令使用 `vinvcn/mattpocock-skills-zh-CN`。
+8. 返回翻译后的文件内容或 patch，并附上所有复核标记。
 
-When translating one file:
+## 仓库刷新工作流
 
-1. Identify the file path and file type.
-2. Classify the file as translatable prose, mixed content, config/metadata, or non-translatable.
-3. Protect behavior-critical spans before translation.
-4. Translate only natural-language prose.
-5. Restore protected spans exactly.
-6. Check that commands, code blocks, paths, URLs, identifiers, and frontmatter keys are unchanged.
-7. Check that localized install commands use `vinvcn/mattpocock-skills-zh-CN`.
-8. Return the translated file content or a patch, plus any review flags.
+从上游刷新时：
 
-## Workflow for a repo refresh
-
-When refreshing from upstream:
-
-1. Treat upstream as a content source, not as Git history.
-2. Identify new, changed, and removed content files.
-3. Translate new and changed prose-bearing files.
-4. Copy or preserve non-translatable support files only when they are in scope.
-5. Preserve the localized repo’s README positioning and install path.
+1. 把上游当作内容来源，而不是 Git 历史。
+2. 找出新增、变更和移除的内容文件。
+3. 翻译新增和变更的、含说明性文字的文件。
+4. 仅当不可翻译的支持文件属于刷新范围时，才复制或保留。
+5. 保持本地化仓库的 README 定位和安装路径不变。
 6. 按“验证步骤”完成同步后的结构、完整性、索引和行为关键内容检查。
-7. Add a concise entry to the README sync log.
+7. 在 README 同步记录中追加一条简短条目。
 8. 在 README 中记录本次验证结果、翻译执行者和翻译策略摘要。
-9. Flag ambiguous files, removed files, or risky transformations for maintainer review.
+9. 把有歧义的文件、被移除的文件或有风险的转换打上复核标记，交维护者审查。
 10. 总结已翻译文件、复制或保留文件、移除文件、跳过文件、验证结果和复核标记。
 
 ## 验证步骤
@@ -167,61 +159,61 @@ When refreshing from upstream:
 
 验证结果应同步写入顶层 `README.md`，使用简短 checklist，不要把完整命令输出粘进去。
 
-## README sync log
+## SYNC.md 同步记录
 
-Each upstream refresh should update the top-level `README.md` sync log with one short entry.
+每次上游刷新都应在顶层 `SYNC.md` 的同步记录中新增一条简短条目。
 
-The entry should include:
+条目应包含：
 
-- the refresh date in `YYYY-MM-DD` format
-- the upstream source revision, usually `mattpocock/skills@<short-sha>`
-- the local sync commit, if it already exists; otherwise use a short pending note and replace it after commit
-- a one-sentence description of the visible content change
+- 刷新日期，使用 `YYYY-MM-DD` 格式
+- 上游来源 revision，通常是 `mattpocock/skills@<short-sha>`
+- 本地同步 commit（如果已存在）；否则先写一句简短的待定说明，commit 后再替换
+- 一句话描述本次可见的内容变更
 
-Keep this record concise. Do not move the detailed translation workflow into the README; link to this skill instead.
+保持记录简短。
 
-Example:
+示例：
 
 ```text
-- 2026-05-09: Synced upstream `mattpocock/skills@733d312`, local commit `c9fe120`. Added Chinese translations for `prototype` and `in-progress` content, and refreshed public skill indexes.
+- 2026-05-09：已同步上游 `mattpocock/skills@733d312`，本地 commit `c9fe120`。为 `prototype` 和 `in-progress` 内容新增了中文翻译，并刷新公开 skill 索引。
 ```
 
-## Required output format for review
+## 复核输出格式
 
-When reviewing a translation refresh, provide:
+复核一次翻译刷新时，提供：
 
 ```text
-Changed files:
+改动文件：
 - ...
 
-Translated files:
+已翻译文件：
 - ...
 
-Copied or preserved files:
+复制或保留文件：
 - ...
 
-Removed or stale files:
+移除或过时文件：
 - ...
 
-Review flags:
+复核标记：
 - ...
 
-README sync log:
+SYNC.md 同步记录：
 - ...
 
 验证结果:
 - ...
 
-Invariant checks:
-- install commands point to vinvcn/mattpocock-skills-zh-CN
-- code blocks preserved
-- frontmatter keys preserved
-- paths and identifiers preserved
-- Markdown structure preserved
+不变量检查：
+- 安装命令指向 vinvcn/mattpocock-skills-zh-CN
+- 代码块保持原样
+- frontmatter keys 保持原样
+- 路径和 identifiers 保持原样
+- Markdown 结构保持原样
 ```
 
-## Fail-closed rule
+## Fail-closed 规则
 
-When unsure whether text is behavior-critical, preserve it and flag it.
+拿不准一段文本是否行为关键时，先原样保留并打上复核标记。
 
-Do not silently rewrite anything that could affect installation, skill discovery, command execution, file references, API calls, tool use, or agent behavior.
+不要悄悄改写任何可能影响安装、skill 发现、命令执行、文件引用、API 调用、工具使用或 agent 行为的内容。
