@@ -24,7 +24,7 @@ const json = async (path, data) => { await mkdir(dirname(path), { recursive: tru
 await json(join(plugin, '.claude-plugin/plugin.json'), { ...original, skills: ['./skills/'], mcpServers: './.mcp.json' })
 await json(join(plugin, '.codex-plugin/plugin.json'), {
   ...original, skills: './skills/', mcpServers: './.mcp.json',
-  interface: { displayName: 'Gungnir Skills + Canvas', shortDescription: '工程技能与项目画布共创', longDescription: '简体中文工程技能，以及自动启动、按项目读写 Markdown 的 Canvas MCP。', developerName: 'vinvcn', category: 'Developer Tools', capabilities: ['Read', 'Write', 'Interactive'], defaultPrompt: ['使用 $canvas 打开当前项目的结构图。'] },
+  interface: { displayName: 'Gungnir', shortDescription: '工程技能与项目画布共创', longDescription: '简体中文工程技能，以及自动启动、按项目读写 Markdown 的 Canvas MCP。', developerName: 'vinvcn', category: 'Developer Tools', capabilities: ['Read', 'Write', 'Interactive'], defaultPrompt: ['使用 $canvas 打开当前项目的结构图。'] },
 })
 // Codex resolves bundled stdio paths in the portable MCP format.
 const codex = JSON.parse(await readFile(join(plugin, '.codex-plugin/plugin.json'), 'utf8'))
