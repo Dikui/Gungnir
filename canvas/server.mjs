@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { resolve, sep, extname } from 'node:path'
 import { openProject } from './project.mjs'
-import { exportArchitecture } from './architecture.mjs'
+import { layoutDiagnostics } from './layout.mjs'
 
 export async function startCanvas(projectPath, architecturePath) {
   const project = await openProject(projectPath, architecturePath)
@@ -37,10 +37,10 @@ export async function startCanvas(projectPath, architecturePath) {
       return
     }
     if (req.method === 'GET') {
-      if (url.pathname === '/api/context') return send(200, { ...state.context(), ...project.info() })
+      if (url.pathname === '/api/context') return send(200, { ...state.context({ geometry: url.searchParams.get('geometry') === 'true' }), ...(project.notes().trim()?{notes:project.notes()}:{}), ...project.info() })
       if (url.pathname === '/api/state') return send(200, { ...state.data, ...project.info() })
       if (url.pathname === '/api/architecture') {
-        try { return send(200, { text: exportArchitecture(state.data.records) }) }
+        try { return send(200, { text: project.read() }) }
         catch (e) { return send(409, { error: e.message }) }
       }
       return send(404, { error: 'Not found' })
@@ -64,8 +64,9 @@ export async function startCanvas(projectPath, architecturePath) {
           else if (url.pathname === '/api/import') transaction = state.importMarkdown(input)
           else if (url.pathname === '/api/patch') transaction = state.patch(input)
           else if (url.pathname === '/api/undo') transaction = state.undo(input.transactionId, input.baseRevision)
+          else if (url.pathname === '/api/arrange') transaction = state.arrange(input.baseRevision)
           else return send(404, { error: 'Not found' })
-          await project.persist(); broadcast(); send(200, { ...state.data, ...project.info(), transaction })
+          await project.persist(); broadcast(); send(200, { ...state.data, ...project.info(), transaction, ...(url.pathname==='/api/arrange'?{diagnostics:layoutDiagnostics(state.data.records)}:{}) })
         } catch (e) { state.data = before; throw e }
       })
       await mutation

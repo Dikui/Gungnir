@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { createBindingId, createShapeId, track, useEditor, type TLGeoShape, type TLShape, type TLShapeId } from 'tldraw'
 
+import { arrangeEditor } from './FrameworkTools'
+
 const ports = [
   { name: '上', x: .5, y: 0 },
   { name: '右', x: 1, y: .5 },
@@ -67,6 +69,7 @@ export const QuickConnect = track(function QuickConnect() {
           terminal: 'end', normalizedAnchor: { x: connection.targetPort!.x, y: connection.targetPort!.y }, isExact: true, isPrecise: true, snap: 'edge-point',
         } },
       ])
+      arrangeEditor(editor)
       editor.select(arrowId)
     })
     editor.markHistoryStoppingPoint('完成快速连线')

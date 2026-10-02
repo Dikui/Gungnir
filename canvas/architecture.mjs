@@ -11,25 +11,64 @@ const decode = text => text === '#8203;' ? '' : text.replace(/<br\s*\/?\s*>/gi,'
   return String.fromCodePoint(n)
 })
 
-export function exportArchitecture(records) {
-  const values=Object.values(records)
-  const boxes=values.filter(r=>r.typeName==='shape'&&r.type==='geo'&&r.props.geo==='rectangle').sort((a,b)=>a.id.localeCompare(b.id))
-  if(!boxes.length)throw new Error('画布中没有可导出的方框')
-  const ids=new Map(boxes.map((box,i)=>[box.id,`N${i+1}`])), endpoints=new Map()
+const boxesIn = records => Object.values(records).filter(r=>r.typeName==='shape'&&r.type==='geo'&&r.props.geo==='rectangle').sort((a,b)=>a.id.localeCompare(b.id))
+const identifier = /^[A-Za-z_][A-Za-z0-9_-]*$/
+export const referencesBlock = /(?:^[ \t]*\r?\n)?<!-- canvas:references -->[\s\S]*?<!-- \/canvas:references -->[ \t]*(?:\r?\n)?/gm
+
+export function normalizeReferences(value) {
+  if(!Array.isArray(value)||value.length>30)throw new Error('来源必须是最多 30 项的引用列表')
+  return [...new Set(value.map(ref=>{
+    if(typeof ref!=='string'||!ref.trim()||ref.length>1000||/[\r\n\u0000-\u001f]/.test(ref))throw new Error('来源必须是单行文件路径或 HTTP(S) 链接')
+    ref=ref.trim()
+    if(/^[a-z][a-z0-9+.-]*:/i.test(ref)&&!/^https?:\/\//i.test(ref)&&!/^[^:]+\.[^/:]+:\d+(?::\d+)?$/.test(ref))throw new Error('来源仅支持文件路径或 HTTP(S) 链接')
+    if(/^https?:\/\//i.test(ref)){const url=new URL(ref);if(url.username||url.password)throw new Error('来源链接不能包含账号或密码')}
+    return ref
+  }))]
+}
+
+export function documentIds(records) {
+  const boxes=boxesIn(records),ids=new Map(),used=new Set()
+  for(const box of boxes) {
+    const name=box.meta?.documentId
+    if(typeof name==='string'&&identifier.test(name)&&!used.has(name)){ids.set(box.id,name);used.add(name)}
+  }
+  let n=1
+  for(const box of boxes)if(!ids.has(box.id)){
+    while(used.has(`N${n}`))n++
+    const name=`N${n++}`;ids.set(box.id,name);used.add(name)
+  }
+  return ids
+}
+
+export function framework(records,{geometry=false}={}) {
+  const values=Object.values(records),boxes=boxesIn(records),ids=new Set(boxes.map(box=>box.id)),endpoints=new Map()
   for(const r of values) {
     if(r.typeName!=='binding'||r.type!=='arrow')continue
     if(!endpoints.has(r.fromId))endpoints.set(r.fromId,{})
-    endpoints.get(r.fromId)[r.props.terminal]=ids.get(r.toId)
+    endpoints.get(r.fromId)[r.props.terminal]=ids.has(r.toId)?r.toId:undefined
   }
   const edges=values.filter(r=>r.typeName==='shape'&&r.type==='arrow').map(arrow=>{
     let {start,end}=endpoints.get(arrow.id)??{}
-    if(!start||!end)throw new Error('有连线未连接到两个方框，请连接两端后再导出架构。')
     const left=arrow.props.arrowheadStart!=='none',right=arrow.props.arrowheadEnd!=='none'
     if(left&&!right)[start,end]=[end,start]
-    const direction=left&&right?'<-->':left||right?'-->':'---',text=plainText(arrow.props.richText)
-    return `  ${start} ${direction}${text?'|'+quote(text)+'|':''} ${end}`
+    return {id:arrow.id,from:start??null,to:end??null,direction:left&&right?'both':left||right?'forward':'none',text:plainText(arrow.props.richText),...(geometry?{geometry:{x:arrow.x,y:arrow.y,start:arrow.props.start,end:arrow.props.end,kind:arrow.props.kind,labelPosition:arrow.props.labelPosition}}:{})}
+  }).sort((a,b)=>a.id.localeCompare(b.id))
+  const nodes=boxes.map(box=>({id:box.id,text:plainText(box.props.richText),...(box.meta?.refs?.length?{refs:normalizeReferences(box.meta.refs)}:{}),...(geometry?{geometry:{x:box.x,y:box.y,w:box.props.w,h:box.props.h,growY:box.props.growY??0,rotation:box.rotation??0}}:{})}))
+  if(geometry)for(const edge of edges)edge.geometry.anchors=values.filter(r=>r.typeName==='binding'&&r.fromId===edge.id).map(r=>({terminal:r.props.terminal,anchor:r.props.normalizedAnchor}))
+  return {nodes,edges}
+}
+
+export function exportArchitecture(records) {
+  const graph=framework(records),ids=documentIds(records)
+  if(!graph.nodes.length)throw new Error('画布中没有可导出的方框')
+  const directions={forward:'-->',both:'<-->',none:'---'}
+  const edges=graph.edges.map(edge=>{
+    if(!edge.from||!edge.to)throw new Error(`连线 ${edge.id}${edge.text?`（${edge.text}）`:''} 未连接到两个方框：${!edge.from?'起点':'终点'}未绑定，请连接后再导出。`)
+    return `  ${ids.get(edge.from)} ${directions[edge.direction]}${edge.text?'|'+quote(edge.text)+'|':''} ${ids.get(edge.to)}`
   }).sort()
-  return ['```mermaid','flowchart LR',...boxes.map(box=>`  ${ids.get(box.id)}[${quote(plainText(box.props.richText))}]`),'',...edges,'```',''].join('\n')
+  const text=['```mermaid','flowchart LR',...graph.nodes.map(node=>`  ${ids.get(node.id)}[${quote(node.text)}]`),'',...edges,'```',''].join('\n')
+  const refs=Object.fromEntries(graph.nodes.filter(n=>n.refs).map(n=>[ids.get(n.id),n.refs]))
+  return Object.keys(refs).length?text+'\n<!-- canvas:references -->\n```json\n'+JSON.stringify(refs).replace(/</g,'\\u003c')+'\n```\n<!-- /canvas:references -->\n':text
 }
 
 // Deliberately parse the box-and-connection subset. Reject unsupported syntax instead of losing it.
@@ -93,7 +132,20 @@ export function parseArchitecture(markdown) {
     }
   }
   if(!nodes.size)throw new Error('框架图中没有方框')
-  return {direction:header[1],nodes:[...nodes.values()].map(({id,text})=>({id,text})),edges}
+  const refBlocks=[...markdown.matchAll(referencesBlock)]
+  if(refBlocks.length>1)throw new Error('存在多个 Canvas 来源小节，无法确定引用归属')
+  let refs={}
+  if(refBlocks.length){
+    const json=refBlocks[0][0].match(/```json\s*\n([\s\S]*?)\n```/)
+    if(!json)throw new Error('Canvas 来源小节需要 JSON 引用表')
+    try{refs=JSON.parse(json[1])}catch{throw new Error('Canvas 来源小节的 JSON 不完整')}
+    if(!refs||typeof refs!=='object'||Array.isArray(refs))throw new Error('Canvas 来源小节必须是模块引用表')
+    for(const [id,value] of Object.entries(refs)){
+      if(!nodes.has(id))throw new Error(`来源引用了不存在的模块 ${id}`)
+      refs[id]=normalizeReferences(value)
+    }
+  }
+  return {direction:header[1],nodes:[...nodes.values()].map(({id,text})=>({id,text,...(Object.hasOwn(refs,id)&&refs[id].length?{refs:refs[id]}:{})})),edges}
 }
 
 
@@ -126,7 +178,12 @@ export function architectureRecords(graph,records,parentId,origin) {
     const rank=level.get(node.id),row=rows.get(rank)??0;rows.set(rank,row+1)
     const column=reverse?maxLevel-rank:rank
     const x=offset.x+(horizontal?column:row)*380,y=offset.y+(horizontal?row:column)*rowHeight
-    byId.set(node.id,shape('geo',`shape:${prefix}-n${String(i).padStart(3,'0')}`,x,y,{...boxProps(node.text),h:heights.get(node.id)}))
+    const box=shape('geo',`shape:${prefix}-n${String(i).padStart(3,'0')}`,x,y,{...boxProps(node.text),h:heights.get(node.id)})
+    const used=new Set(documentIds({...records,...Object.fromEntries(result.filter(r=>r.id!==box.id).map(r=>[r.id,r]))}).values())
+    let documentId=node.id,n=1
+    while(used.has(documentId))documentId=`N${n++}`
+    box.meta={documentId,...(node.refs?.length?{refs:normalizeReferences(node.refs)}:{})}
+    byId.set(node.id,box)
   })
   graph.edges.forEach((edge,i)=>{
     const from=byId.get(edge.from),to=byId.get(edge.to)

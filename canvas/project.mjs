@@ -4,7 +4,7 @@ import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { mkdir, open, readFile, realpath, rename, rm, stat, writeFile } from 'node:fs/promises'
 import { createTLSchema } from '@tldraw/tlschema'
 import { CanvasState } from './state.mjs'
-import { architectureRecords, exportArchitecture, parseArchitecture } from './architecture.mjs'
+import { architectureRecords, exportArchitecture, parseArchitecture, referencesBlock } from './architecture.mjs'
 
 const hash = text => createHash('sha256').update(text ?? '\0missing').digest('hex')
 const readOptional = async path => { try { return await readFile(path, 'utf8') } catch (e) { if (e.code === 'ENOENT') return null; throw e } }
@@ -81,16 +81,21 @@ export async function openProject(projectPath, architecturePath = 'docs/architec
     let syncedRevision = restored ? cached.syncedRevision : state.data.revision
     const info = () => ({ projectPath: root, architecturePath: file, hasDraft: syncedRevision !== state.data.revision })
     const persist = () => atomicWrite(join(dataDir, 'document.json'), JSON.stringify({ sourceHash: hash(source), syncedRevision, state: state.data }))
+    const render = () => {
+      const diagram = exportArchitecture(state.data.records), prose = source?.replace(referencesBlock, '') ?? ''
+      const matches = [...prose.matchAll(blocks)]
+      if(matches.length>1)throw new Error('存在多个 Mermaid 图，无法确定回写位置')
+      return matches.length?prose.slice(0,matches[0].index)+diagram+prose.slice(matches[0].index+matches[0][0].length):diagram
+    }
     return {
       state, info, persist,
+      read: render,
+      notes: () => source?.replace(referencesBlock,'').replace(blocks,'') ?? '',
       async save(baseRevision) {
         if (baseRevision !== state.data.revision) throw new Error('画布已发生变化，请重新读取后保存')
         const currentPath = await projectFile(root, architecturePath)
         if (currentPath !== file || hash(await readOptional(file)) !== hash(source)) throw new Error('项目 Markdown 已被外部修改，未覆盖；请先解决冲突')
-        const diagram = exportArchitecture(state.data.records)
-        const matches = source === null ? [] : [...source.matchAll(blocks)]
-        if (matches.length > 1) throw new Error('存在多个 Mermaid 图，无法确定回写位置')
-        const content = matches.length ? source.slice(0, matches[0].index) + diagram + source.slice(matches[0].index + matches[0][0].length) : diagram
+        const content = render()
         await atomicWrite(file, content)
         source = content
         syncedRevision = state.data.revision

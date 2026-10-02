@@ -12,10 +12,11 @@ const result = value => ({ content: [{ type: 'text', text: typeof value === 'str
 const guarded = fn => async input => { try { return result(await fn(input)) } catch (e) { return { ...result(e.message), isError: true } } }
 async function call(id, path, body) {
   const canvas = canvases.get(id)
-  if (!canvas) throw new Error('请先调用 canvas_open_project 打开当前项目')
+  if (!canvas) throw new Error(`canvas ${id}: 请先调用 canvas_open_project 打开当前项目`)
   const response = await fetch(canvas.base + path, { method: body ? 'POST' : 'GET', headers: { 'x-canvas-token': canvas.token, ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined })
   const data = await response.json()
   if (!response.ok) throw new Error(data.error)
+  if (['/api/import','/api/patch','/api/undo','/api/arrange'].includes(path)) return {revision:data.revision, transactionId:data.transaction?.id??null, changedIds:data.transaction?.changes.map(change=>change.id)??[], hasDraft:data.hasDraft, ...(data.diagnostics?{diagnostics:data.diagnostics}:{})}
   return path === '/api/architecture' ? data.text : data
 }
 
@@ -32,10 +33,11 @@ server.registerTool('canvas_open_project', {
   canvases.set(id, canvas)
   return { canvasId: id, url: canvas.url, projectPath: canvas.projectPath, architecturePath: canvas.architecturePath, hasDraft: canvas.hasDraft }
 }))
-server.registerTool('canvas_get_context', { description: 'Read latest revision, selection, structured shapes and bindings before editing.', inputSchema: { canvasId } }, guarded(({ canvasId }) => call(canvasId, '/api/context')))
-server.registerTool('canvas_read_architecture', { description: 'Export the current canvas as Mermaid Markdown. Snapshot IDs are not editable shape IDs. This does not save the project file.', inputSchema: { canvasId } }, guarded(({ canvasId }) => call(canvasId, '/api/architecture')))
+server.registerTool('canvas_get_context', { description: 'Read latest revision, selection and the full framework using actual editable node and edge IDs, direction, text and references. Geometry is optional.', inputSchema: { canvasId, geometry:z.boolean().default(false) } }, guarded(({ canvasId, geometry }) => call(canvasId, '/api/context'+(geometry?'?geometry=true':''))))
+server.registerTool('canvas_read_architecture', { description: 'Read the complete current project Mermaid Markdown, including notes and references. Document IDs are not editable shape IDs. This does not save the project file.', inputSchema: { canvasId } }, guarded(({ canvasId }) => call(canvasId, '/api/architecture')))
 server.registerTool('canvas_import_markdown', { description: 'Append one rectangle-and-arrow Mermaid diagram. Never import a whole diagram again to update existing shapes.', inputSchema: { canvasId, ...importSchema.shape } }, guarded(({ canvasId, ...input }) => call(canvasId, '/api/import', input)))
 server.registerTool('canvas_apply_patch', { description: 'Atomically modify selected canvas using its latest baseRevision. Preserve unrelated human edits.', inputSchema: { canvasId, ...patchSchema.shape } }, guarded(({ canvasId, ...input }) => call(canvasId, '/api/patch', input)))
+server.registerTool('canvas_arrange', { description: 'Arrange the complete framework, preserving node and edge IDs, descriptions, directions and references. Uses one undoable transaction.', inputSchema: {canvasId, baseRevision:revision} }, guarded(({canvasId,...input})=>call(canvasId,'/api/arrange',input)))
 server.registerTool('canvas_undo', { description: 'Undo one transaction without overwriting later edits to its objects.', inputSchema: { canvasId, transactionId: z.string(), baseRevision: revision } }, guarded(({ canvasId, ...input }) => call(canvasId, '/api/undo', input)))
 server.registerTool('canvas_save_project', { description: 'Required at the end of the Canvas skill: export latest canvas into the registered project Markdown, preserve surrounding prose, verify saved contents. Reject external Markdown changes or stale revisions. Report errors instead of overwriting conflicts.', inputSchema: { canvasId, baseRevision: revision } }, guarded(({ canvasId, ...input }) => call(canvasId, '/api/save', input)))
 

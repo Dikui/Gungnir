@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   DefaultStylePanel, DefaultStylePanelContent, GeoShapeUtil, SVGContainer,
   track, useEditor, toRichText, type TLArrowShape, type TLGeoShape, type TLUiStylePanelProps, type SvgExportContext,
 } from 'tldraw'
-import { plainText } from '../architecture.mjs'
+import { normalizeReferences, plainText } from '../architecture.mjs'
 
 function customFill(shape: TLGeoShape) {
   const color = shape.meta.fillColor
@@ -57,7 +57,7 @@ const ArrowDescription = track(function ArrowDescription() {
   if (selected.length !== 1 || selected[0].type !== 'arrow' || editor.getIsReadonly() || editor.isShapeOrAncestorLocked(selected[0])) return null
   const arrow = selected[0] as TLArrowShape
   return <label className="arrow-description">连线描述
-    <textarea aria-label="连线描述" placeholder="例如：传递检测结果" rows={3} value={plainText(arrow.props.richText)}
+    <textarea style={{resize:'none'}} aria-label="连线描述" placeholder="例如：传递检测结果" rows={3} value={plainText(arrow.props.richText)}
       onFocus={() => editor.markHistoryStoppingPoint('修改连线描述')}
       onBlur={() => editor.markHistoryStoppingPoint('完成连线描述修改')}
       onKeyDown={event => event.stopPropagation()}
@@ -66,6 +66,41 @@ const ArrowDescription = track(function ArrowDescription() {
   </label>
 })
 
+const SourceReferences = track(function SourceReferences() {
+  const editor = useEditor(), selected = editor.getSelectedShapes()
+  const [drafts, setDrafts] = useState<Record<string, { value: string; base: string }>>({})
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const shape = selected.length === 1 && selected[0].type === 'geo' && selected[0].props.geo === 'rectangle' ? selected[0] : null
+  if (!shape) return null
+  const raw = Array.isArray(shape.meta.refs) ? shape.meta.refs : [], base = JSON.stringify(raw)
+  const draft = drafts[shape.id], value = draft?.value ?? raw.join('\n')
+  const disabled = editor.getIsReadonly() || editor.isShapeOrAncestorLocked(shape)
+  let refs: string[] = []
+  try { refs = normalizeReferences(raw) } catch { /* Invalid external metadata remains editable. */ }
+  function save() {
+    if (!draft || disabled || !shape) return
+    try {
+      const latest = editor.getShape(shape.id)
+      if (!latest || editor.getIsReadonly() || editor.isShapeOrAncestorLocked(latest)) throw new Error('模块已删除或锁定，来源未保存')
+      if (JSON.stringify(Array.isArray(latest.meta.refs) ? latest.meta.refs : []) !== draft.base) throw new Error('来源已由其他编辑更新，请重新选择模块核对后修改')
+      const next = normalizeReferences(draft.value.split('\n').map(line => line.trim()).filter(Boolean))
+      editor.updateShapes([{ id: shape.id, type: 'geo', meta: { ...latest.meta, refs: next } }])
+      setDrafts(current => { const next = { ...current }; delete next[shape.id]; return next })
+      setErrors(current => ({ ...current, [shape.id]: '' }))
+    } catch (error: any) { setErrors(current => ({ ...current, [shape.id]: error.message })) }
+  }
+  return <label className="arrow-description source-references">模块来源
+    <textarea style={{resize:'none'}} aria-label="模块来源，每行一条" placeholder={'https://example.com/docs\nsrc/main.ts:12'} rows={3} disabled={disabled} value={value}
+      onFocus={() => editor.markHistoryStoppingPoint('修改模块来源')}
+      onBlur={() => { save(); editor.markHistoryStoppingPoint('完成模块来源修改') }}
+      onKeyDown={event => event.stopPropagation()}
+      onChange={event => { const value = event.target.value; setDrafts(current => ({ ...current, [shape.id]: { value, base: current[shape.id]?.base ?? base } })); setErrors(current => ({ ...current, [shape.id]: '' })) }}/>
+    <small>每行一个 HTTP/HTTPS 链接或文件位置。</small>
+    {errors[shape.id] && <small role="alert" className="reference-error">{errors[shape.id]}<button type="button" onClick={() => { setDrafts(current => { const next = { ...current }; delete next[shape.id]; return next }); setErrors(current => ({ ...current, [shape.id]: '' })) }}>重新载入来源</button></small>}
+    {refs.length > 0 && <span className="source-links">{refs.map(ref => /^https?:\/\//i.test(ref) ? <a key={ref} href={ref} target="_blank" rel="noopener noreferrer">{ref}</a> : <span key={ref}>{ref}</span>)}</span>}
+  </label>
+})
+
 export function CanvasStylePanel(props: TLUiStylePanelProps) {
-  return <DefaultStylePanel {...props}><ArrowDescription/><FillColors/><DefaultStylePanelContent/></DefaultStylePanel>
+  return <DefaultStylePanel {...props}><ArrowDescription/><SourceReferences/><FillColors/><DefaultStylePanelContent/></DefaultStylePanel>
 }
