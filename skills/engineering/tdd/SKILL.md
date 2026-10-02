@@ -1,39 +1,39 @@
 ---
 name: tdd
-description: 测试驱动开发。适用于用户想用先写测试的方式构建功能或修复缺陷、提到 “red-green-refactor”，或需要集成测试时。
+description: 先写测试，再开发功能或修复缺陷；适用于 red-green-refactor 和集成测试。
 disable-model-invocation: true
 ---
 
-# Test-Driven Development
+# 测试驱动开发
 
-TDD 是 red -> green loop。这个 skill 是让该 loop 产出值得保留的 tests 的 reference：什么是好 test、tests 应该放在哪里、anti-patterns，以及 loop 的规则。每个 cycle 前和 cycle 中都要参考这些内容，而不是事后才看。
+TDD 是 red → green 循环。本技能 说明如何写值得保留的测试、测试放在哪里、如何避免反模式，以及每轮开发的规则。每轮开始前和过程中都要参考，不要等结束后再看。
 
-探索 codebase 时，读取 `CONTEXT.md`（如果存在），让 test names 和 interface vocabulary 与项目 domain language 对齐，并尊重你触碰区域的 ADRs。
+探索代码库时，若存在 `CONTEXT.md` 就先读。测试名称和接口术语应与项目领域语言一致，并遵守相关 ADR。
 
-## What a good test is
+## 什么是好测试
 
-Tests 应通过 public interfaces 验证 behavior，而不是 implementation details。代码可以完全改变；tests 不该随之改变。一个好 test 读起来像 specification："user can checkout with valid cart" 能清楚说明存在什么能力；因为它不关心 internal structure，所以能承受 refactors。
+测试应通过公共接口验证行为，而不是实现细节。代码可以改变，测试不应随之改变。好测试应能说明能力，例如 "user can checkout with valid cart"；它不依赖内部结构，因此能承受重构。
 
 示例见 [tests.md](tests.md)，mocking 规则见 [mocking.md](mocking.md)。
 
-## Seams — where tests go
+## 测试边界
 
-**Seam** 是你测试的 public boundary：可以观察 behavior、但不伸手进入内部的 interface。Tests 放在 seams 上，绝不针对 internals。
+**测试边界（seam）** 是可观察行为、但不暴露内部实现的公共接口。测试只写在这些边界上，不测内部实现。
 
-**只测试预先认可的 seams。** 写任何 test 前，先写下要测试的 seams 并与用户确认。未经确认的 seam 不写 test。你无法测试所有东西；提前认可 seams，才能把测试精力放在 critical paths 和复杂 logic 上，而不是每个 edge case。
+**只测试预先认可的边界。** 写测试前，先列出要测的边界并请用户确认；未经确认的边界不写测试。测试不可能覆盖所有内容。提前确定边界，才能把精力放在关键路径和复杂逻辑上，而非每个边界情况。
 
-询问："What's the public interface, and which seams should we test?"
+询问用户：“公共接口是什么？哪些边界需要测试？”
 
-当 interface 的形状本身就是问题所在时——module 该多深、seam 该放在哪里、interface 应该暴露什么——用 `/codebase-design` skill 获取词汇。它是 module、interface、depth、seam、adapter、leverage 和 locality 这些术语的共享来源，是供查阅的 reference，而不是要运行的 session。
+如果问题在于接口本身——模块应有多深、边界应放在哪里、接口应暴露什么——使用 `/codebase-design` 中的 module、interface、depth、seam、adapter、leverage 和 locality 术语。它提供设计参考，须由用户明确指定后调用。
 
-## Anti-patterns
+## 应避免的做法
 
-- **Implementation-coupled** — mock internal collaborators、测试 private methods，或通过 side channel 验证（例如不用 interface 而直接查询 database）。特征是 refactor 时 test 失败，但 behavior 没变。
-- **Tautological** — assertion 以和代码相同的方式重新计算 expected value（`expect(add(a, b)).toBe(a + b)`、手工按同一逻辑生成 snapshot、把 constant 断言等于它自己），因此天然 pass，永远无法与代码 disagree。Expected values 必须来自独立 source of truth：known-good literal、worked example 或 spec。
-- **Horizontal slicing** — 先写所有 tests，再写所有 implementation。批量 tests 验证的是 _想象中的_ behavior：你测试的是东西的 _shape_，不是 user-facing behavior；tests 会对真实变化迟钝，并在理解 implementation 前承诺 test structure。改用 **vertical slices**：一个 test -> 一个 implementation -> repeat，每个 test 都是回应上一轮学习的 **tracer bullet**。
+- **与实现耦合** — mock 内部协作者、测试私有方法，或绕过接口直接查数据库等方式验证。重构时测试失败但行为未变，就是这类问题。
+- **循环论证** — 断言用与代码相同的逻辑计算预期值（`expect(add(a, b)).toBe(a + b)`、按同一逻辑生成快照、断言常量等于自身），因此测试会自然通过，无法发现代码错误。预期值必须来自独立依据：已知正确的字面值、演算示例或需求文档。
+- **横向切分** — 先写完所有测试，再写实现。这样测到的是 _想象中的行为_，不是面向用户的行为；测试会跟不上真实变化，也会在理解实现前固定结构。改用 **纵向切片**：一次完成一个“测试 → 实现”循环。每个测试都是基于上一轮发现的纵向验证（tracer bullet）。
 
-## Rules of the loop
+## 开发循环
 
-- **Red before green.** 先写 failing test，再只写足够让它通过的代码。不要预判未来 tests，也不要添加 speculative features。
-- **One slice at a time.** 每个 cycle 只处理一个 seam、一个 test、一个 minimal implementation。
-- **Refactoring is not part of the loop.** Refactoring 属于 review stage（见 `code-review` skill），不属于 red -> green implementation cycle。
+- **先红后绿。** 先写失败测试，再只写通过它所需的代码。不要预判未来测试，也不要添加推测性功能。
+- **一次一个切片。** 每轮只处理一个测试边界、一个测试和最小实现。
+- **重构不属于循环。** 重构放在审查阶段（见 `code-review` 技能，须手动调用），不放在 red → green 开发循环中。

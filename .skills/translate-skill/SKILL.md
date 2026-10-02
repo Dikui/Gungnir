@@ -1,94 +1,57 @@
 ---
 name: translate-skill
-description: 将 mattpocock/skills 的内容翻译、刷新或复核到简体中文本地化仓库 vinvcn/mattpocock-skills-zh-CN 时使用这个项目级 skill。适用于 skill files、README content、CLAUDE.md、CONTEXT.md、docs，以及其他需要保留行为关键 identifiers 的上游用户可见内容。
+description: 将 mattpocock/skills 的说明翻译、刷新或复核为简体中文，保留命令、路径和其他影响行为的内容。
 disable-model-invocation: true
 ---
 
-# Translate Skill
+# 翻译与刷新技能内容
 
-Use this skill to translate upstream `mattpocock/skills` content into Simplified Chinese for `vinvcn/mattpocock-skills-zh-CN`.
+将上游 `mattpocock/skills` 的内容本地化到 `vinvcn/mattpocock-skills-zh-CN`。目标仓库是独立的简体中文版本：只同步内容，不同步 Git 历史或上游仓库管理元数据。
 
-This skill is for **content localization**, not Git synchronization.
+## 翻译范围
 
-## Operating principle
+翻译面向用户、代理和维护者的自然语言说明，包括：
 
-Translate user-facing English prose into natural Simplified Chinese while preserving all behavior-critical content exactly.
+- README、文档和技能正文。
+- 技能简介及 frontmatter 中的提示语。
+- 以文字说明写成的示例。
 
-The target repo is an independent Simplified Chinese localized edition. It should receive translated content, not upstream repository metadata.
+以下内容原样保留：
 
-## What to translate
+- 目录名、技能名、斜杠命令、CLI 命令、代码块和行内代码。
+- 文件路径、包名、工具及 API 标识、环境变量名。
+- frontmatter 及 JSON/YAML/TOML 的键。
+- Markdown 链接目标和影响行为的标签。
 
-Translate natural-language prose, including:
+保留 Markdown 结构、标题层级、列表嵌套、表格、相对路径和代码围栏。
 
-```text
-README explanations
-skill instructions
-skill descriptions
-user-facing frontmatter prompts
-agent-facing guidance
-maintainer-facing guidance
-docs prose
-examples that are written as prose
-```
+## 安装路径
 
-## What to preserve exactly
-
-Do not translate or rewrite:
-
-```text
-directory names
-skill names
-slash commands
-CLI commands
-code blocks
-inline code
-file paths
-package names
-tool identifiers
-API identifiers
-environment variable names
-frontmatter keys
-JSON/YAML/TOML keys
-Markdown link URLs
-behavior-critical labels
-```
-
-Preserve Markdown structure, heading levels, list nesting, tables, link targets, relative paths, and code fences.
-
-## Repository-path localization
-
-When translating user-facing installation examples, replace the upstream repo path:
+在指导用户安装或使用本地化版本的命令或说明中，将仓库路径：
 
 ```text
 mattpocock/skills
 ```
 
-with the localized repo path:
+替换为：
 
 ```text
 vinvcn/mattpocock-skills-zh-CN
 ```
 
-Only make this replacement where the command or prose is telling users how to install or use the localized repo.
+其他位置不做此替换，并保留上游项目署名。
 
-Do not remove attribution to the upstream project.
+## Frontmatter
 
-## Frontmatter rules
+键保持不变。按值的实际含义判断是否翻译：
 
-Preserve frontmatter keys exactly.
+- `name` 保持不变。
+- `description`、`argument-hint` 等自然语言说明译为简体中文。
+- 标识、命令、路径、包名、URL、工具名、布尔值、数字和其他配置值保持不变。
+- 自然语言值中嵌入的斜杠命令、行内代码、占位符和其他影响行为的片段保持不变。
+- 无法确定时标记待复核，不猜测。
 
-Classify each frontmatter value by meaning, not just by field name:
-
-- Keep `name` values unchanged.
-- Translate user-facing or agent-facing natural-language prose into Simplified Chinese. This
-  includes `description` and `argument-hint` values.
-- Keep identifiers, commands, paths, package names, URLs, tool names, booleans, numbers, and
-  other typed configuration values unchanged.
-- Within a translatable value, preserve embedded slash commands, inline code, placeholders,
-  paths, URLs, package names, tool names, and other behavior-critical spans exactly.
-- Flag ambiguous values rather than guessing.
-
-Example:
+示例：
 
 ```yaml
 ---
@@ -99,85 +62,62 @@ argument-hint: "你想学习什么？"
 ---
 ```
 
-## Translation style
+## 语言要求
 
-Use Simplified Chinese that is:
+使用自然、简洁、准确的简体中文，与仓库现有语气一致。常见工程术语可以保留英文；翻译会降低准确性时，保留原词。
 
-```text
-natural
-developer-friendly
-concise
-accurate
-consistent with existing repo tone
-```
+## 翻译单个文件
 
-Keep common engineering terms in English when the English term is standard among developers or when translating it would reduce clarity.
+1. 确定文件路径和类型，区分自然语言、混合内容、配置与不可翻译内容。
+2. 标记需要原样保留的片段。
+3. 只翻译自然语言，并原样放回受保护的片段。
+4. 对照原文检查命令、代码块、路径、URL、标识和 frontmatter 键。
+5. 确认本地化安装命令使用 `vinvcn/mattpocock-skills-zh-CN`。
+6. 返回文件内容或补丁，并列出待复核事项。
 
-## Workflow for a single file
+## 刷新整个仓库
 
-When translating one file:
-
-1. Identify the file path and file type.
-2. Classify the file as translatable prose, mixed content, config/metadata, or non-translatable.
-3. Protect behavior-critical spans before translation.
-4. Translate only natural-language prose.
-5. Restore protected spans exactly.
-6. Check that commands, code blocks, paths, URLs, identifiers, and frontmatter keys are unchanged.
-7. Check that localized install commands use `vinvcn/mattpocock-skills-zh-CN`.
-8. Return the translated file content or a patch, plus any review flags.
-
-## Workflow for a repo refresh
-
-When refreshing from upstream:
-
-1. Treat upstream as a content source, not as Git history.
-2. Identify new, changed, and removed content files.
-3. Translate new and changed prose-bearing files.
-4. Copy or preserve non-translatable support files only when they are in scope.
-5. Preserve the localized repo’s README positioning and install path.
-6. 按“验证步骤”完成同步后的结构、完整性、索引和行为关键内容检查。
-7. Add a concise entry to the README sync log.
-8. 在 README 中记录本次验证结果、翻译执行者和翻译策略摘要。
-9. Flag ambiguous files, removed files, or risky transformations for maintainer review.
-10. 总结已翻译文件、复制或保留文件、移除文件、跳过文件、验证结果和复核标记。
+1. 将上游视为内容来源，不合并其 Git 历史。
+2. 列出新增、修改和移除的内容文件。
+3. 翻译新增或修改文件中的自然语言。
+4. 只复制或保留本次范围内的非翻译支持文件。
+5. 保留本地化 README 的定位和安装路径。
+6. 完成下一节的验证，将简短结果写入顶层 README，不粘贴完整命令输出。
+7. 更新 README 同步记录，注明翻译执行者和翻译策略。
+8. 将含义不明的文件、被移除的文件和风险改动交给维护者复核。
+9. 总结翻译、复制、保留、移除和跳过的文件，以及验证结果和待复核事项。
 
 ## 验证步骤
 
-每次上游内容刷新后，必须完成并记录以下检查：
+每次上游内容刷新后，完成并记录：
 
-1. 运行 `node scripts/check-translation.mjs`，确认 Markdown 结构、frontmatter、README install path 和 license invariant 没被破坏。
-2. 检查公开 skill 索引一致性：`engineering/`、`productivity/`、`misc/` 下的 skills 必须同时出现在顶层 `README.md` 和 `.claude-plugin/plugin.json`；`personal/`、`in-progress/`、`deprecated/` 不应出现在 plugin 或顶层公开索引中。
-3. 对比 `upstream/main` 的 in-scope 文件清单，确认没有缺失上游文件，也没有保留已经从上游移除且不属于本地策略的 stale files。
-4. 检查共同 Markdown 文件的行为关键内容：frontmatter keys 和 `name` 值不变，fenced code blocks 平衡，路径、命令、URL、identifier 不被误改。
-5. 运行 `git diff --check` 和 `git diff --cached --check`，确认没有 whitespace 或 patch hygiene 问题。
-6. 检查 README 同步记录指向最新 upstream short SHA，并包含本地同步 commit；不能留下“待定”占位。
-7. 扫描 stale install path 和旧路径，例如仍指向上游 repo 的安装命令、旧的中文仓库短路径、已移除的 triage skill 名、已移除的 domain-model 相对路径等。
-8. 运行 `node scripts/audit-english.mjs` 作为人工复核队列。该脚本在本仓库会包含大量合理的英文术语、命令、示例和 identifiers，因此只作为 review flag，不作为硬性失败门槛。
+1. 运行 `node scripts/check-translation.mjs`，检查 Markdown、frontmatter、README 安装路径和许可证约束。
+2. 核对公开索引：`engineering/`、`productivity/`、`misc/` 中的技能须同时出现在顶层 `README.md` 和 `.claude-plugin/plugin.json`。`personal/`、`in-progress/`、`deprecated/` 中的技能不得出现在这两个公开索引中。
+3. 对比 `upstream/main` 中本次范围内的文件清单，确认没有漏掉上游文件，也没有保留上游已移除且本地策略不需要的文件。
+4. 对照双方共有的 Markdown 文件，确认 frontmatter 键和 `name` 不变、代码围栏成对、路径和命令等行为关键内容没有误改。
+5. 运行 `git diff --check` 和 `git diff --cached --check`。
+6. 确认 README 同步记录包含最新上游短 SHA 和本地同步提交号，没有遗留“待定”占位。
+7. 检查过时的安装地址和路径，包括上游安装地址、旧中文仓库短路径、已移除的 triage 技能名及旧 domain-model 相对路径。
+8. 运行 `node scripts/audit-english.mjs`，逐项人工复核结果。合理的英文术语、命令、示例和标识不算失败；该脚本只提供复核线索。
 
-验证结果应同步写入顶层 `README.md`，使用简短 checklist，不要把完整命令输出粘进去。
+## README 同步记录
 
-## README sync log
+每次刷新在顶层 README 增加一条简短记录，包含：
 
-Each upstream refresh should update the top-level `README.md` sync log with one short entry.
+- 日期，格式为 `YYYY-MM-DD`。
+- 上游版本，通常写为 `mattpocock/skills@<short-sha>`。
+- 本地同步提交号；尚未提交时可暂写待定，提交后必须替换。
+- 一句话概括用户可见的变化。
 
-The entry should include:
-
-- the refresh date in `YYYY-MM-DD` format
-- the upstream source revision, usually `mattpocock/skills@<short-sha>`
-- the local sync commit, if it already exists; otherwise use a short pending note and replace it after commit
-- a one-sentence description of the visible content change
-
-Keep this record concise. Do not move the detailed translation workflow into the README; link to this skill instead.
-
-Example:
+详细流程留在本技能中，README 只链接到这里。示例：
 
 ```text
 - 2026-05-09: Synced upstream `mattpocock/skills@733d312`, local commit `c9fe120`. Added Chinese translations for `prototype` and `in-progress` content, and refreshed public skill indexes.
 ```
 
-## Required output format for review
+## 复核输出格式
 
-When reviewing a translation refresh, provide:
+复核翻译刷新时，按以下格式报告：
 
 ```text
 Changed files:
@@ -209,8 +149,6 @@ Invariant checks:
 - Markdown structure preserved
 ```
 
-## Fail-closed rule
+## 不确定时
 
-When unsure whether text is behavior-critical, preserve it and flag it.
-
-Do not silently rewrite anything that could affect installation, skill discovery, command execution, file references, API calls, tool use, or agent behavior.
+无法确定某段文字是否影响行为时，原样保留并标记待复核。不得擅自改动可能影响安装、技能发现、命令执行、文件引用、API 调用、工具使用或代理行为的内容。

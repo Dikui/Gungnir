@@ -1,7 +1,7 @@
 ---
 name: grill-me
-description: 一个用来打磨计划或设计的持续追问式访谈。
+description: 通过持续提问打磨计划或设计。
 disable-model-invocation: true
 ---
 
-运行一次 `/grilling` session。
+只有用户也明确指定 `/grilling` 时，才运行一次 `/grilling` 访谈。

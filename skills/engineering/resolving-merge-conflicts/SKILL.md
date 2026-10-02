@@ -1,15 +1,11 @@
 ---
 name: resolving-merge-conflicts
-description: "适用于需要解决正在进行的 git merge/rebase 冲突时。"
+description: "依据双方改动的原始意图，解决正在进行的 Git 合并或变基冲突。"
 disable-model-invocation: true
 ---
 
-1. **查看当前 merge/rebase 状态**。检查 git history 和冲突文件。
-
-2. **为每个冲突找到 primary sources**。深入理解每个变更为什么产生，以及原始意图是什么。阅读 commit messages，检查 PRs，检查原始 issues/tickets。
-
-3. **解决每个 hunk。** 尽可能保留双方意图。若二者不兼容，选择符合本次 merge 目标的一方，并记录 trade-off。**不要**发明新行为。始终解决冲突；不要 `--abort`。
-
-4. 发现项目的 **automated checks** 并运行它们，通常是 typecheck、tests、format。修复 merge 引入的问题。
-
-5. **完成 merge/rebase。** Stage 所有内容并 commit。若正在 rebase，继续 rebase 流程直到所有 commits 都完成。
+1. 查看当前合并或变基状态、Git 历史和冲突文件。
+2. 为每处冲突查找原始依据：提交信息、PR、issue 或任务单。弄清双方为什么修改，以及要实现什么。
+3. 逐块解决冲突，尽量保留双方意图。意图不兼容时，选择符合本次合并目标的一方，并记录取舍。不得发明新行为，也不得用 `--abort` 中止操作。
+4. 查找并运行项目已有的自动检查，如类型检查、测试和格式检查。修复本次合并引入的问题。
+5. 完成合并或变基：暂存所有内容并提交；变基时继续处理，直到所有提交完成。

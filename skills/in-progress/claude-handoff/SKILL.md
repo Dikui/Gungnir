@@ -1,18 +1,18 @@
 ---
 name: claude-handoff
-description: 把当前对话交接给一个全新的 background agent，让它立即接手工作。
-argument-hint: "下一个 session 将用于什么？"
+description: 将当前对话整理为交接摘要，并启动新的后台代理立即接手。
+argument-hint: "下一个会话将用于什么？"
 disable-model-invocation: true
 ---
 
-为当前对话写一份 handoff summary，让一个全新的 agent 可以继续工作。不要把它保存下来，而是启动一个以这份 summary 作为 prompt 的 background agent：`claude --bg --name "<descriptive name>" "<handoff summary>"`。它会在当前工作目录中启动并立即返回；用户用 `claude agents` 管理它。
+为当前对话编写交接摘要，不保存为文件。将摘要作为提示，启动后台代理：`claude --bg --name "<descriptive name>" "<handoff summary>"`。代理在当前工作目录启动，命令立即返回；用户可用 `claude agents` 管理它。
 
-始终带上 `-n`/`--name` 并给出描述性名称（例如 `--name "Fix login bug"`）——它设置显示名称，会出现在 job list、session picker 和 terminal title 中。
+始终传入 `-n`/`--name` 和描述性名称，如 `--name "Fix login bug"`。名称会显示在任务列表、会话选择器和终端标题中。
 
-在 summary 中包含一个 "suggested skills" section，推荐 agent 应当调用的 skills。
+摘要应包含：
 
-不要重复其它 artifacts（PRDs、plans、ADRs、issues、commits、diffs）中已经记录的内容，改为用 path 或 URL 引用它们。
+- `suggested skills` 小节：建议接手代理使用的技能，实际调用仍需用户明确指定。
+- 已有产物的路径或 URL，如 PRD、计划、ADR、issue、提交和差异，不重复其内容。
+- 用户传入参数所指定的下一会话重点。
 
-删去任何敏感信息，例如 API keys、passwords 或个人身份信息——这份 summary 会成为 agent 的 prompt。
-
-如果用户传入了 arguments，把它们当作对下一个 session 重点的描述，并据此调整 summary。
+删除 API 密钥、密码和个人身份信息等敏感内容；摘要会直接成为新代理的提示。

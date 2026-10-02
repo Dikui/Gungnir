@@ -1,45 +1,40 @@
 ---
 name: writing-fragments
-description: Writing, explore——挖掘原始 fragments，暂不施加任何结构。
+description: 通过访谈收集写作素材，持续保存片段，暂不安排提纲或文章结构。
 disable-model-invocation: true
 ---
 
 <what-to-do>
 
-这是纯粹的 **explore**：在不承诺任何结构的前提下，拓宽可写内容的空间——承诺结构是 _exploit_，是另一个 skill 的工作。运行一个产出 fragments 的 grilling session，围绕用户想写的任何主题持续访谈。在这里强加 phases、outlines 或文章结构都不在范围内。
+围绕用户想写的主题持续访谈，拓宽可写的内容。本阶段只收集素材，不安排阶段、提纲或文章结构。
 
-当对话双方产生 fragments 时，把它们追加到单一 markdown 文件。
+从用户的第一条消息开始收集双方产生的素材片段，追加到同一 Markdown 文件。用户未提供路径时，只询问一次，并在本次会话中沿用。
 
-如果用户没有传入路径，只询问一次文档保存到哪里，然后在 session 剩余部分记住它。
-
-从用户说的第一句话开始捕获 fragments，包括 initial prompt。
-
-第一次写入时，在顶部放一个带 working title 的单一 H1（之后可以改），除此之外什么都不要放：不要 metadata、TOC 或 date。
+首次写入时，顶部只放一个暂定标题的 H1，之后可以修改。除此之外直接写素材，不添加元数据、目录或日期。
 
 </what-to-do>
 
 <supporting-info>
 
-## What is a fragment
+## 什么是素材片段
 
-Fragment 是任何可能进入最终文章的文本片段。它必须_对作者可读_，也就是作者能知道它是什么意思；但它不需要定义术语，也不需要让冷读者立即理解。标准是 “这是不是一段好写作素材？”，不是 “这是不是自洽论证？”
+片段是任何可能进入最终文章的文字。作者能理解即可，不必解释全部术语，也不必构成完整论证。判断标准是它是否有写作价值。
 
-Fragments 刻意保持异质。可能成为 fragment 的例子：
+片段可以是：
 
-- 一句 sharp sentence，你想在某处使用但还不知道放哪里。
-- 一个 claim 和一句 justification。
-- 一个 vignette：发生过的事、code snippet、scenario、analogy。
-- 一个 half-thought："something about how X feels like Y, work this out later."
-- 一句 quote、一段 dialogue、一句 overheard line。
-- 一组凭感觉属于同一簇的 observations。
-- 一个 complaint、confession 或 punchline。
-- 一个 **leading word**——一个紧凑的隐喻或新造词，整篇文章都可以挂在它上面（一个为这个 idea 命名的术语，就像 _tracer bullets_ 或 _fog of war_ 为整个模式命名那样）。
+- 一句暂时不知道放在哪里的好句子。
+- 一个观点及其理由。
+- 一段经历、代码示例、场景或类比。
+- 尚未想清楚、留待展开的想法。
+- 引文、对话或偶然听到的话。
+- 一组相关观察、抱怨、自白或点睛之语。
+- 为反复出现的想法命名的核心词或比喻（leading word）。
 
-在这些当中，leading word 是最值得落地的 fragment。它是 load-bearing 的：在 explore 阶段命名对的那一个，就会塑造之后的结构、transitions 和标题——在整个 exploit 阶段持续产生回报。当对话围绕一个反复出现的 idea 打转时，推动为它造一个词。
+尤其注意最后一类：一个准确的名称能影响后续结构、转场和标题。对话反复涉及同一想法时，推动用户为它命名。
 
-Novelist's diary 是模型：多年无结构的 noticings，之后被挖掘成 raw material。Fragments 就是 noticings。
+像写小说家的观察日记一样积累素材，暂不要求片段彼此连贯。
 
-## File format
+## 文件格式
 
 ```markdown
 # Working title
@@ -66,14 +61,14 @@ A reaction to it.
 - And want to be near each other
 ```
 
-Fragments 用 horizontal rule（`\n---\n`）分隔。正文内不要 headings。不要 tags。除了加入顺序之外，不做排序。
+用水平线（`\n---\n`）分隔片段。正文不加标题或标签，只按加入顺序排列。
 
-## Writing rhythm
+## 写入节奏
 
-安静追加。不要为每个 fragment 请求许可。可以顺带说你添加了什么（"adding that"），但不要用 save dialogs 打断对话。
+直接追加，不为每个片段重复请求许可。可以顺带说明添加了什么，但不打断访谈。
 
-每次写入前：从磁盘重新读取文件。用户可能在回合之间编辑、重排或删除 fragments；保留他们的变化。永远不要 overwrite 文件；只 append（或者在用户要求时，就地编辑特定 fragment）。
+每次写入前先从磁盘重读文件。保留用户对片段的修改、重排和删除，默认只追加，不覆盖文件。用户明确要求时，原位修改指定片段。
 
-用户随时可以说 "cut the last one"、"rewrite that one sharper"、"merge those two"。把它们当成一等指令。
+用户可以随时要求删除、重写或合并片段；按这些要求处理。
 
 </supporting-info>

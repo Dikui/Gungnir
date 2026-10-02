@@ -1,34 +1,30 @@
 ---
 name: migrate-to-shoehorn
-description: 将测试文件从 `as` 类型断言迁移到 @total-typescript/shoehorn。适用于用户提到 shoehorn、想替换测试中的 `as`，或需要局部测试数据时。
+description: 用 @total-typescript/shoehorn 替换测试中的 as 类型断言，构造部分数据或故意错误的数据。
 disable-model-invocation: true
 ---
 
-# Migrate to Shoehorn
+# 迁移到 Shoehorn
 
-## Why shoehorn?
+## 用途与范围
 
-`shoehorn` 允许你在 tests 中传入 partial data，同时保持 TypeScript 满意。它用 type-safe alternatives 替换 `as` assertions。
+`shoehorn` 用类型安全的方式替换 `as` 断言，让测试可以只传入所需的部分数据。
 
-**只用于 test code。** 永远不要在 production code 中使用 shoehorn。
+**只修改测试代码。生产代码不得使用 shoehorn。**
 
-Tests 中 `as` 的问题：
+测试中的 `as` 容易绕过类型检查，还需要手动指定目标类型。构造故意错误的数据时，通常要写成 `as unknown as Type`。
 
-- 经过训练，不去使用它
-- 必须手动指定 target type
-- 对故意错误的数据需要 double-as（`as unknown as Type`）
-
-## Install
+## 安装
 
 ```bash
 npm i @total-typescript/shoehorn
 ```
 
-## Migration patterns
+## 替换方式
 
-### Large objects with few needed properties
+### 大对象只需要少量属性
 
-Before:
+修改前：
 
 ```ts
 type Request = {
@@ -49,7 +45,7 @@ it("gets user by id", () => {
 });
 ```
 
-After:
+修改后：
 
 ```ts
 import { fromPartial } from "@total-typescript/shoehorn";
@@ -65,13 +61,13 @@ it("gets user by id", () => {
 
 ### `as Type` → `fromPartial()`
 
-Before:
+修改前：
 
 ```ts
 getUser({ body: { id: "123" } } as Request);
 ```
 
-After:
+修改后：
 
 ```ts
 import { fromPartial } from "@total-typescript/shoehorn";
@@ -81,13 +77,13 @@ getUser(fromPartial({ body: { id: "123" } }));
 
 ### `as unknown as Type` → `fromAny()`
 
-Before:
+修改前：
 
 ```ts
 getUser({ body: { id: 123 } } as unknown as Request); // wrong type on purpose
 ```
 
-After:
+修改后：
 
 ```ts
 import { fromAny } from "@total-typescript/shoehorn";
@@ -95,25 +91,22 @@ import { fromAny } from "@total-typescript/shoehorn";
 getUser(fromAny({ body: { id: 123 } }));
 ```
 
-## When to use each
+## 函数选择
 
-| Function        | Use case                                           |
+| 函数            | 用途                                               |
 | --------------- | -------------------------------------------------- |
-| `fromPartial()` | 传入仍能 type-check 的 partial data                |
-| `fromAny()`     | 传入故意错误的数据（保留 autocomplete）             |
-| `fromExact()`   | 强制 full object（之后可换成 fromPartial）          |
+| `fromPartial()` | 传入部分数据，同时检查已提供属性的类型               |
+| `fromAny()`     | 传入故意错误的数据，保留自动补全                     |
+| `fromExact()`   | 要求完整对象，之后可换成 `fromPartial()`             |
 
-## Workflow
+## 步骤
 
-1. **Gather requirements** — 询问用户：
-   - 哪些 test files 中的 `as` assertions 造成问题？
-   - 是否在处理大型 objects，但只关心部分 properties？
-   - 是否需要传入故意错误的数据来测试 error paths？
+1. **确定需求**：询问哪些测试文件中的 `as` 需要替换，是否只需要对象的部分属性，以及是否需要错误数据来测试失败路径。
 
-2. **Install and migrate**：
-   - [ ] Install: `npm i @total-typescript/shoehorn`
-   - [ ] 查找 test files 中的 `as` assertions: `grep -r " as [A-Z]" --include="*.test.ts" --include="*.spec.ts"`
+2. **安装并迁移**：
+   - [ ] 安装：`npm i @total-typescript/shoehorn`
+   - [ ] 查找测试中的 `as` 断言：`grep -r " as [A-Z]" --include="*.test.ts" --include="*.spec.ts"`
    - [ ] 用 `fromPartial()` 替换 `as Type`
    - [ ] 用 `fromAny()` 替换 `as unknown as Type`
-   - [ ] 添加来自 `@total-typescript/shoehorn` 的 imports
-   - [ ] 运行 type check 验证
+   - [ ] 从 `@total-typescript/shoehorn` 导入所需函数
+   - [ ] 运行类型检查
