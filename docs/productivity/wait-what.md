@@ -1,12 +1,25 @@
 ## What it does
 
-`wait-what` 是你在一句话没听明白时输入的内容。[agent](https://www.aihero.dev/ai-coding-dictionary/agent) 随后会把它刚说过的话重新讲一遍。它补上你缺少的 context，用朴素英语书写，并使用你项目 `CONTEXT.md` 里的词汇。
+[`wait-what`](../../skills/productivity/wait-what/SKILL.md) 用于你没听懂当前解释时。代理会回顾相关对话，补足背景、前提和推理，使用你的语言和项目 `CONTEXT.md` 中的术语。
 
-这个 skill 只有三行长。这是设计，不是未完成的草稿。那些对抗冗长的 skills 会因膨胀而失败：一个四百行的 concision skill 仍然让 [model](https://www.aihero.dev/ai-coding-dictionary/model) 显得啰嗦，因为 model 读的是篇幅，而不是恳求。这一个只携带一个精确的 leading word，除此之外什么都没有。
+目标是让你理解。短句只是起点；删掉必要背景，即使更短，也没有完成解释。
+
+## 渐进式解释
+
+默认按以下顺序推进，只有仍不清楚时才升级：
+
+1. **简明文字**：核心答案、必要背景和一个具体例子。
+2. **图示**：展示关系、流程或时序，标出卡住的环节。
+3. **单页 HTML**：分步展开同一个例子，支持回看；需要探索参数时增加交互。
+4. **讲解视频**：用连续画面和旁白说明仍未理解的变化或因果关系。
+
+每轮只提供当前需要的一层。你继续说“没懂”时，代理沿用同一问题的解释进度；你已经理解或能够继续原任务时停止。明确要求某种形式时，可以直接从那一层开始。
+
+工具无法生成目标形式时，代理会说明限制并提供替代解释。视频脚本或分镜会明确标注，不作为成片交付。
 
 ## When to reach for it
 
-你通过输入 `/wait-what` 来调用它。agent 不会自行调用它，也不该。只有你知道自己什么时候跟丢了。
+在 Codex 中输入 `$wait-what`，在 Claude Code 中使用对应的 `/wait-what` 技能命令。它不会因你普通地提问而自动调用，详见[调用规则](../invocation.md)。调用后，可以继续反馈哪一步没懂，无需每轮重输技能名。
 
 在你发现自己开始跳读的那一刻就用它。agent 已经漂移进它自己发明的术语、堆了五个缩写，或者解释了一个你从没见过前提的 decision。它修复的是你正在进行的这场对话。要彻底阻止术语出现，用 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，它预先构建共享语言。
 
@@ -20,17 +33,22 @@ skill 说重新讲一遍**那个**，不是"刚才那条消息"。让你迷失�
 
 ## It plugs into the language you already have
 
-正文复用了你全局 `CLAUDE.md` 和项目 `CONTEXT.md` 里已有的 leading words。ASD-STE100 Simplified Technical English 设定语域。ubiquitous language 提供名词。skill、`CLAUDE.md` 和 `CONTEXT.md` 抓取的是同一批 [tokens](https://www.aihero.dev/ai-coding-dictionary/token)，所以调用它并不是一条新指令。它是对 agent 早已同意的一条指令的提醒。
+技能借鉴 ASD-STE100 的简化表达原则：短句、直接表达、术语一致，并保留必要条件。解释使用你的语言，中文不机械套用英文词数限制。项目 `CONTEXT.md` 提供领域术语；升级到图示、HTML 或视频时继续沿用。
 
 如果你没有 `CONTEXT.md`，skill 仍然有效。你只是失去领域词汇那一半。
 
 ## It's working if
 
-- 重新讲一遍**更短更清楚**，而不是更短更生硬。
+- 重新解释后，你能理解原先卡住的内容，而不只是看到更少的字。
 - 它补上了你缺少的前提，而不只是删词。
 - 项目的名词替换了那些发明出来的词。你 `CONTEXT.md` 里的术语回来了。
-- 你能连用两次，而它不会退化成生硬简短。
+- 你连续反馈“没懂”时，它会针对缺口升级解释，而不重复压缩同一段文字。
 
 ## Where it fits
 
-你可以在任何时刻、任何对话、任何其他 skill 内部使用 `wait-what`。它事后修复一条消息。真正的解药是预先商定的共享语言，那就是 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)：一次 [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) 会话，一边跑 [domain-modeling](https://aihero.dev/skills-domain-modeling)，这样你们双方都在用的词会落进你的 `CONTEXT.md`。如果你不确定哪个 skill 适合此刻，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+你可以在其他技能执行期间明确调用 `wait-what`，让代理解释当前问题。解释流程在本技能内完成，不自动调用 `teach`、`prototype` 或其他技能。需要其他技能时，由你明确指定。
+
+## 参考
+
+- [ASD-STE100 简化表达技能](https://github.com/danyuchn/asd-ste100-skill)：使用短句和一致术语，简化时保留原意。
+- [Answer me with HTML](https://github.com/QingYunA/answer-me-with-html/tree/5a0e28ba4d1316de040ee24e9b729c4bdc5f5445)：按子问题组织解释页，分离内容写作与页面排版。
