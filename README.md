@@ -6,6 +6,8 @@ Matt Pocock Agent Skills 中文手动调用版，基于 [vinvcn/mattpocock-skill
 
 下文保留上游项目说明及安装示例；要使用本手动调用版本，请从 `dikui/Gungnir` 获取 `skills/`，不要使用上游安装地址。
 
+输出表达的改进依据见 [Answer me with HTML 借鉴评估](./docs/answer-me-with-html-review.md)，包含形式选择、适用边界、性能证据和最小落地建议。
+
 ## 为什么需要这个中文版？
 
 - 更好适配中文大语言模型
