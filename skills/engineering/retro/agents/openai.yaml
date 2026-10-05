@@ -1,0 +1,5 @@
+interface:
+  display_name: "Retro"
+  short_description: "复盘一次编码会话。"
+policy:
+  allow_implicit_invocation: false

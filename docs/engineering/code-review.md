@@ -4,16 +4,18 @@
 
 两条轴线从不合并、也从不重新排序。报告以*每条轴线*的最严重问题收尾，并拒绝在它们之间点名一个单独的赢家，因为一个变更可能通过一条轴线却在另一条上失败：一段遵循了每一条约定、却实现了错误东西的代码通过 Standards 却败给 Spec；一段完全按 [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) 要求去做、却破坏了仓库约定的代码则相反。一个混合的裁决会让通过的那条轴线掩盖失败的那条。
 
+审查开始时固定基准、目标与共同祖先的提交 SHA，并列出全部变更文件。两个子代理分别记录文件是否审完，主代理再复核候选问题，最后连同未审范围一起报告。完整流程见 [SKILL.md](../../skills/engineering/code-review/SKILL.md)。
+
 ## When to reach for it
 
-输入 `/code-review`，或者当你要求 review 一个 branch、一个 PR、进行中的改动，或任何「since X」的内容时，由 agent 自动调用。
+显式输入 `/code-review` 或 `$code-review`，并提供比较基准。其他技能不会自动调用它，见[调用规则](../invocation.md)。
 
 | 你的处境 | 指向 |
 | --- | --- |
 | 存在一个 diff，你想知道它是否*构建得对* *并且*是正确的东西 | `code-review` |
 | 你想在 diff 里猎杀 bugs——null paths、races、off-by-one | Claude Code 自己的内置 review，而不是这一个（见下面的命名冲突） |
 | 什么都还没写，你想让它 test-first 地写出来 | [tdd](https://aihero.dev/skills-tdd) |
-| 一整份 spec 需要被构建，review 包括在内 | [implement](https://aihero.dev/skills-implement)，它自己会调用这个 skill |
+| 一整份 spec 需要被构建，review 包括在内 | 同时显式指定 [implement](https://aihero.dev/skills-implement) 和 `code-review` |
 | 是整个 codebase 漂移了，而不是一个 diff | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) |
 | 某个东西坏了，而你不知道为什么 | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
 
@@ -45,6 +47,30 @@ Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 
 **Smell baseline** 是它底下的地板：来自《Refactoring》第 3 章的十二个 Fowler code smells——Mysterious Name、Duplicated Code、Feature Envy、Data Clumps、Primitive Obsession、Repeated Switches、Shotgun Surgery、Divergent Change、Speculative Generality、Message Chains、Middle Man、Refused Bequest。每一个都是一个带标签的启发式（「possible Feature Envy」），绝不是一条硬性违规，而且每一个都表述为 *它是什么* → *如何修复*，所以一条 finding 自带一个动作抵达，而不是自带一份抱怨。你的 linter 已经强制执行的任何东西，两条轴线都会跳过。
 
+## Coverage and evidence
+
+每条轴线都报告 `已审 X/N，未审 Y/N`。跳过、读取失败、超时或上下文不足的文件算未审，必须说明原因。测试、删除和重命名文件不会默认排除。文件漏记时也算未审，不能从“没有报告问题”推断它已被检查。
+
+有未审文件时，结果标为“部分完成”；无文件完成时标为“未完成”。即使已经检查的文件没有发现问题，也不能给出整体通过结论。Spec 因没有需求文档而跳过时，仍报告 `no spec available`。文件全部审完也不等于需求全部实现。
+
+只有 diff 不足以支持判断时，才补读当前疑点所需的上下文。例如，删除函数内的权限检查后，需要确认入口是否已有校验；修改函数签名后，需要核对直接调用方。代码和行号来自已记录的提交，不使用工作区内容替代。此步骤不默认扫描全仓库、运行或新增测试。
+
+每条问题都包含：标题与类型、依据、事实、影响与等级、位置、建议。规范违规、判断性建议和需求问题保持区分；高、中、低等级由具体影响决定。证据不足的线索列为“待确认”，不计入确定问题数量。需求遗漏可以没有代码行号，但必须提供需求位置、预期实现区域和查找依据。
+
+以下仅为输出格式示意，不是本仓库的实际发现：
+
+> **Spec｜需求问题：缺少失败回退**
+>
+> **依据：** 需求文档第 12 行要求主服务失败后使用备用服务。
+>
+> **事实：** 失败分支直接返回错误；已核对的被调用函数也没有回退逻辑。
+>
+> **影响与等级：** 中；主服务不可用时，备用服务无法接管请求。
+>
+> **位置：** 目标提交中的 `src/client.ts:42`，对应失败分支的 `return { error };`。
+>
+> **建议：** 在该分支执行备用服务调用。
+
 ## Common questions
 
 **它和 Claude Code 自己的 `/code-review` 冲突。我该怎么办？**
@@ -65,7 +91,7 @@ Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 
 **我能信任这些 findings 吗？**
 
-不检查就不行。Sub-agent 的输出是假设，不是证据——一个团队报告过十几处破坏性变更被基于散文的 review 放行。Skill 逐字或轻度清洗地合并两份报告，而不是对照文件重新验证每条断言，所以一条 finding 可能引用错误的位置或夸大影响。在照它行动之前，先读每条 finding 上的引用。每条 finding 都必须携带一个引用——一条 standards 规则、一个 smell 加其 hunk、或一行 spec——正是这一点让这一切可以被核查。
+主代理会在输出前重新读取依据和相关代码，复查事实、触发条件、影响及位置。被证据否定的问题会移除，同一轴线内的重复问题会合并；证据不足或未完成复核的内容单列为“待确认”。复核后的坏味道仍是判断性建议，不会被升级为确定缺陷。这些是技能的流程要求，不是程序强制保证；采取行动前仍应核对引用。
 
 **为什么我每次运行它都会发现新问题？**
 
@@ -73,21 +99,26 @@ Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 
 **它会 review 我未提交的工作吗？**
 
-不会。它 diff `<fixed-point>...HEAD`，三点式，从 merge-base 度量，排除了 staged 和 working-tree 变更。如果 `implement` 没有做 interim commit，那么即将被提交的工作对 review 是不可见的。先 commit，再 review，然后 amend 或追加一个 fixup。
+不会。它在开始时解析基准与 `HEAD`，固定两个提交及 merge-base，再比较 merge-base 到目标提交的差异。staged、working-tree 和 untracked 变更都不在范围内；审查期间分支或 `HEAD` 移动也不会改变已固定的范围。需要审查的新工作应先提交，再显式调用本技能。
 
 ## It's working if
 
 - 它在任何 sub-agent 生成之前，就拒绝在坏的 ref 或空 diff 上开始。
 - 报告以 `## Standards` 和 `## Spec` 下的两个独立区块抵达，而不是一个合并的列表。
 - 每条 Standards finding 都点名你仓库某个文件中的一条规则，或十二个 smells 之一，并引用 hunk；每条 Spec finding 都引用 spec 的一行。
+- 报告说明固定的提交范围；每条轴线的文件覆盖数量与原始清单相符，未审文件带原因。
+- 候选问题在汇总前经过事实和位置复核；待确认项单列，坏味道保留判断性建议标签。
+- diff 不足时只补读相关上下文；每条问题都有依据、事实、影响、位置和最小建议，需求遗漏不编造代码行号。
 - 收尾总结给出每条轴线的最大问题，并拒绝挑出一个整体赢家。
 - 没有 spec 可用时，Spec 区块会说明这一点，而不是列出它从代码推断出的需求。
 
 ## Where it fits
 
-`code-review` 是 build chain 尾部的 review 步骤——`grill-with-docs → to-spec → to-tickets → implement → code-review`——也能在你指向它的任何 branch 或 PR 上独立运行。
+`code-review` 是 build chain 尾部的 review 步骤——`grill-with-docs → to-spec → to-tickets → implement → code-review → retro`——也能在你指向它的任何 branch 或 PR 上独立运行。
 
-- [implement](https://aihero.dev/skills-implement) 是最接近的邻居：它驱动构建，并在提交前把此 skill 作为自己的收尾 review 调用。
+- [implement](https://aihero.dev/skills-implement) 驱动单个任务；[implement-spec](https://aihero.dev/skills-implement-spec) 实施整份需求。需要收尾审查时，先提交待审工作，再显式调用本技能；并行实施的审查针对所有任务已汇入的集成分支。
+- [retro](https://aihero.dev/skills-retro) 复盘审查遗漏，提出自动检查或编码规范改进。
+- [pr](https://aihero.dev/skills-pr) 为已审查的工作撰写 PR 正文。上述技能都由用户明确指定。
 - [to-spec](https://aihero.dev/skills-to-spec) 和 [to-tickets](https://aihero.dev/skills-to-tickets) 产出 Spec 轴线所要核对的那份文档；一份含糊的 spec 会让那条轴线也含糊。
 - [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 是整个 codebase 的对口物——这个 skill 只看一个 diff。
 

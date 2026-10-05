@@ -1,16 +1,16 @@
 ---
 name: setup-ts-deep-modules
-description: 在 TypeScript repo 中接入 dependency-cruiser，让每个 package 成为 deep module：implementation 隐藏在 subfolders 中，只能通过 entry-point files 访问。User-invoked。
+description: 为 TypeScript 仓库配置 dependency-cruiser，限制包只能通过入口文件访问，并验证违规导入会被拦截。
 disable-model-invocation: true
 ---
 
-# Setup TS Deep Modules
+# 配置 TypeScript 深模块
 
-让 repo 中每个 package 成为 **deep module**：用小 interface 隐藏大量 behaviour。Package 的 public surface 是其 **entry points**（package root 中的 files），所有 subfolders 都隐藏。这个 skill 会安装 [dependency-cruiser](https://github.com/sverweij/dependency-cruiser)，加入强制只能通过 entry points 访问的 rules，并证明这些 rules 确实会拦截违规。
+用小接口隐藏包内实现。包根目录的文件是公开入口，子目录中的内容都是内部实现。
 
-Vocabulary（deep module、interface、seam、depth）来自调用 Skill 工具并指定 `codebase-design`；整个过程都使用它的语言。
+安装 [dependency-cruiser](https://github.com/sverweij/dependency-cruiser)，配置导入限制，并实际验证它能拦截违规。deep module、interface、seam、depth 等术语沿用 `/codebase-design`；调用该技能须由用户明确指定。
 
-## The shape this enforces
+## 目录与规则
 
 ```
 src/packages/
@@ -21,82 +21,78 @@ src/packages/
     tests/          ← co-located tests + fixtures (a subfolder, so private).
 ```
 
-Public surface 是 package 的 **root files**，并非指定的单个 `index.ts`。按 convention，implementation 放在 `lib/`，tests 放在 `tests/`，使所有 packages 采用相同的 two-folder shape。Rule 本身是通用的：*任何* subfolder 中的*任何*内容都是 private，因此永远无需为了新增 folder 扩展 config。
+公开入口包括根目录的所有文件，不限于 `index.ts`。约定用 `lib/` 放实现、`tests/` 放测试。限制依据路径层级，对任何子目录都生效，不为新增目录单独加规则。
 
-四条 rules，全部为 `error`：
+以下四条规则的级别均为 `error`：
 
-1. **Entry-point boundary** — package 外的 code（app code 或其他 package）只能 import 该 package 的 entry points（root files），不能 import subfolder 中的任何内容。
-2. **Intra-package freedom** — package 自己的 files 可以自由互相 import。
-3. **Tests through the entry points** — `<pkg>/tests/` 下的 files 可以 import 任意 package 的 entry points 和自己的 `tests/` fixtures，但不能 import 任何 package 的 subfolder internals（包括自己的）。允许跨 package integration tests，不允许 deep imports。
-4. **No cycles** — 不允许 dependency cycles。
+1. **外部只访问入口**：应用代码和其他包只能导入本包根目录文件，不能导入子目录内容。
+2. **包内自由导入**：包内文件可以相互导入，测试遵守下一条专门限制。
+3. **测试通过入口访问**：`<pkg>/tests/` 可导入任意包的入口，以及自己的 `tests/` 测试夹具。不得导入任何包的内部实现，包括本包。允许跨包集成测试，不允许深层导入。
+4. **禁止循环依赖**。
 
-**Entry points, not a barrel.** Public surface 是每个 root file，因此 package 可以提供多个小 entry points（`index.ts`、`client.ts`、`server.ts`），不必把一切汇入巨大的 `index.ts`。不鼓励 re-export 整个 subtree 的 barrel files；entry points 要小，implementation 隐藏在 subfolders。
+可提供 `index.ts`、`client.ts`、`server.ts` 等多个小入口。不鼓励用汇总整个子目录导出的 barrel 文件，或将全部内容塞入一个巨大的 `index.ts`。
 
-Layering（哪些 packages 可以依赖哪些）是另一个 concern，在 config 中保留 commented stub，由当前 repo 填写。
+包之间允许哪些依赖属于分层规则。在配置中保留注释占位，交由当前仓库定义。
 
-## Steps
+## 步骤
 
-### 1. Detect the environment
+### 1. 确定环境
 
-- **Package manager** — `pnpm-lock.yaml` → pnpm，`yarn.lock` → yarn，`bun.lockb` → bun，否则 npm。后续每条 command 都使用它（`pnpm`/`yarn`/`npm run`/`bunx`）。
-- **Packages root** — 存在 `src/` 就用 `src/packages`，否则用 `packages`。如果 repo 已有明显不同的 convention，与用户确认。
-- **Existing config** — 检查 `.dependency-cruiser.*` file。若存在，不要覆盖；merge 四条 rules 和 options，并说明添加了什么。
+- 包管理器：`pnpm-lock.yaml` 对应 pnpm，`yarn.lock` 对应 yarn，`bun.lockb` 对应 bun，否则用 npm。后续命令使用对应的 `pnpm`/`yarn`/`npm run`/`bunx`。
+- 包目录：有 `src/` 时用 `src/packages`，否则用 `packages`。若项目已有明显不同的约定，先与用户确认。
+- 已有配置：检查 `.dependency-cruiser.*`。已有文件时合并四条规则和选项，不覆盖，并说明新增内容。
 
-**Done when:** package manager、packages root 和 existing-config status 全部明确。
+完成条件：包管理器、包目录和已有配置情况均已明确。
 
-### 2. Install dependency-cruiser
+### 2. 安装依赖
 
-使用检测到的 package manager，把 `dependency-cruiser` 安装为 devDependency。
+使用项目包管理器，将 `dependency-cruiser` 安装为开发依赖。
 
-**Done when:** `dependency-cruiser` 出现在 `devDependencies`。
+完成条件：`devDependencies` 中包含 `dependency-cruiser`。
 
-### 3. Write the config
+### 3. 配置规则
 
-把 [`dependency-cruiser.config.cjs`](./dependency-cruiser.config.cjs) 复制到 repo root，命名为 `.dependency-cruiser.cjs`。把 `PACKAGES_ROOT` 设置成 step 1 检测到的 root。Rules 基于 path depth 且与 extension 无关，不需要其他调整。
+将 [dependency-cruiser.config.cjs](./dependency-cruiser.config.cjs) 作为仓库根目录 `.dependency-cruiser.cjs` 的起点；已有配置按步骤 1 合并。将 `PACKAGES_ROOT` 设为步骤 1 确定的包目录。规则依据路径层级，不依赖扩展名，无需其他调整。
 
-**Done when:** `.dependency-cruiser.cjs` 存在、`PACKAGES_ROOT` 正确，并包含四条 forbidden rules。
+完成条件：`.dependency-cruiser.cjs` 存在，`PACKAGES_ROOT` 正确，包含四条禁止规则。
 
-### 4. Wire it into the checks
+### 4. 接入项目检查
 
-- 添加 `lint:boundaries` script：`depcruise <packages-root>`（或 `depcruise src`）。
-- 把它纳入 repo 已经执行 typecheck 的 umbrella check command（如 `check` / `ci` / `validate`）。不要修改 `tsconfig` 或添加 path aliases。
-- 如果没有 umbrella script，就添加 `lint:boundaries`，并告诉用户把它加入 CI。
+添加 `lint:boundaries` 脚本：`depcruise <packages-root>`，或 `depcruise src`。将它加入现有类型检查所在的统一命令，如 `check`、`ci`、`validate`。不修改 `tsconfig`，不新增路径别名。
 
-**Done when:** `lint:boundaries` 存在，且和 typecheck 由同一 command 运行。
+没有统一检查命令时，只添加 `lint:boundaries`，并告诉用户将其加入 CI。
 
-### 5. Scaffold the example package
+完成条件：脚本存在；有统一检查命令时，它与类型检查一起运行。
 
-创建并 commit 一个 `<packages-root>/example/` 作为 copy-me template：
+### 5. 创建示例包
 
-- `index.ts` — entry point，export 一个 delegate 给 internal file 的 function，让 package 明显是 *deep*，不是 pass-through。
-- `lib/impl.ts` — **subfolder** 中的 internal file，由 `index.ts` import，外部无法访问。
-- `tests/example.test.ts` — **只** import `../index`（entry point），并针对 public function assert。
+创建并提交 `<packages-root>/example/`，作为可复制或删除的初始模板：
 
-告诉用户这是可以 copy 或 delete 的 starter template。
+- `index.ts`：公开函数，将工作交给内部文件，体现小接口隐藏实现。
+- `lib/impl.ts`：由 `index.ts` 导入的内部实现，外部无法访问。
+- `tests/example.test.ts`：只导入 `../index`，对公开函数断言。
 
-**Done when:** example package 存在，通过 root entry point 暴露 behaviour，并把 `impl` 隐藏在 subfolder。
+完成条件：示例包通过根目录入口提供行为，内部实现保留在子目录中。
 
-### 6. Prove the rules bite
+### 6. 验证拦截
 
-这是整个 skill 的 completion criterion；不能在 violation 时失败的 config 毫无价值。
+1. 运行 `lint:boundaries`，正常示例必须通过。
+2. 临时在 `tests/example.test.ts` 加入深层导入，如 `import { thing } from "../lib/impl"`。再次运行，必须因 `tests-through-entrypoints` 失败。
+3. 撤销深层导入，再运行一次，必须通过。
 
-1. 运行 `lint:boundaries`，clean example 必须 **pass**。
-2. 临时给 `tests/example.test.ts` 加一个 deep import，例如 `import { thing } from "../lib/impl"`。再次运行 `lint:boundaries`，必须以 `tests-through-entrypoints` **fail**。
-3. Revert deep import，再运行一次，必须 **pass**。
+完成条件：实际观察到“通过 → 违规失败 → 恢复后通过”。若第二步没有失败，先修正检查接入，不能宣布完成。
 
-**Done when:** 已观察到 pass、deep import 时 fail、恢复后再 pass。Step 2 不失败，就先修正 wiring，不能完成任务。
+### 7. 记录约定
 
-### 7. Document the convention
+在 `<packages-root>/README.md` 说明 `src/packages/<name>/` 的布局、根目录入口、`lib/`、`tests/` 和 `lint:boundaries` 的运行方式。明确只通过包入口导入，推荐多个小入口，不鼓励用一个 index 重新导出整个子目录。只需保留可复制示例和四条规则各一段说明。
 
-在 packages folder（`<packages-root>/README.md`）中写 `README.md`，内容覆盖：`src/packages/<name>/` layout（root 中是 entry points、`lib/` 放 implementation、`tests/` 放 tests）、“只通过 package 的 entry points（root files）import”，以及如何运行 `lint:boundaries`。明确 **discourage barrel files**，用多个小 entry points，而不是从一个 index re-export 整个 subtree。内容只保留 copy-me snippet，以及四条 rules 各一段。
+从仓库规则文件添加一行链接：优先 `CLAUDE.md`，其次 `AGENTS.md`，两者都没有时创建 `AGENTS.md`。例如：`Packages are deep modules — see [src/packages/README.md](./src/packages/README.md) before adding or importing one.`
 
-再从 repo 的 agent-instructions file 指向它：优先 `CLAUDE.md`，否则 `AGENTS.md`；两者都不存在则创建 `AGENTS.md`。一行即可，例如：`Packages are deep modules — see [src/packages/README.md](./src/packages/README.md) before adding or importing one.` 这让 agent 能发现 boundary rule，而不是撞上它。
+完成条件：包目录说明存在，写明不鼓励 barrel 文件，并有仓库规则文件链接到它。
 
-**Done when:** `<packages-root>/README.md` 存在且 discourages barrels，repo 的 `CLAUDE.md`/`AGENTS.md` 链接到它。
+## 配置注意事项
 
-## Notes
-
-- Config 中的 `$1` back-references（dependency-cruiser group matching）让 package 能访问自己的 internals，同时阻止 outsiders；不要把它们展开成每 package 一条 rule。
-- Public/private 由 **depth** 决定：package root files 是 entry points，subfolder 中的一切都是 private。Convention 是 `lib/` 和 `tests/`，但 rule 不 hardcode；新增 folder 无需改 config，新增 entry point 只需新增 root file，不需要 barrel。
-- Packages 是 **flat**：root 下只有一层 immediate children。Package internals 可以任意深，但 package 不能包含另一个 package。
-- 使用 `.cjs`（不是 `.js`），确保即使 repo 使用 `"type": "module"`，config 的 `module.exports` 也能工作。
+- 保留配置中的 `$1` 反向引用。它用于允许包内访问、阻止外部访问，不展开成每个包一条规则。
+- 公开与私有由路径深度决定。新增子目录不改配置，新增入口只需增加根目录文件。
+- 包目录下只有一层包；包不能嵌套包，包内实现可以任意深。
+- 使用 `.cjs`，使配置中的 `module.exports` 在 `"type": "module"` 仓库中仍然可用。

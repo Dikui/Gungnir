@@ -1,19 +1,20 @@
 ---
 name: domain-modeling
-description: 构建并打磨项目的领域模型。适用于讨论 codebase 术语、编写或编辑 CONTEXT.md，或记录或编辑 ADR。
+description: 维护项目的领域术语和模型，并记录重要架构决策。
+disable-model-invocation: true
 ---
 
-# Domain Modeling
+# 领域建模
 
-在设计过程中主动构建并打磨项目的 domain model。这是 *active* discipline：挑战术语、发明 edge-case scenarios，并在概念成形的当下写入 glossary 和 decisions。
+设计时主动维护领域模型：澄清术语、用边界场景检验概念，并及时把结论写入词汇表或 ADR。读取 `GLOSSARY.md` 只是查词；本技能 用于修改模型。
 
-## File structure
+## 文件结构
 
-多数 repos 只有一个 context：
+多数仓库只有一个上下文：
 
 ```text
 /
-|- CONTEXT.md
+|- GLOSSARY.md
 |- docs/
 |  `- adr/
 |     |- 0001-event-sourced-orders.md
@@ -21,54 +22,54 @@ description: 构建并打磨项目的领域模型。适用于讨论 codebase 术
 `- src/
 ```
 
-如果 root 有 `CONTEXT-MAP.md`，说明 repo 有多个 contexts。map 指向每个 context 的位置：
+如果仓库根目录有 `GLOSSARY-MAP.md`，说明仓库有多个上下文；该文件会列出各上下文 的位置：
 
 ```text
 /
-|- CONTEXT-MAP.md
+|- GLOSSARY-MAP.md
 |- docs/
 |  `- adr/                          -> system-wide decisions
 `- src/
    |- ordering/
-   |  |- CONTEXT.md
+   |  |- GLOSSARY.md
    |  `- docs/adr/                  -> context-specific decisions
    `- billing/
-      |- CONTEXT.md
+      |- GLOSSARY.md
       `- docs/adr/
 ```
 
-按需懒创建文件：只有在有内容要写时才创建。如果没有 `CONTEXT.md`，当第一个 term 被解决时创建它。如果没有 `docs/adr/`，当第一个 ADR 需要出现时创建它。
+只在有内容要写时创建文件：解决第一个术语时创建 `GLOSSARY.md`；需要记录第一个 ADR 时创建 `docs/adr/`。
 
-## During the session
+## 建模过程
 
-### Challenge against the glossary
+### 对照词汇表
 
-当用户使用的术语与 `CONTEXT.md` 中既有语言冲突时，立即指出。"Your glossary defines 'cancellation' as X, but you seem to mean Y - which is it?"
+如果用户用词与 `GLOSSARY.md` 冲突，立即指出，例如：“词汇表把 cancellation 定义为 X，但你似乎在说 Y，应该采用哪一个？”
 
-### Sharpen fuzzy language
+### 澄清模糊术语
 
-当用户使用模糊或过载术语时，提出一个精确的 canonical term。"You're saying 'account' - do you mean the Customer or the User? Those are different things."
+遇到模糊或含义过多的术语时，提出明确的规范术语，例如：“account 指 Customer 还是 User？两者并不相同。”
 
-### Discuss concrete scenarios
+### 用具体场景检验
 
-讨论 domain relationships 时，用具体场景做压力测试。发明能探测 edge cases 的场景，迫使用户精确定义概念之间的 boundaries。
+讨论领域关系时，用具体场景检验边界案例，帮助用户明确概念之间的边界。
 
-### Cross-reference with code
+### 核对代码
 
-当用户描述某事如何工作时，检查代码是否同意。如果发现矛盾，要指出："Your code cancels entire Orders, but you just said partial cancellation is possible - which is right?"
+用户描述系统行为时，核对代码；发现矛盾就指出，例如：“代码会取消整个订单，但你说可以部分取消，哪一种才是预期？”
 
-### Update CONTEXT.md inline
+### 及时更新 GLOSSARY.md
 
-当一个 term 被解决时，立刻更新 `CONTEXT.md`。不要批量攒到最后；随着概念出现就捕获。使用 [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) 中的格式。
+术语一经确认就更新 `GLOSSARY.md`，不要留到最后批量处理。遵循 [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md) 的格式。
 
-`CONTEXT.md` 必须完全不包含 implementation details。不要把 `CONTEXT.md` 当 spec、scratch pad 或 implementation decisions 的仓库。它只是一份 glossary。
+`GLOSSARY.md` 只能包含领域术语，不得记录实现细节。不要用它保存需求文档、草稿或实现决策。
 
-### Offer ADRs sparingly
+### 谨慎提出 ADR
 
-只有以下三项都成立时，才提出创建 ADR：
+只有以下三项全部成立时，才建议创建 ADR：
 
-1. **Hard to reverse** - 之后改变主意的成本有意义
-2. **Surprising without context** - 未来读者会疑惑 "why did they do it this way?"
-3. **The result of a real trade-off** - 确实存在替代方案，而你基于具体理由选择了其中一个
+1. **难以逆转**：后续改变决策会有明显成本。
+2. **需要解释**：未来读者会疑惑为什么这样设计。
+3. **经过真实取舍**：存在替代方案，并基于具体理由作出了选择。
 
-缺少任一项就跳过 ADR。使用 [ADR-FORMAT.md](./ADR-FORMAT.md) 中的格式。
+缺少任一项就不建 ADR。遵循 [ADR-FORMAT.md](./ADR-FORMAT.md) 的格式。

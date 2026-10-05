@@ -1,3 +1,5 @@
 interface:
   display_name: "Writing for Agents"
   short_description: "编写 agent 消费的文档"
+policy:
+  allow_implicit_invocation: false

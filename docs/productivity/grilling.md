@@ -13,7 +13,7 @@
 | 你有什么 | 拿什么 |
 | --- | --- |
 | 你不在工作目录里 | [grill-me](https://aihero.dev/skills-grill-me)——同一个 [session](https://www.aihero.dev/ai-coding-dictionary/session)，只是这个名字 agent 永远不会自己触发 |
-| 你在工作目录里 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——同一个 session，并且它会边进行边写出 `CONTEXT.md` 和 ADRs |
+| 你在工作目录里 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——同一个 session，并且它会边进行边写出 `GLOSSARY.md` 和 ADRs |
 | 一个太大、一个 session 装不下的 effort | [wayfinder](https://aihero.dev/skills-wayfinder)——它绘制一张 map，并在 decision tickets 内部运行 grilling |
 | 一个交谈无法解决、关于某物该如何呈现或感觉的问题 | [prototype](https://aihero.dev/skills-prototype)——构建一次性版本，然后回来 |
 | 一个你自己的、需要访谈的 skill | 从它内部调用 `/grilling`，而不是另写一场访谈 |
@@ -38,7 +38,7 @@
 | --- | --- |
 | tree、frontier、rounds、问题格式、facts vs decisions | 这里 |
 | 一个 session 应该持续多久、对一个你无法靠交谈回答的问题该怎么办、如何避免一路点头 | [grill-me](https://aihero.dev/skills-grill-me) |
-| 什么会被写进 `CONTEXT.md`、什么会成为 ADR | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
+| 什么会被写进 `GLOSSARY.md`、什么会成为 ADR | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
 
 ## Common questions
 

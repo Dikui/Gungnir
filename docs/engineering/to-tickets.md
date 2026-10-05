@@ -93,7 +93,7 @@ Skill 止步于 artifact，没有 auto-dispatch 模式。分派是手工的：�
 `to-tickets` 是 main build chain 中的一个步骤：
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → retro
 ```
 
-上游是 [to-spec](https://aihero.dev/skills-to-spec)，它交来一份已定稿的 spec 供你切片——把两者保持在一个不间断的 context window 里。下游是 [implement](https://aihero.dev/skills-implement)，它每个全新 session 构建一个 ticket，为 tests 驱动 [tdd](https://aihero.dev/skills-tdd)，并以 [code-review](https://aihero.dev/skills-code-review) 收尾。当你不确定哪个 skill 或 flow 合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+上游是 [to-spec](https://aihero.dev/skills-to-spec)，它交来一份已定稿的 spec 供你切片——把两者保持在一个不间断的 context window 里。下游是 [implement](https://aihero.dev/skills-implement)，它每个全新 session 构建一个 ticket，为 tests 驱动 [tdd](https://aihero.dev/skills-tdd)，并以 [code-review](https://aihero.dev/skills-code-review) 收尾。也可使用 [implement-spec](https://aihero.dev/skills-implement-spec) 按依赖图并行实施整份需求。完成后可显式调用 [retro](https://aihero.dev/skills-retro) 复盘工作环境。当你不确定哪个 skill 或 flow 合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

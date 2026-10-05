@@ -1,6 +1,6 @@
 ## What it does
 
-`grill-me` 拿一个**松散的想法**，持续访谈你，直到你能对它做出承诺。你不需要一份已经成型的工作计划才能开始——产出一份计划正是这个 [session](https://www.aihero.dev/ai-coding-dictionary/session) 的用途。它以 **rounds** 来提问：每一 round 就是整条 **frontier**——所有那些前提你已经搞定的问题——所以你永远不会被问到某个还悬而未决的问题。
+`grill-me` 拿一个**松散的想法**，持续访谈你，直到其中出现真正的 decisions。你不需要一份已经成型的工作计划才能开始——产出一份计划正是这个 [session](https://www.aihero.dev/ai-coding-dictionary/session) 的用途。它以 **rounds** 来提问：每一 round 就是整条 **frontier**——所有那些前提你已经搞定的问题——所以你永远不会被问到某个还悬而未决的问题。
 
 它是 **[stateless](https://www.aihero.dev/ai-coding-dictionary/stateless)** 的。它不写任何文件，也不留下任何 workspace。它唯一留下的，是你自己头脑中一个更清晰的、关于这个想法的版本。
 
@@ -13,7 +13,7 @@
 你想要三个 grilling skills 中的哪一个，取决于你面前的是什么：
 
 - **Anything, anywhere** —— `grill-me`。它不需要 repo，也不写任何文件，而且主题不必与代码有关。
-- **有一个要与之对齐的 codebase** —— [grill-with-docs](https://aihero.dev/skills-grill-with-docs)。同样的访谈，但它是 [stateful](https://www.aihero.dev/ai-coding-dictionary/stateful) 的：它读取你的代码，并把学到的东西保存在 `CONTEXT.md` 和 ADRs 里。
+- **有一个要与之对齐的 codebase** —— [grill-with-docs](https://aihero.dev/skills-grill-with-docs)。同样的访谈，但它是 [stateful](https://www.aihero.dev/ai-coding-dictionary/stateful) 的：它读取你的代码，并把学到的东西保存在 `GLOSSARY.md` 和 ADRs 里。
 - **对单一 session 来说太大** —— [wayfinder](https://aihero.dev/skills-wayfinder)。它把 effort 绘制成一张 map，并在其内部运行 grilling sessions。
 
 关闭 [plan mode](https://www.aihero.dev/ai-coding-dictionary/agent-mode)。Plan mode 会让 agent 倾向于赶着产出一份计划，而这与停留在追问中恰恰相反。
@@ -71,6 +71,6 @@ When grilling, ask one question at a time.
 
 `grill-me` 是一个**可以在任何地方、针对任何事物运行的 standalone**。stateless 正是让它可移植的原因：没有 repo、没有 workspace、没有配置，也不假设这个想法与软件有关。人们把它用于商业决定、用于写作、用于下一步要做什么——任何在他们头脑里无法安定的东西。
 
-这种可移植性正是它与 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 的主要区别——后者运行同样的访谈，但会读取一个 codebase 来对齐，并把学到的东西记录为 `CONTEXT.md` 和 ADRs。两者都位于 [grilling](https://aihero.dev/skills-grilling) primitive 之上；`grill-me` 是不携带任何东西的 user-invoked 前门。
+这种可移植性正是它与 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 的主要区别——后者运行同样的访谈，但会读取一个 codebase 来对齐，并把学到的东西记录为 `GLOSSARY.md` 和 ADRs。两者都位于 [grilling](https://aihero.dev/skills-grilling) primitive 之上；`grill-me` 是不携带任何东西的 user-invoked 前门。
 
 如果你 grill 的东西确实被证明是软件，你可以把同一段对话交给 [to-spec](https://aihero.dev/skills-to-spec)，继续进入 build flow——这是一个选项，而不是这个 skill 的重点。当你不确定哪条流程合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你引路。

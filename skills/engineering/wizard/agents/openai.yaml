@@ -1,3 +1,5 @@
 interface:
   display_name: "Wizard"
   short_description: "生成交互式配置向导"
+policy:
+  allow_implicit_invocation: false

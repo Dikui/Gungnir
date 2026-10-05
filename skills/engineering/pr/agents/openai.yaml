@@ -1,0 +1,5 @@
+interface:
+  display_name: "PR"
+  short_description: "编写便于快速审查的 PR 正文"
+policy:
+  allow_implicit_invocation: false

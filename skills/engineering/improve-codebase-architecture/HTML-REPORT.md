@@ -105,7 +105,7 @@ Before：把 function calls tree 渲染为 nested boxes。After：把同一棵 t
 
 ## Tone
 
-平实的语言，简洁；但 architectural nouns 和 verbs 必须来自 `/codebase-design` skill。简洁不是术语漂移的借口。
+Plain English，简洁；但 architectural nouns 和 verbs 必须来自 `/codebase-design` skill。简洁不是术语漂移的借口。
 
 **Use exactly:** module, interface, implementation, depth, deep, shallow, seam, adapter, leverage, locality.
 

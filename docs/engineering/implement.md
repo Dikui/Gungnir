@@ -54,11 +54,11 @@
 
 **我可以一次指向我所有的 tickets，或者并行运行几个吗？**
 
-不行。一次调用，一个 ticket。跨 ticket 队列的批量派发和 [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) 扇出都被反复请求过，而两者都不存在。在同一个 checkout 里并排运行多个 `/implement` sessions，比"不受支持"更糟：一份现场报告描述了某个 session 里的 `git commit --amend` 落在另一个 session 的 commit 上、一条 stash 从 `refs/stash` 里消失、以及 commit 落到错误的 branch 上——全部发生在一个下午、横跨三个 issues。这些 sessions 共享同一个 working directory、同一个 index 和同一个 HEAD。Git worktrees 是社区的变通方案，而且注意 `refs/stash` 也跨 worktrees 共享，所以单靠 worktrees 并不能修复 stash 的情形。如果你今天就想要并行，你得自己把它组装起来。
+使用 `/implement` 时仍是一次调用、一个任务。需要一次实施整份需求时，显式指定 [implement-spec](https://aihero.dev/skills-implement-spec)：它按无阻塞的任务集合派发子代理，每个代理使用独立 worktree，最后汇入同一集成分支。在同一个 checkout 里并排运行多个 `/implement` sessions，比"不受支持"更糟：一份现场报告描述了某个 session 里的 `git commit --amend` 落在另一个 session 的 commit 上、一条 stash 从 `refs/stash` 里消失、以及 commit 落到错误的 branch 上——全部发生在一个下午、横跨三个 issues。这些 sessions 共享同一个 working directory、同一个 index 和同一个 HEAD。Git worktrees 是社区的变通方案，而且注意 `refs/stash` 也跨 worktrees 共享，所以单靠 worktrees 并不能修复 stash 的情形。需要并行时使用 `implement-spec`，不要让多个实施会话共享同一 checkout。
 
 **它可以开 pull request 而不是 commit 吗？**
 
-不是内建的。它直接提交到当前 branch，这让几个人觉得太急切：代码在他们有机会验证它能工作之前就落地了。没有任何配置 flag，也没有 PR 模式。人们会在调用里覆盖它（"commit 到一个 branch 并开一个 PR"），或者通过编辑他们本地的那份 skill 副本来覆盖。
+不是内建的。它直接提交到当前 branch，这让几个人觉得太急切：代码在他们有机会验证它能工作之前就落地了。没有任何配置 flag，也没有 PR 模式。人们会在调用里覆盖它（"commit 到一个 branch 并开一个 PR"），或者通过编辑他们本地的那份 skill 副本来覆盖。代理需要撰写 PR 正文时，可由用户显式指定 [pr](https://aihero.dev/skills-pr)，采用最小图示、前后验证证据和合并影响说明。
 
 **`code-review` 说它看不到我的变更。**
 
@@ -84,10 +84,10 @@
 
 ## Where it fits
 
-`implement` 是 main chain 的 build step，倒数第二：
+`implement` 是主流程的实施步骤：
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → retro
 ```
 
 它的邻居是 [to-tickets](https://aihero.dev/skills-to-tickets)——产出它所消费的 tickets 并声明决定其顺序的 blocking edges；[tdd](https://aihero.dev/skills-tdd)——它在每个 seam 上内部驱动它；以及 [code-review](https://aihero.dev/skills-code-review)——它在提交之前运行它。它位于规划类 skills 的下游并信任它们。它不会重新验证交给它的东西的形状，所以一张结构糟糕的地图或一个横向分层的 ticket 会照原样被构建。

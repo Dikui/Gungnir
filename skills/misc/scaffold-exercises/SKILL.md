@@ -1,37 +1,34 @@
 ---
 name: scaffold-exercises
-description: 创建包含章节、题目、答案和讲解的练习目录结构，并确保通过 linting。适用于用户想 scaffold exercises、创建 exercise stubs，或设置新的课程章节时。
+description: 按课程计划创建章节、练习和说明文件，通过练习目录检查后提交。
+disable-model-invocation: true
 ---
 
-# Scaffold Exercises
+# 创建练习目录
 
-创建能通过 `pnpm ai-hero-cli internal lint` 的 exercise directory structures，然后用 `git commit` 提交。
+创建练习目录，通过 `pnpm ai-hero-cli internal lint` 检查后，用 `git commit` 提交。
 
-## Directory naming
+## 目录命名
 
-- **Sections**：`exercises/` 下的 `XX-section-name/`（例如 `01-retrieval-skill-building`）
-- **Exercises**：section 下的 `XX.YY-exercise-name/`（例如 `01.03-retrieval-with-bm25`）
-- Section number = `XX`，exercise number = `XX.YY`
-- Names 使用 dash-case（小写、连字符）
+- **章节**：`exercises/` 下的 `XX-section-name/`，例如 `01-retrieval-skill-building`。
+- **练习**：章节下的 `XX.YY-exercise-name/`，例如 `01.03-retrieval-with-bm25`。
+- 章节编号为 `XX`，练习编号为 `XX.YY`。名称使用小写字母和连字符。
 
-## Exercise variants
+## 练习类型
 
-每个 exercise 至少需要这些 subfolders 中的一个：
+练习可包含以下子目录：
 
-- `problem/` — student workspace，包含 TODOs
-- `solution/` — reference implementation
-- `explainer/` — conceptual material，不含 TODOs
+- `problem/`：学生作答区，包含 TODO。
+- `solution/`：参考实现。
+- `explainer/`：概念讲解，不含 TODO。
 
-创建 stub 时，除非 plan 指定其他 variant，否则默认使用 `explainer/`。
+创建初始目录时，默认使用 `explainer/`，除非计划指定其他类型。每个练习至少需要 `problem/`、`explainer/` 或 `explainer.1/` 之一。
 
-## Required files
+## 必需文件
 
-每个 subfolder（`problem/`、`solution/`、`explainer/`）都需要一个 `readme.md`，要求：
+每个子目录（`problem/`、`solution/`、`explainer/`）都需要非空的 `readme.md`，且链接有效。只有一行真实标题也可以。
 
-- **非空**（必须有真实内容，即使只有一行 title 也可以）
-- 没有 broken links
-
-创建 stub 时，生成带 title 和 description 的最小 readme：
+新建时，使用最简的标题和说明：
 
 ```md
 # Exercise Title
@@ -39,46 +36,46 @@ description: 创建包含章节、题目、答案和讲解的练习目录结构�
 Description here
 ```
 
-如果 subfolder 有 code，还需要 `main.ts`（>1 行）。但对 stubs 来说，readme-only exercise 可以接受。
+含代码的子目录还需提供超过一行的 `main.ts`。初始练习可以只有说明文件。
 
-## Workflow
+## 步骤
 
-1. **Parse the plan** — 提取 section names、exercise names 和 variant types
-2. **Create directories** — 对每个 path 执行 `mkdir -p`
-3. **Create stub readmes** — 每个 variant folder 一个带 title 的 `readme.md`
-4. **Run lint** — 执行 `pnpm ai-hero-cli internal lint` 验证
-5. **Fix any errors** — 迭代直到 lint 通过
+1. 从计划中提取章节名、练习名和练习类型。
+2. 对每个路径执行 `mkdir -p`。
+3. 在每个练习类型的子目录中创建带标题的 `readme.md`。
+4. 执行 `pnpm ai-hero-cli internal lint`。
+5. 修正错误，直到检查通过。
 
-## Lint rules summary
+## 检查规则
 
-linter（`pnpm ai-hero-cli internal lint`）检查：
+`pnpm ai-hero-cli internal lint` 检查：
 
-- 每个 exercise 有 subfolders（`problem/`、`solution/`、`explainer/`）
+- 每个练习有对应的子目录（`problem/`、`solution/`、`explainer/`）
 - 至少存在 `problem/`、`explainer/` 或 `explainer.1/` 之一
-- primary subfolder 中存在非空 `readme.md`
-- 没有 `.gitkeep` files
-- 没有 `speaker-notes.md` files
-- readmes 中没有 broken links
-- readmes 中没有 `pnpm run exercise` commands
-- 除非是 readme-only，否则每个 subfolder 都需要 `main.ts`
+- 主要子目录中存在非空 `readme.md`
+- 没有 `.gitkeep` 文件
+- 没有 `speaker-notes.md` 文件
+- 说明文件中没有失效链接
+- 说明文件中没有 `pnpm run exercise` 命令
+- 除非只有说明文件，否则每个子目录都需要 `main.ts`
 
-## Moving/renaming exercises
+## 移动或重命名练习
 
-重新编号或移动 exercises 时：
+重新编号或移动练习时：
 
-1. 使用 `git mv`（不是 `mv`）重命名 directories，保留 git history
-2. 更新 numeric prefix 以维持顺序
-3. 移动后重新运行 lint
+1. 使用 `git mv` 重命名目录，保留 Git 历史。
+2. 更新编号前缀，维持顺序。
+3. 重新运行目录检查。
 
-Example:
+示例：
 
 ```bash
 git mv exercises/01-retrieval/01.03-embeddings exercises/01-retrieval/01.04-embeddings
 ```
 
-## Example: stubbing from a plan
+## 示例：按计划创建初始目录
 
-给定这样的 plan：
+计划：
 
 ```
 Section 05: Memory Skill Building
@@ -95,7 +92,7 @@ mkdir -p exercises/05-memory-skill-building/05.02-short-term-memory/{explainer,p
 mkdir -p exercises/05-memory-skill-building/05.03-long-term-memory/explainer
 ```
 
-然后创建 readme stubs：
+然后创建说明文件：
 
 ```
 exercises/05-memory-skill-building/05.01-introduction-to-memory/explainer/readme.md -> "# Introduction to Memory"

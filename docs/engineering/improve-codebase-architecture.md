@@ -27,9 +27,9 @@
 
 ## Prerequisites
 
-运行它无需任何前置条件。它会读取 `CONTEXT.md` 以及 `docs/adr/` 中存在的任何 ADRs，并在它们存在时用你领域自己的名词说话——一个候选项读起来是"加深 Order intake module"，而不是"重构 FooBarHandler"。
+运行它无需任何前置条件。它会读取 `GLOSSARY.md` 以及 `docs/adr/` 中存在的任何 ADRs，并在它们存在时用你领域自己的名词说话——一个候选项读起来是"加深 Order intake module"，而不是"重构 FooBarHandler"。
 
-它在两个地方写入。report 进入 `<tmpdir>/architecture-review-<timestamp>.html`，位于 repo 之外。在 grilling 循环期间，它会向 `CONTEXT.md` 添加或锐化术语——如果该文件不存在就创建它——并提议把一个被否决的候选项记录为 ADR，这样未来的运行就不会再次建议它。
+它在两个地方写入。report 进入 `<tmpdir>/architecture-review-<timestamp>.html`，位于 repo 之外。在 grilling 循环期间，它会向 `GLOSSARY.md` 添加或锐化术语——如果该文件不存在就创建它——并提议把一个被否决的候选项记录为 ADR，这样未来的运行就不会再次建议它。
 
 ## Depth, and the report that hunts for it
 
@@ -98,4 +98,4 @@ skill 没有随附一个好答案。反复出现的请求是想要一份 `TYPESC
 
 ## Where it fits
 
-`improve-codebase-architecture` 是**定期维护**——每隔几天运行一次，在任何链条之外，用来排队工作而不是亲自动手。它的邻居是 [codebase-design](https://aihero.dev/skills-codebase-design)——拥有每个候选项赖以书写的 depth-and-seam 词汇；[grilling](https://aihero.dev/skills-grilling)——一旦你选中候选项就由它走 decision tree；以及 [domain-modeling](https://aihero.dev/skills-domain-modeling)——在决策落定时保持 `CONTEXT.md` 和 ADRs 处于最新状态。它产出的是一个 idea，这个 idea 在 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 或 [to-spec](https://aihero.dev/skills-to-spec) 处重新进入 main build flow。至于哪种情形该用哪个 skill，[ask-matt](https://aihero.dev/skills-ask-matt) 是覆盖全集的 router。
+`improve-codebase-architecture` 是**定期维护**——每隔几天运行一次，在任何链条之外，用来排队工作而不是亲自动手。它的邻居是 [codebase-design](https://aihero.dev/skills-codebase-design)——拥有每个候选项赖以书写的 depth-and-seam 词汇；[grilling](https://aihero.dev/skills-grilling)——一旦你选中候选项就由它走 decision tree；以及 [domain-modeling](https://aihero.dev/skills-domain-modeling)——在决策落定时保持 `GLOSSARY.md` 和 ADRs 处于最新状态。[retro](https://aihero.dev/skills-retro) 关注代理工作环境，本技能关注代码中的模块深化。它产出的是一个 idea，这个 idea 在 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 或 [to-spec](https://aihero.dev/skills-to-spec) 处重新进入 main build flow。至于哪种情形该用哪个 skill，[ask-matt](https://aihero.dev/skills-ask-matt) 是覆盖全集的 router。

@@ -1,81 +1,80 @@
 ---
 name: writing-for-agents
-description: 为 agent 编写文档。适用于创建或编辑 skills，或修改 AGENTS.md 或 CLAUDE.md 时。
+description: 编写或精简供代理阅读的技能、AGENTS.md、CLAUDE.md 和参考文档。
+disable-model-invocation: true
 ---
 
-为 agent 消费的任何文档提供参考——一个 skill、一个 `AGENTS.md` / `CLAUDE.md`、一个经 pointer 触达的文档。包装方式不同；写作本身并无不同：同样的杠杆让每一份都变得可预测——agent 每次运行都采取相同的 _process_，而不是产出相同的 output。
+让代理清楚地知道何时读取文档、该做什么、何时完成。目标是让执行过程稳定，输出可以随任务变化。
 
-当你写的文档是 skill 时，阅读 [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md) 了解 frontmatter、invocation 选择以及 router skills。
+编写技能时，另读 [SKILL-MECHANICS.md](SKILL-MECHANICS.md)。本仓库的技能均须由用户明确调用；调用规则以[仓库说明](../../../docs/invocation.md)为准。
 
-## Context pointers
+## 写清楚指令
 
-**context pointer** 是 agent context 中持有的一个 reference，它命名某个 context 之外的材料，并对触达它的条件进行编码。某个 skill 的 description 就是其一；`AGENTS.md` 中命名某个文档的一行是同一个对象。决定 agent 何时以及多可靠地触达材料的，是指针的 _措辞_，而不是它的目标。一个必须是目标的、却由措辞薄弱的 pointer 承载的内容，是一个 variance bug：先打磨措辞，只有打磨失败时才内联该材料。
+借鉴 [asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill) 的消歧原则：
 
-一个 pointer 做两件事——说明材料是什么，并列出应触发触达它的 **branches**（一个 branch 是文档处理的一个独立情形，所以不同的 runs 会沿不同的路径穿过它）。一个始终加载的 pointer 的每个词都会在每一轮付出成本，所以它比正文更该被大力修剪：
+- 一句话表达一个动作或判断。多个步骤用有序列表。
+- 明确谁执行动作。条件、动作和例外放在一起。
+- 同一个概念使用同一个名称。优先使用常见词和直接的动词。
+- 保留事实、条件、范围和数量。保留“必须”“建议”“可以”“可能”的原有强度。
+- 精简以清楚为限。缩短会改变含义时，保留必要的长句。
 
-- **把 leading word 放到最前面**——pointer 是它做触发工作的地方。
-- **每个 branch 一个 trigger。** 如果同义词只是重命名单一 branch，那就是同一个 branch 写了两遍；合并它们，只保留真正不同的 branches。
-- **删掉正文已经承载的 identity。**
+这些原则适用于中文说明；不套用英文词数限制，也不声称符合完整的 ASD-STE100 标准。
 
-## The two loads
+## 写清楚文档入口
 
-你添加的每个文档和 pointer 都会花掉两个预算之一：
+文档入口是指向其他材料的说明，例如技能简介，或 `AGENTS.md` 中的一条文档链接。入口要说明材料的用途，以及何时读取它。入口措辞不清时，先修改入口；仍不能让代理可靠地读取必要材料时，再考虑把内容移入主文档。
 
-- **Context load** ——始终加载的材料对 agent window 的成本：一行 `AGENTS.md`、一个 skill description、任何每轮都躺在 context 里的东西，无论是否触发都要花 tokens 和注意力。
-- **Cognitive load** ——对人类的成本：存在哪些文档、何时伸手去取每一份。人类就是 index。这不是要最小化的成本——它是 human agency 的代价；把它花在人的判断起作用的地方，在它不起作用的地方移除它。
+- 把能识别用途的核心术语放在前面。
+- 每种独立场景写一次读取条件。合并只是在换词重复的条件。
+- 删除正文已说明、又不影响识别用途的信息。
+- 经常加载的入口应保持简短。本仓库技能简介供用户选择技能，不构成自动调用授权。
 
-只能通过 pointer 触达的材料，以该 pointer 自己那一行为代价逃过 context load；完全没有 pointer 的材料则完全由 cognitive load 承载。
+## 安排信息位置
 
-## Information hierarchy
+每份文档都有两类成本：代理读取内容占用上下文；用户记住有哪些文档、何时使用它们，也需要精力。把用户的精力留给需要判断的地方。
 
-一个文档由两类内容构成——**steps**（agent 执行的有序动作）和 **reference**（按需查阅的定义、规则、事实）——它们自由混合：全是 steps（一份菜谱）、全是 reference（一次 review 的规则、本 skill），或两者都有。核心决策是每块内容放在 **information hierarchy** 的哪个位置——一个按 agent 需要材料的即时程度排序的 ladder：
+只通过入口读取的材料，平时只占入口的上下文空间。没有入口的材料，则完全依赖用户记住并提供它。
 
-1. **In-file step** ——primary tier：agent 按顺序做什么。
-2. **In-file reference** ——按需查阅。通常是一个合法的 flat peer-set（一次 review 的所有规则都在一个 rung 上）——这是合理的安排，不是坏味道。
-3. **Disclosed reference** ——推到独立文件中，经 context pointer 触达，只在 pointer 触发时加载。既涵盖同一文件夹里的 sibling 文件，也涵盖存在于任何地方、任何文档都能指向的完全 external reference。
+按使用时机安排内容：
 
-把太少内容下放会让顶层膨胀；把太多内容下放会隐藏 agent 实际需要的材料。那种张力就是整个决策。
+1. **执行步骤**：在主文档中按顺序列出动作。
+2. **共用参考**：所有任务分支都需要的规则、定义和事实，放在主文档中。并列的规则清单不必强行改成步骤。
+3. **条件参考**：只有部分分支需要的详细内容，放在独立文件中。入口写明读取条件，可以指向同目录或其他位置的文档。
 
-**Progressive disclosure** 是沿 ladder 下移的动作——移出主文件、放到一个 pointer 后面——让顶层保持清晰。它主要不是 token 优化：它是 hierarchy 被保护的方式。Branching 是最干净的 disclosure 测试：内联每个 branch 都需要的内容，只把部分 branches 触达的内容放到 pointer 后面。当一个文档有 steps 时，本应被 disclose 的 in-file reference 会把它们埋起来，把关注它们变成掷硬币——这是一个 variance 杠杆，而不只是可读性杠杆。
+渐进披露是按任务需要逐步提供信息，目的是保留清晰的层级，而非单纯减少字数或 Token。主流程保留必要步骤，避免参考细节掩盖当前动作。
 
-**Co-location** 是文件内的伴随动作：ladder 决定一块内容 _下移多远_，co-location 决定它一旦到了那里 _什么在它旁边_。把一个概念的定义、规则和 caveats 放在同一个 heading 下，而不是散落各处，这样读一部分时它的邻居也随之而来。检验标准：文档应该读起来像专门写给 agent 的 documentation——分组的材料读起来就是这样；散落的材料不是。（它与 duplication 不同：duplication 在两处重复同一含义；散落是把一个含义碎片化到许多处。）
+把同一概念的定义、规则和例外放在一起。每项含义只保留一个权威位置。即使内容都有效且不重复，过长的文档仍会分散注意力；此时按任务分支拆出参考材料，或按下节条件拆分步骤。
 
-**Sprawl** 是这里的失败模式：文档过长，即使每一行都 live 且 unique。注意力在多余内容上变稀薄，每一行多余的都要多维护一条。治疗方式是 ladder：把 **reference** disclose 到 pointers 后面，并按 **branch** 或 sequence 拆分，让每条路径只携带它需要的。
+## 明确完成条件
 
-## Steps and completion criteria
+每个步骤都要说明如何判断完成。完成条件应同时满足：
 
-每个 step 都以一个 **completion criterion** 结束——告诉 agent 工作完成的条件。两个属性让它成为杠杆：
+- **可判断**：代理能区分完成与未完成。例如“已检查所有修改过的模型”比“已充分理解”明确。
+- **覆盖必要工作**：说明必须检查的范围。“生成修改清单”不能代替“逐一检查所有修改过的模型”。同样，参考规则也可要求逐条检查。
 
-- **Clarity** ——agent 能分辨 done 与 not-done 吗？一个模糊的边界（"understanding reached"）会诱发 **premature completion**：在 step 真正完成之前就结束，注意力滑向 _being done_。仍然可见的后续 steps——**post-completion steps**——提供拉力；criterion 的清晰度是阻力。按顺序防御：**先 sharpen 边界**（局部且廉价）；只有当它不可避免地模糊 _且_ 你观察到 rush 时，才通过拆分 sequence 隐藏后续 steps——而且隐藏只在跨越真实 context boundary（一次 hand-off 或 subagent dispatch；inline 调用会把后续 steps 留在 context 里，什么也清不掉）时才有效。
-- **Demand** ——它要求多少。"Every modified model accounted for" 迫使做彻底的工作，而 "produce a change list" 不会。Demand 驱动 **legwork**——agent 在工作的内部做的挖掘，潜伏在措辞里而不是被写成自己的 step——并且它不受 step 约束："every rule applied" 约束一整套 flat reference，正如 "every step done" 约束一个 sequence，这正是为什么一个全 reference 的文档仍然带有穷尽性的门槛。
+如果代理过早进入下一步，先明确当前步骤的完成条件。只有边界仍无法说清、且已观察到提前结束时，才拆分流程，让代理在完成当前工作前看不到后续步骤。
 
-最强的 criteria 既可检查又穷尽。
+这种拆分需要交接或子代理等真正独立的上下文。只在原上下文中调用另一个文档，仍会暴露后续步骤。反过来，合并原本分离的流程，也可能让代理过早关注后面的工作。
 
-## When to split
+只有收益超过额外的上下文和维护成本时才拆分文档。技能是否需要独立入口，见 [SKILL-MECHANICS.md](SKILL-MECHANICS.md)；本仓库始终保留手动调用限制。
 
-把一个文档拆成两个会花掉两种 load 之一，所以只有当这一刀赚回成本时才拆：
+## 选择稳定的术语
 
-- **By sequence** ——当 post-completion steps 会诱使 agent 急着结束眼前那一步时，拆分一连串 steps。把它们挡在视野之外，会在当前任务上驱动更多 legwork。当心反面：合并 sequences 会让每个 step 的后续 steps 暴露给它后面的东西，诱发 premature completion。
-- **By invocation** ——skill 专属：见 [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md)。
+用简短、已有明确含义的术语指代反复出现的概念。模型已熟悉的词通常比自造词更省解释；必须自造时，先定义。
 
-## Leading words
+术语在正文中标识执行要求，在入口中帮助识别用途。提示、文档和代码中的名称应一致。重复使用术语即可，不必重复整段定义。
 
-**leading word** 是一个已经存在于模型预训练中的紧凑概念，agent 在运行文档时会用它思考（_lesson_、_fog of war_、_tracer bullets_）。它作为一个 token 反复出现，绝不作为一个句子，累积 distributed definition，并通过招募模型已持有的 priors，用最少的 tokens 锚定一整片行为。自己造词也可以，只要你定义清楚，但一个编造的词招募不到任何 priors——你会在定义上付出一个预训练词免费提供的东西；先伸手去拿一个已有的词。
+例如，在测试流程中用“测试失败”说明当前状态，比“建立可信的反馈循环”更容易判断。只有短词能保留原有含义时才替换，不能为了省字牺牲精度。
 
-它两次做锚定。正文中锚定 _execution_：每次出现该词，agent 都伸手去拿同样的行为，在 flat reference 内部它把注意力聚焦到要寻找的一类事物上。pointer 中锚定 _invocation_：当同一个词存在于你的 prompts、docs 和 codebase 中，agent 会把那份 shared language 连到该材料，更可靠地触达它。
+优先直接说明目标行为，如“注释写成一行”。必要的硬性禁令仍需保留，并说明应采取的行为。
 
-寻找用 leading words 做重构的机会。一个在三处展开的 triad、一个花一句话来指向一个概念的 pointer——每一段都是恳求 collapse 成单个 token 的文字：
+## 删除无用内容
 
-- "fast, deterministic, low-overhead" → _tight_（一个 _tight_ loop）。
-- "a loop you believe in" → _red_——一个模糊的 gate 变成一个二元可观察状态（loop 在 bug 上变 _red_，或者不变）。
+逐段检查：
 
-你赢两次：更少的 tokens，以及一个更尖锐的 hook 让 agent 挂起它的思考。假设每个文档都携带着 leading words 可以退役的 restatements——去找它们。
+- **重复含义**：保留一个权威位置，其余位置按需链接。不要把术语的重复使用误判为内容重复。
+- **环境已有的信息**：配置、`package.json` 脚本、目录和 `--help` 已能提供的信息，优先直接查阅。查询成本很高时才在文档中保留副本。记录环境无法说明的约定、决策原因和注意事项。
+- **不再相关的内容**：删除过时说明和不影响任务的解释。只有部分分支需要的内容移到条件参考中。
+- **不改变行为的指令**：若模型默认就会正确执行，删除整句，不必只缩短措辞。若不能确定，用实际执行结果判断。术语太弱、无法产生所需行为时，换成更明确的要求。
 
-**Negation** 是这个杠杆旁边的失败模式：用禁止来引导会把被禁止的行为拖进 context，让它 _更容易_ 浮现，而不是更难。_Don't think of an elephant_，而 elephant 就是全部；negation 是一个被强烈激活的概念压垮的弱修饰符，所以禁令读起来一半像是在叫你去做那件事。应 prompt **positive**——直接说明目标行为（"write one-line comments"），让被禁止的那个从不被说出。只有当你无法正向表达某条 hard guardrail 时，prohibition 才配得上一个位置；即便如此，也要配上正向目标，让注意力落到该做什么上。
-
-## Pruning
-
-- 让每个 meaning 都保持在 **single source of truth**：一个权威位置，这样改变行为就是一处的编辑。**Duplication**——同一含义出现在多处——会花维护成本和 tokens，并把这个含义在 ladder 上的 prominence 抬高到超过它真实等级的位置。（这是 leading word 的意外反例——leading word 是有意重复一个 token，绝不重复含义。）
-- **environment** 也是一个 source of truth——`package.json` scripts、config files、目录布局、`--help` output——而一个把它重述出来的文档是一个 **cache**：一次 lookup 的副本，只有当 lookup 很昂贵时才配得上它的 load。缓存那些 agent 查看环境也找不到的东西：未写下的约定、某个选择背后的原因、没有 config 会招认的 gotcha。把 one-file、one-command 的 lookups 留给 environment，在那里它们不会过时。
-- 逐行检查 **relevance**：它是否仍支撑文档所做的工作？一行会因为从不支撑任务（只是 expository，或一个本应被 disclose 的 branch）而失去 relevance，或随着它描述的行为或 world 变化而 stale。更短的文档更容易保持 relevance。没有 pruning discipline，默认命运是 **sediment**：因为添加看着安全、删除看着有风险而沉积的 stale layers，直到你必须钻穿它们去找仍然 live 的东西。
-- 逐句寻找 **no-ops**：一条模型默认就会服从的指令，付出 load 却什么也没说。检验标准——它是否相对于默认改变行为？——是模型相对的，不是读者相对的：两个人在一个 no-op 上意见不一，其实是对默认不一致，用运行文档来裁决，而不是用辩论。当一个句子失败时，删除整句，而不是修剪其中的词。这个检验标准也用于给 leading words 打分：一个弱到打不赢默认的词（当 agent 已经大致 thorough 时的 _be thorough_）就是 no-op，修法是换一个更强的词（_relentless_），而不是换一种 technique。
+验收时确认：入口能让读者找到材料，步骤有完成条件，必要约束没有丢失，文档只保留会影响任务的内容。

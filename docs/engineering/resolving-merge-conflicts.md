@@ -1,3 +1,5 @@
+> **已归档。** 上游在 v1.3.0 移除了本技能，不再维护，也没有替代技能。代理可直接处理合并或变基冲突。本仓库将旧技能保留在 `skills/deprecated/`，不随插件发布；本文仅供历史参考。
+
 ## What it does
 
 `resolving-merge-conflicts` 逐个 hunk 地处理正在进行的 git merge 或 rebase，然后运行项目自己的检查，并以一次 commit 完成整个操作。

@@ -1,87 +1,117 @@
 ---
 name: code-review
-description: "从固定点（commit、branch、tag 或 merge-base）开始，按 Standards（代码是否符合本仓库记录的编码标准？）和 Spec（代码是否符合来源 issue/spec 的要求？）两个轴线审查变更。两个审查会在并行子代理中运行，并并排报告。适用于用户想审查 branch、PR、进行中的变更，或要求“review since X”时。"
+description: "审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。"
+disable-model-invocation: true
 ---
 
-对用户提供的 fixed point 与 `HEAD` 之间的 diff 做双轴 review：
+审查用户指定基准与 `HEAD` 之间的差异，分别检查：
 
-- **Standards** — 代码是否符合这个 repo 记录下来的 coding standards？
-- **Spec** — 代码是否忠实实现来源 issue / spec？
+- **Standards（编码规范）**：代码是否遵守仓库的编码规范？
+- **Spec（需求）**：代码是否实现来源 issue 或需求文档中的要求？
 
-两个轴线都作为**并行 sub-agents**运行，避免互相污染 context；然后这个 skill 聚合它们的 findings。
+两个子代理并行审查，各自形成结论。最后分别呈现结果，避免一类问题掩盖另一类问题。
 
-Issue tracker 应该已经提供给你；如果缺少 `docs/agents/issue-tracker.md`，请让用户运行 `/setup-matt-pocock-skills`。
+从 `docs/agents/issue-tracker.md` 读取 issue tracker 配置。文件缺失时，告知用户先显式运行 `/setup-matt-pocock-skills`。其他技能仅在用户明确指定后调用，见[调用规则](../../../docs/invocation.md)。
 
-## Process
+## 审查步骤
 
-### 1. Pin the fixed point
+### 1. 确定比较基准
 
-用户说的任何内容都是 fixed point：commit SHA、branch name、tag、`main`、`HEAD~5` 等。如果用户没有指定，就询问。
+基准可以是提交 SHA、分支名、标签、`main` 或 `HEAD~5`。用户未指定时，先询问。
 
-先捕获一次 diff command：`git diff <fixed-point>...HEAD`（three-dot，因此比较对象是 merge-base）。同时用 `git log <fixed-point>..HEAD --oneline` 记录 commits 列表。
+用 `git rev-parse --verify '<fixed-point>^{commit}'` 和 `git rev-parse --verify 'HEAD^{commit}'` 分别取得基准与目标提交 SHA，再用 `git merge-base <base-sha> <head-sha>` 取得共同祖先。记录这三个 SHA，后续统一使用它们，不再解析可能移动的分支名或 `HEAD`。
 
-继续前，确认 fixed point 能解析（`git rev-parse <fixed-point>`），并且 diff 非空。错误 ref 或空 diff 应该在这里失败，而不是进入两个并行 sub-agents 后才失败。
+- `git diff --find-renames <merge-base-sha> <head-sha>`：取得审查差异。
+- `git diff --find-renames --name-status -z <merge-base-sha> <head-sha>`：取得完整文件清单，按 NUL 分隔读取，保留状态及重命名前后的路径。
+- `git log <merge-base-sha>..<head-sha> --oneline`：列出提交。
 
-### 2. Identify the spec source
+提交或共同祖先无法解析、命令失败或差异为空时，报告原因并停止，不启动子代理。文件清单包含测试、删除和重命名，不默认排除它们。
 
-按以下顺序寻找来源 spec：
+向用户说明实际比较范围，以及 staged、working-tree 和 untracked 变更不在本次范围内。代码上下文与行号按记录的目标提交读取，例如 `git show <head-sha>:<path>`；删除内容按共同祖先读取，不用当前工作区替代。
 
-1. Commit messages 中的 issue references（`#123`、`Closes #45`、GitLab `!67` 等）— 按 `docs/agents/issue-tracker.md` 中的 workflow 获取。
-2. 用户作为 argument 传入的 path。
-3. `docs/`、`specs/` 或 `.scratch/` 下与 branch name 或 feature 匹配的 spec 文件。
-4. 如果什么都找不到，询问用户 spec 在哪里。如果用户说没有 spec，**Spec** sub-agent 跳过并报告 “no spec available”。
+### 2. 查找需求来源
 
-### 3. Identify the standards sources
+按以下顺序查找：
 
-Repo 中任何记录代码应该如何写的内容，例如 `CODING_STANDARDS.md` 或 `CONTRIBUTING.md`。
+1. 提交信息中的 issue 引用，如 `#123`、`Closes #45`、GitLab `!67`。按 tracker 配置获取内容。
+2. 用户传入的文件路径。
+3. `docs/`、`specs/` 或 `.scratch/` 中与分支名或功能匹配的需求文档。
+4. 仍未找到时，询问用户。用户确认没有需求文档时，跳过 **Spec** 子代理，并报告 `no spec available`。
 
-在 repo 自己记录的 standards 之外，Standards 轴线始终带有下面的 **smell baseline**：一组固定的 Fowler code smells（_Refactoring_ 第 3 章），即使 repo 没有任何约定也适用。有两条规则：
+### 3. 查找编码规范
 
-- **The repo overrides.** 已记录的 repo standard 永远优先；如果它认可 baseline 会标记的东西，就压制该 smell。
-- **Always a judgement call.** 每个 smell 都是带 label 的 heuristic（例如 "possible Feature Envy"），不是硬性违规；和这里的其他 standard 一样，跳过 tooling 已经强制检查的内容。
+读取仓库中说明编码要求的文件，如 `CODING_STANDARDS.md`、`CONTRIBUTING.md`。
 
-每个 smell 按 _what it is_ -> _how to fix_ 读取，并对照 diff：
+同时按下表检查 Fowler《重构》第 3 章中的代码坏味道。即使仓库没有编码规范，也使用这份清单。
 
-- **Mysterious Name** — function、variable 或 type 的名称没有说明它做什么或装什么。-> rename it；如果找不到诚实名称，设计本身可能浑浊。
-- **Duplicated Code** — 同一 logic shape 出现在多个 hunk 或 file 中。-> 抽出共享形状，让两边调用。
-- **Feature Envy** — method 访问另一个 object 的 data 多于自己的 data。-> 把 method 移到它羡慕的数据上。
-- **Data Clumps** — 同几组 fields 或 params 总是一起出现。-> 包成一个 type 来传。
-- **Primitive Obsession** — primitive 或 string 代替了值得拥有自有 type 的 domain concept。-> 给该 concept 一个小 type。
-- **Repeated Switches** — 对同一 type 的相同 `switch`/`if` cascade 在改动中重复。-> 换成 polymorphism，或共享一个 map。
-- **Shotgun Surgery** — 一个 logical change 迫使 diff 分散修改很多文件。-> 把一起变化的东西收拢进一个 module。
-- **Divergent Change** — 一个 file 或 module 因多个无关原因被修改。-> 拆分，让每个 module 只因一个原因变化。
-- **Speculative Generality** — 为 spec 没有的需求增加 abstraction、params 或 hooks。-> 删除它，inline 回来，直到有真实需要。
-- **Message Chains** — caller 不该依赖的长链式导航 `a.b().c().d()`。-> 把这段导航藏到第一个 object 的一个 method 后面。
-- **Middle Man** — class 或 function 基本只是在继续委托。-> 删掉它，直接调用真实目标。
-- **Refused Bequest** — subclass 或 implementer 忽略或 override 了继承来的大部分内容。-> 去掉 inheritance，使用 composition。
+- 仓库规范优先。规范明确允许的写法，不作为坏味道报告。
+- 坏味道是需要判断的线索，不是硬性违规。用“可能存在 Feature Envy”等措辞标明。
+- 跳过工具已经强制检查的规则。
 
-### 4. Spawn both sub-agents in parallel
+| 坏味道 | 检查内容 | 改进方向 |
+| --- | --- | --- |
+| Mysterious Name | 名称未说明函数的用途或变量、类型的含义 | 重命名；无法准确命名时检查设计 |
+| Duplicated Code | 多处出现相同逻辑 | 提取共享逻辑 |
+| Feature Envy | 方法更多地访问其他对象的数据 | 将方法移到数据所属对象 |
+| Data Clumps | 同一组字段或参数总是一起出现 | 用一个类型封装 |
+| Primitive Obsession | 用基本类型或字符串表示值得独立建模的领域概念 | 为该概念定义类型 |
+| Repeated Switches | 对同一类型重复相同的 `switch` 或 `if` 分支 | 使用多态或共享映射 |
+| Shotgun Surgery | 一个逻辑改动需要修改很多文件 | 将一起变化的代码放入同一模块 |
+| Divergent Change | 一个模块因多个无关原因变化 | 按变化原因拆分模块 |
+| Speculative Generality | 为需求之外的情况增加抽象、参数或钩子 | 删除多余设计，需要时再添加 |
+| Message Chains | 调用方依赖 `a.b().c().d()` 这类对象内部导航 | 由第一个对象提供封装方法 |
+| Middle Man | 类或函数基本只负责转发 | 直接调用实际目标 |
+| Refused Bequest | 子类或实现类忽略、覆盖大部分继承行为 | 用组合替代继承 |
 
-**Standards sub-agent prompt** — 包含：
+### 4. 并行审查
 
-- 完整 diff command 和 commit list。
-- Step 3 中找到的 standards-source files 列表，**以及 Step 3 的 smell baseline 全文**；sub-agent 没有其他方式读取它。
-- Brief："Report — per file/hunk where relevant — (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls — documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
+给两个子代理提供固定的三个 SHA、差异命令、提交列表和完整文件清单，以及以下共同要求和下方的候选问题格式：
 
-**Spec sub-agent prompt** — 包含：
+- 各自逐项记录文件清单中的 `已审` 或 `未审`。跳过、读取失败、超时或上下文不足都记为未审，并说明原因；没有发现问题的文件也要记录已审。
+- diff 不足以支持判断时，只补读能确认当前疑点的上下文，如完整函数、直接调用方、接口、相关配置或现有测试。证据足够后停止扩展，不默认扫描整个仓库或新增测试。
+- 每条候选问题使用下方统一格式。证据仍不足的线索标为 `待确认`，写明缺少的证据，不作为确定问题。
+- 报告保持简洁，但不因篇幅限制省略问题或文件覆盖记录。
 
-- Diff command 和 commit list。
-- Spec 的 path 或已获取内容。
-- Brief："Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
+另给 **Standards** 子代理提供规范文件列表，以及坏味道表和它前面的三条规则全文。要求它：
 
-如果缺少 spec，跳过 Spec sub-agent，并在最终报告中说明。
+- 按文件或差异片段报告所有规范问题，并引用规范文件和具体规则。
+- 报告发现的坏味道，标明名称并引用差异片段。
+- 区分硬性违规与判断性建议。
 
-### 5. Aggregate
+另给 **Spec** 子代理提供需求文档路径或已获取的内容。要求它检查：
 
-在 `## Standards` 和 `## Spec` headings 下展示两个 reports，可原样或轻微清理。**不要**合并或重新排序 findings；这两个轴线刻意保持分离（见 _Why two axes_）。
+- 遗漏或只完成一部分的需求。
+- 超出需求范围的行为。
+- 看似已实现、但实现有误的需求。
 
-最后用一行总结：每个轴线的 findings 总数，以及每个轴线内最严重的问题（如果有）。不要跨轴线选一个总冠军；分离就是为了避免这种 reranking。
+每个问题都引用对应的需求原文。需求遗漏可能没有对应的新增代码行，仍需检查，不能只按变更文件判断需求是否完整。用户已确认没有需求文档时，跳过此子代理，并在最终报告中说明。
 
-## Why two axes
+候选问题统一包含：
 
-一个变更可能通过其中一个轴线，但失败在另一个轴线：
+| 字段 | 内容 |
+| --- | --- |
+| 标题与类型 | 简述问题；标明规范违规、判断性建议或需求问题。证据不足时加 `待确认` |
+| 依据 | 规范文件与具体规则、坏味道名称，或需求原文及出处 |
+| 事实 | 代码实际做了什么；涉及运行行为时说明触发条件及已核对的相关上下文 |
+| 影响与等级 | 具体后果。高：阻断核心需求或造成严重数据、安全后果；中：部分需求不满足或影响局部行为；低：影响有限的维护性或规范问题。不能仅凭坏味道名称升级等级 |
+| 位置 | 文件、行号及对应代码片段；删除内容注明旧版本。需求遗漏无代码位置时，列出需求位置、预期实现区域与查找依据，不编造行号 |
+| 建议 | 解决该问题的最小改动方向 |
 
-- 代码符合所有 standard，但实现了错误的东西 -> **Standards pass, Spec fail.**
-- 代码完全符合 issue 要求，但破坏了项目约定 -> **Spec pass, Standards fail.**
+### 5. 复核候选问题
 
-分开报告能避免一个轴线掩盖另一个轴线。
+主代理在汇总前逐条复核，不另建常驻审查代理：
+
+1. 重新读取引用的规则或需求，以及固定提交中的相关代码，确认断言成立，且属于本次变更或本次需求的遗漏。
+2. 核对触发条件、实际影响及等级；必要时检查上层调用、已有保护或其他实现，避免把局部缺失误判为整体缺失。
+3. 核对路径、版本、行号和代码片段。无法确认位置时明确说明；需求遗漏按查找依据核验。
+4. 修正定位或措辞错误，移除已被证据否定的问题；同一轴线内合并重复问题。证据不足或复核无法完成的内容保留为待确认，不计入确定问题数量。经核对的坏味道仍是判断性建议，不改称确定缺陷。
+
+### 6. 汇总结果
+
+核对两个子代理的覆盖记录与原始文件清单。漏记项一律算未审；子代理失败且没有可靠记录时，不推定任何文件已审。每条已启动轴线的已审数与未审数之和必须等于清单总数。
+
+分别在 `## Standards` 和 `## Spec` 下呈现复核后的报告，保留问题归属与剩余问题的相对顺序。每个区块先列出 `已审 X/N，未审 Y/N`，并列明未审文件及原因；有待确认项时单独列出。
+
+有未审文件时标为 `部分完成`；无文件完成时标为 `未完成`。不能用“未发现问题”代替未完成状态或给出整体通过结论。没有需求文档时，Spec 标为 `no spec available`，不伪报审查完成。
+
+最后用一行列出每条轴线经复核的问题数、其中判断性建议数、待确认数和最严重问题（如果有）。两类结果独立判断，不合并排序。文件覆盖完成仅说明文件已被检查，不代表全部需求已满足或没有遗漏缺陷。

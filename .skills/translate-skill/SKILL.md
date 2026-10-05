@@ -1,88 +1,55 @@
 ---
 name: translate-skill
-description: 将 mattpocock/skills 的内容翻译、刷新或复核到简体中文本地化仓库 vinvcn/mattpocock-skills-zh-CN 时使用这个项目级 skill。适用于 skill files、README content、CLAUDE.md、CONTEXT.md、docs，以及其他需要保留行为关键 identifiers 的上游用户可见内容。
+description: 将 mattpocock/skills 的说明翻译、刷新或复核为简体中文，保留命令、路径和其他影响行为的内容。
+disable-model-invocation: true
 ---
 
-# 翻译 skill
+# 翻译与刷新技能内容
 
-使用这个 skill 把上游 `mattpocock/skills` 的内容翻译成简体中文，用于 `vinvcn/mattpocock-skills-zh-CN`。
+将上游 `mattpocock/skills` 的内容本地化到 `vinvcn/mattpocock-skills-zh-CN`。目标仓库是独立的简体中文版本：只同步内容，不同步 Git 历史或上游仓库管理元数据。
 
-这个 skill 用于**内容本地化**，不是 Git 同步。
+## 翻译范围
 
-## 操作原则
+翻译面向用户、代理和维护者的自然语言说明，包括：
 
-把用户可见的英文说明性文字翻译成自然的简体中文，同时原样保留所有行为关键内容。
+- README、文档和技能正文。
+- 技能简介及 frontmatter 中的提示语。
+- 以文字说明写成的示例。
 
-目标仓库是一个独立的简体中文本地化版本。它应接收翻译后的内容，而不是上游的仓库元数据。
+以下内容原样保留：
 
-## 翻译哪些内容
+- 目录名、技能名、斜杠命令、CLI 命令、代码块和行内代码。
+- 文件路径、包名、工具及 API 标识、环境变量名。
+- frontmatter 及 JSON/YAML/TOML 的键。
+- Markdown 链接目标和影响行为的标签。
 
-翻译自然语言文本，包括：
+保留 Markdown 结构、标题层级、列表嵌套、表格、相对路径和代码围栏。
 
-```text
-README 说明
-skill instructions
-skill descriptions
-用户可见的 frontmatter prompts
-面向 agent 的指引
-面向维护者的指引
-docs 说明性文字
-以说明性文字写成的示例
-```
+## 安装路径
 
-## 原样保留哪些内容
-
-不要翻译或改写：
-
-```text
-目录名
-skill 名称
-slash commands
-CLI 命令
-代码块
-inline code
-文件路径
-package 名
-tool identifiers
-API identifiers
-环境变量名
-frontmatter keys
-JSON/YAML/TOML keys
-Markdown 链接 URL
-行为关键 labels
-```
-
-保持 Markdown 结构、标题层级、列表嵌套、表格、链接目标、相对路径和 code fences 不变。
-
-## 仓库路径本地化
-
-翻译用户可见的安装示例时，把上游仓库路径：
+在指导用户安装或使用本地化版本的命令或说明中，将仓库路径：
 
 ```text
 mattpocock/skills
 ```
 
-替换为本地化仓库路径：
+替换为：
 
 ```text
 vinvcn/mattpocock-skills-zh-CN
 ```
 
-只有当命令或说明性文字是在告诉用户如何安装或使用本地化仓库时，才做这个替换。
+其他位置不做此替换，并保留上游项目署名。
 
-不要移除对上游项目的署名。
+## Frontmatter
 
-## Frontmatter 规则
+键保持不变。按值的实际含义判断是否翻译：
 
-原样保留 frontmatter keys。
-
-按含义而不仅是字段名，对每个 frontmatter 值分类：
-
-- 保持 `name` 值不变。
-- 把用户可见或面向 agent 的自然语言文本翻译成简体中文，包括 `description` 和 `argument-hint` 的值。
-- 保持 identifiers、命令、路径、package 名、URL、工具名、布尔值、数字和其他有类型的配置值不变。
-- 在可翻译的值内部，原样保留内嵌的 slash commands、inline code、占位符、路径、URL、package 名、工具名和其他行为关键片段。
-- 对有歧义的值打复核标记，不要猜测。
+- `name` 保持不变。
+- `description`、`argument-hint` 等自然语言说明译为简体中文。
+- 标识、命令、路径、包名、URL、工具名、布尔值、数字和其他配置值保持不变。
+- 自然语言值中嵌入的斜杠命令、行内代码、占位符和其他影响行为的片段保持不变。
+- 无法确定时标记待复核，不猜测。
 
 示例：
 
@@ -95,133 +62,93 @@ argument-hint: "你想学习什么？"
 ---
 ```
 
-## 翻译风格
+## 语言要求
 
-使用满足以下要求的简体中文：
+使用自然、简洁、准确的简体中文，与仓库现有语气一致。常见工程术语可以保留英文；翻译会降低准确性时，保留原词。
 
-```text
-自然
-对开发者友好
-简洁
-准确
-与本仓库现有语气一致
-```
+## 翻译单个文件
 
-如果某个常见工程术语在开发者中是标准说法，或者翻译它会降低清晰度，就把它保留为英文。
+1. 确定文件路径和类型，区分自然语言、混合内容、配置与不可翻译内容。
+2. 标记需要原样保留的片段。
+3. 只翻译自然语言，并原样放回受保护的片段。
+4. 对照原文检查命令、代码块、路径、URL、标识和 frontmatter 键。
+5. 确认本地化安装命令使用 `vinvcn/mattpocock-skills-zh-CN`。
+6. 返回文件内容或补丁，并列出待复核事项。
 
-## 术语参考
+## 刷新整个仓库
 
-查阅仓库根目录的 `TRANSLATION-GLOSSARY.md`。
-
-对已决定的术语，严格使用记录的译法。
-
-## 术语决定与落地流程
-
-术语的请求与认领流程见 `CONTRIBUTING.md`；译法以 `TRANSLATION-GLOSSARY.md` 为唯一权威。一次完整的落地流程：
-
-1. 批准：维护者把术语登入术语表的「已决定的翻译」区并填「决定于」，请求行保留在请求区。
-2. 落地：开分支，按已决定的译法替换仓库中的字面出现位置（大小写不敏感匹配），只改与该术语相关的出现位置；`dsh-plugin/skills/` 是构建产物（gitignored，由 `dsh-plugin/scripts/copy-skills.mjs` 从 `skills/` 生成），不要手改，源头修复后随插件构建自动同步。
-3. 更新术语表：把请求行状态改为 `applied`（该状态在应用 PR 合并后生效），保留来源引用与历史行。
-4. 提交 PR：按 `CONTRIBUTING.md` 的 PR 检查清单执行（先 `git add` 再运行脚本）；PR 描述链接术语表条目与相关 issue，除非明确要关闭该 issue，不要使用会自动关闭它的关键字。
-
-## 单文件工作流
-
-翻译单个文件时：
-
-1. 确认文件路径和文件类型。
-2. 把文件归类为可翻译的自然语言文本、混合内容、config/metadata 或不可翻译。
-3. 翻译前先保护行为关键片段。
-4. 只翻译自然语言文本。
-5. 原样恢复被保护的片段。
-6. 检查命令、代码块、路径、URL、identifiers 和 frontmatter keys 保持不变。
-7. 检查本地化后的安装命令使用 `vinvcn/mattpocock-skills-zh-CN`。
-8. 返回翻译后的文件内容或 patch，并附上所有复核标记。
-
-## 仓库刷新工作流
-
-从上游刷新时：
-
-1. 把上游当作内容来源，而不是 Git 历史。
-2. 找出新增、变更和移除的内容文件。
-3. 翻译新增和变更的、含说明性文字的文件。
-4. 仅当不可翻译的支持文件属于刷新范围时，才复制或保留。
-5. 保持本地化仓库的 README 定位和安装路径不变。
-6. 按“验证步骤”完成同步后的结构、完整性、索引和行为关键内容检查。
-7. 在 README 同步记录中追加一条简短条目。
-8. 在 README 中记录本次验证结果、翻译执行者和翻译策略摘要。
-9. 把有歧义的文件、被移除的文件或有风险的转换打上复核标记，交维护者审查。
-10. 总结已翻译文件、复制或保留文件、移除文件、跳过文件、验证结果和复核标记。
+1. 将上游视为内容来源，不合并其 Git 历史。
+2. 列出新增、修改和移除的内容文件。
+3. 翻译新增或修改文件中的自然语言。
+4. 只复制或保留本次范围内的非翻译支持文件。
+5. 保留本地化 README 的定位和安装路径。
+6. 完成下一节的验证，将简短结果写入顶层 README，不粘贴完整命令输出。
+7. 更新 README 同步记录，注明翻译执行者和翻译策略。
+8. 将含义不明的文件、被移除的文件和风险改动交给维护者复核。
+9. 总结翻译、复制、保留、移除和跳过的文件，以及验证结果和待复核事项。
 
 ## 验证步骤
 
-每次上游内容刷新后，必须完成并记录以下检查：
+每次上游内容刷新后，完成并记录：
 
-1. 运行 `node scripts/check-translation.mjs`，确认 Markdown 结构、frontmatter、README install path 和 license invariant 没被破坏。
-2. 检查公开 skill 索引一致性：`engineering/`、`productivity/`、`misc/` 下的 skills 必须同时出现在顶层 `README.md` 和 `.claude-plugin/plugin.json`；`personal/`、`in-progress/`、`deprecated/` 不应出现在 plugin 或顶层公开索引中。
-3. 对比 `upstream/main` 的 in-scope 文件清单，确认没有缺失上游文件，也没有保留已经从上游移除且不属于本地策略的 stale files。
-4. 检查共同 Markdown 文件的行为关键内容：frontmatter keys 和 `name` 值不变，fenced code blocks 平衡，路径、命令、URL、identifier 不被误改。
-5. 运行 `git diff --check` 和 `git diff --cached --check`，确认没有 whitespace 或 patch hygiene 问题。
-6. 检查 README 同步记录指向最新 upstream short SHA，并包含本地同步 commit；不能留下“待定”占位。
-7. 扫描 stale install path 和旧路径，例如仍指向上游 repo 的安装命令、旧的中文仓库短路径、已移除的 triage skill 名、已移除的 domain-model 相对路径等。
-8. 运行 `node scripts/audit-english.mjs` 作为人工复核队列。该脚本在本仓库会包含大量合理的英文术语、命令、示例和 identifiers，因此只作为 review flag，不作为硬性失败门槛。
+1. 运行 `node scripts/check-translation.mjs`，检查 Markdown、frontmatter、README 安装路径和许可证约束。
+2. 核对公开索引：`engineering/`、`productivity/`、`misc/` 中的技能须同时出现在顶层 `README.md` 和 `.claude-plugin/plugin.json`。`personal/`、`in-progress/`、`deprecated/` 中的技能不得出现在这两个公开索引中。
+3. 对比 `upstream/main` 中本次范围内的文件清单，确认没有漏掉上游文件，也没有保留上游已移除且本地策略不需要的文件。
+4. 对照双方共有的 Markdown 文件，确认 frontmatter 键和 `name` 不变、代码围栏成对、路径和命令等行为关键内容没有误改。
+5. 运行 `git diff --check` 和 `git diff --cached --check`。
+6. 确认 README 同步记录包含最新上游短 SHA 和本地同步提交号，没有遗留“待定”占位。
+7. 检查过时的安装地址和路径，包括上游安装地址、旧中文仓库短路径、已移除的 triage 技能名及旧 domain-model 相对路径。
+8. 运行 `node scripts/audit-english.mjs`，逐项人工复核结果。合理的英文术语、命令、示例和标识不算失败；该脚本只提供复核线索。
 
-验证结果应同步写入顶层 `README.md`，使用简短 checklist，不要把完整命令输出粘进去。
+## README 同步记录
 
-## SYNC.md 同步记录
+每次刷新在顶层 README 增加一条简短记录，包含：
 
-每次上游刷新都应在顶层 `SYNC.md` 的同步记录中新增一条简短条目。
+- 日期，格式为 `YYYY-MM-DD`。
+- 上游版本，通常写为 `mattpocock/skills@<short-sha>`。
+- 本地同步提交号；尚未提交时可暂写待定，提交后必须替换。
+- 一句话概括用户可见的变化。
 
-条目应包含：
-
-- 刷新日期，使用 `YYYY-MM-DD` 格式
-- 上游来源 revision，通常是 `mattpocock/skills@<short-sha>`
-- 本地同步 commit（如果已存在）；否则先写一句简短的待定说明，commit 后再替换
-- 一句话描述本次可见的内容变更
-
-保持记录简短。
-
-示例：
+详细流程留在本技能中，README 只链接到这里。示例：
 
 ```text
-- 2026-05-09：已同步上游 `mattpocock/skills@733d312`，本地 commit `c9fe120`。为 `prototype` 和 `in-progress` 内容新增了中文翻译，并刷新公开 skill 索引。
+- 2026-05-09: Synced upstream `mattpocock/skills@733d312`, local commit `c9fe120`. Added Chinese translations for `prototype` and `in-progress` content, and refreshed public skill indexes.
 ```
 
 ## 复核输出格式
 
-复核一次翻译刷新时，提供：
+复核翻译刷新时，按以下格式报告：
 
 ```text
-改动文件：
+Changed files:
 - ...
 
-已翻译文件：
+Translated files:
 - ...
 
-复制或保留文件：
+Copied or preserved files:
 - ...
 
-移除或过时文件：
+Removed or stale files:
 - ...
 
-复核标记：
+Review flags:
 - ...
 
-SYNC.md 同步记录：
+README sync log:
 - ...
 
 验证结果:
 - ...
 
-不变量检查：
-- 安装命令指向 vinvcn/mattpocock-skills-zh-CN
-- 代码块保持原样
-- frontmatter keys 保持原样
-- 路径和 identifiers 保持原样
-- Markdown 结构保持原样
+Invariant checks:
+- install commands point to vinvcn/mattpocock-skills-zh-CN
+- code blocks preserved
+- frontmatter keys preserved
+- paths and identifiers preserved
+- Markdown structure preserved
 ```
 
-## Fail-closed 规则
+## 不确定时
 
-拿不准一段文本是否行为关键时，先原样保留并打上复核标记。
-
-不要悄悄改写任何可能影响安装、skill 发现、命令执行、文件引用、API 调用、工具使用或 agent 行为的内容。
+无法确定某段文字是否影响行为时，原样保留并标记待复核。不得擅自改动可能影响安装、技能发现、命令执行、文件引用、API 调用、工具使用或代理行为的内容。

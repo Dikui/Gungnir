@@ -1,44 +1,45 @@
 ---
 name: git-guardrails-claude-code
-description: 设置 Claude Code hooks，在危险 git commands（push、reset --hard、clean、branch -D 等）执行前阻止它们。适用于用户想防止破坏性 git 操作、添加 git safety hooks，或在 Claude Code 中阻止 git push/reset 时。
+description: 为 Claude Code 配置钩子，阻止 git push、硬重置、强制清理等危险操作。
+disable-model-invocation: true
 ---
 
-# Setup Git Guardrails
+# 配置 Git 操作保护
 
-设置一个 PreToolUse hook，在 Claude 执行危险 git commands 前拦截并阻止它们。
+配置 `PreToolUse` 钩子，在 Claude 执行危险 Git 命令前阻止操作。
 
-## What Gets Blocked
+## 拦截范围
 
-- `git push`（包括 `--force` 在内的所有 variants）
+- `git push`（包括 `--force` 在内的所有形式）
 - `git reset --hard`
 - `git clean -f` / `git clean -fd`
 - `git branch -D`
 - `git checkout .` / `git restore .`
 
-被阻止时，Claude 会看到一条 message，说明它无权访问这些 commands。
+操作被阻止时，向 Claude 返回无权执行该命令的提示。
 
-## Steps
+## 步骤
 
-### 1. Ask scope
+### 1. 确定安装范围
 
-询问用户：只为**当前 project** 安装（`.claude/settings.json`），还是为**所有 projects** 安装（`~/.claude/settings.json`）？
+询问用户：只对当前项目生效（`.claude/settings.json`），还是对所有项目生效（`~/.claude/settings.json`）？
 
-### 2. Copy the hook script
+### 2. 复制脚本
 
-bundled script 位于：[scripts/block-dangerous-git.sh](scripts/block-dangerous-git.sh)
+使用附带的脚本：[scripts/block-dangerous-git.sh](scripts/block-dangerous-git.sh)。
 
-根据 scope 复制到目标位置：
+按安装范围复制到：
 
-- **Project**: `.claude/hooks/block-dangerous-git.sh`
-- **Global**: `~/.claude/hooks/block-dangerous-git.sh`
+- **当前项目**：`.claude/hooks/block-dangerous-git.sh`
+- **所有项目**：`~/.claude/hooks/block-dangerous-git.sh`
 
 用 `chmod +x` 让它可执行。
 
-### 3. Add hook to settings
+### 3. 添加配置
 
-添加到对应 settings file：
+将钩子加入对应的配置文件：
 
-**Project** (`.claude/settings.json`):
+**当前项目**（`.claude/settings.json`）：
 
 ```json
 {
@@ -58,7 +59,7 @@ bundled script 位于：[scripts/block-dangerous-git.sh](scripts/block-dangerous
 }
 ```
 
-**Global** (`~/.claude/settings.json`):
+**所有项目**（`~/.claude/settings.json`）：
 
 ```json
 {
@@ -78,13 +79,13 @@ bundled script 位于：[scripts/block-dangerous-git.sh](scripts/block-dangerous
 }
 ```
 
-如果 settings file 已存在，把 hook merge 到现有 `hooks.PreToolUse` array 中，不要覆盖其他 settings。
+配置文件已存在时，将钩子合并到 `hooks.PreToolUse` 数组，保留其他配置。
 
-### 4. Ask about customization
+### 4. 确定是否自定义
 
-询问用户是否要在 blocked list 中添加或移除 patterns。相应编辑复制后的 script。
+询问用户是否需要增减拦截规则，再修改复制后的脚本。
 
-### 5. Verify
+### 5. 验证
 
 运行快速测试：
 
@@ -92,4 +93,4 @@ bundled script 位于：[scripts/block-dangerous-git.sh](scripts/block-dangerous
 echo '{"tool_input":{"command":"git push origin main"}}' | <path-to-script>
 ```
 
-应以 code 2 退出，并向 stderr 打印 BLOCKED message。
+脚本应以退出码 `2` 结束，并向 `stderr` 打印 `BLOCKED` 提示。

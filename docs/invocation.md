@@ -1,20 +1,21 @@
-# Model-invoked 与 user-invoked
+# 仅手动调用
 
-本仓库中的每个 `SKILL.md` 都是一个 skill。它们只按一个维度区分：**invocation**，也就是谁能调用它：
+Gungnir 中的所有技能都为 **User-invoked**，包括 `skills/` 中的正式技能、开发中技能，以及 `.skills/` 中的内部翻译技能。只有用户明确指定技能时才调用，不根据任务描述自动选择。
 
-- **User-invoked** - 只能由人类输入名称来调用。在 frontmatter 中设置 `disable-model-invocation: true`（Claude Code），并在 `agents/openai.yaml` 中设置 `policy.allow_implicit_invocation: false`（Codex）。`description` 面向人类：浏览 slash commands 时看到的一行摘要。去掉触发词列表（例如 "Use when the user says..."）。
-- **Model-invoked** - 模型和用户都可以调用。默认就是这种形式：省略 `disable-model-invocation`，并省略 `agents/openai.yaml` 中的 `policy` block。`description` 面向模型，并保留丰富的触发措辞（例如 "Use when the user wants..."、"mentions..."、"asks for..."），让自动调用能命中。判断一个 skill 是否应保持 model-invoked 的测试是：模型能否有意义地自行想到要用它？（复用是抽出 skill 的理由，不是这个判断标准。）
+每个技能同时设置两项配置：
 
-每个 agent harness 都用自己的方式把 user-invoked skill 排除在模型可调用范围之外，因此只有人类能触发它，其他 skill 也不能调用它。User-invoked skill 可以调用 model-invoked skills，但永远不能调用另一个 user-invoked skill。
+- Claude Code：`SKILL.md` frontmatter 中的 `disable-model-invocation: true`。
+- Codex：相邻 `agents/openai.yaml` 中的 `policy.allow_implicit_invocation: false`。
 
-每个 skill 的 `SKILL.md` 旁都必须有 `agents/openai.yaml`。它保存 Codex UI metadata：skill picker 使用的 `interface.display_name` 与 `interface.short_description`；对于 user-invoked skills，还保存与 `disable-model-invocation` 配对的 `policy.allow_implicit_invocation: false`。两边必须保持同步：一个 skill 要么在两个 harness 中都是 user-invoked，要么都不是。
+两项配置必须保持一致。保留原有技能名称、描述、UI metadata 和工具依赖，用户仍可在技能选择器中找到它们。
 
-Bucket `README.md` 和顶层 `README.md` 都按 **User-invoked** 与 **Model-invoked** 对条目分组。
+## 手动调用
 
-## 它们之间的依赖
+- Codex：`$research 调研这个问题`。
+- Claude Code：`/research 调研这个问题`。
 
-依赖用 **`/skill` 风格的 prose invocation** 表达（例如 "Run the `/grilling` skill"），而不是深层 `../other-skill/FILE.md` 交叉引用。共享 reference docs 存放在拥有它们的 skill 内；其他 skills 通过调用该 skill 触达这些资料，而不是跨目录链接。
+技能正文中的 `/其他技能` 引用表示流程依赖，不构成自动调用授权。需要这些能力时，由用户明确指定相应技能；例如需要完整实现、测试和审查流程时，同时指定 `implement`、`tdd` 和 `code-review`。
 
-## 被动与主动的 domain 工作
+只是通过文件路径读取普通参考文档，不属于调用另一个技能。
 
-只是为了词汇而 _读取_ `CONTEXT.md`，是一条普通 prose pointer，不是 `domain-modeling` skill。只有主动构建和打磨 domain model 的纪律（挑战术语、构造 edge-case scenarios、写 ADRs、内联更新 `CONTEXT.md`）才是 `domain-modeling`。
+顶层和各 bucket 的 `README.md` 将本版本技能统一列在 **User-invoked** 分组；开发中技能仍遵循原有发布范围。

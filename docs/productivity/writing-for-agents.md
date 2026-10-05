@@ -8,7 +8,7 @@
 
 ## When to reach for it
 
-输入 `/writing-for-agents`，或者当你在创建或编辑一个 skill、修改 `AGENTS.md` 或 `CLAUDE.md` 时，agent 会自行调用它。
+输入 `/writing-for-agents` 手动调用。创建或编辑 skill、`AGENTS.md` 或 `CLAUDE.md` 时，也需要用户明确指定本技能。
 
 对于 agent 会读的其他一切，你手动去用它：你的 docs、specs 和 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)、system 与 [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) prompts。检验标准只有一个问题——agent 会读这个吗？——文档是怎么到它面前的并不重要，无论是一个 pointer 点名了它、一个人把它粘进去，还是它只是躺在 repo 里。要首先搞清楚一个 codebase 实际包含什么，用 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——这份参考管的是文档读起来如何，而不是它知道什么。
 
@@ -67,4 +67,4 @@
 
 ## Where it fits
 
-这是一份随时可调的 standalone reference。它在链条里没有邻居，因为它位于整个集合之下，而不是任何单个 skill 旁边：这里的每个 skill 都是照着它写出来的，而其他 skills 留下的 documents——一份 `CONTEXT.md` 及其 ADRs、一份 spec、一张 ticket——正是每当 agent 不得不读它们时它所管辖的文本。当你不确定哪个 skill 或流程适合某项任务时，[ask-matt](https://aihero.dev/skills-ask-matt) 会带你在整个集合上路由。
+这是一份随时可调的 standalone reference。它在链条里没有邻居，因为它位于整个集合之下，而不是任何单个 skill 旁边：这里的每个 skill 都是照着它写出来的，而其他 skills 留下的 documents——一份 `GLOSSARY.md` 及其 ADRs、一份 spec、一张 ticket——正是每当 agent 不得不读它们时它所管辖的文本。[retro](https://aihero.dev/skills-retro) 会使用此写作参考来表达工作环境改进；在本版本中，两项技能仍须由用户明确指定。当你不确定哪个 skill 或流程适合某项任务时，[ask-matt](https://aihero.dev/skills-ask-matt) 会带你在整个集合上路由。

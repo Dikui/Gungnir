@@ -1,32 +1,32 @@
 ---
 name: loop-me
-description: 在这个工作区中，就我想构建的工作流规格访谈我。
+description: 通过访谈找出值得委托的重复活动，并在工作区中写成可执行的工作流规格。
 disable-model-invocation: true
 argument-hint: "一个待设计的工作流；也可以留空，让我去找一个"
 ---
 
-调用 Skill 工具并指定 `grilling`，运行一个 stateful session，唯一输出是 **workflow** specs。使用 grilling discipline：持续追问、一次一个问题、每个问题都附推荐答案。围绕下面的 vocabulary 和 goal 来访谈。随着 grilling 解决问题，创建、编辑、删除 specs。
+运行持续记录状态的 `/grilling` 访谈。一次问一个问题，每个问题附上推荐答案。唯一输出是工作流规格；随着问题解决，创建、修改或删除规格文件。其他技能仅在用户明确指定后调用。
 
-## The loop lens
+## 找出重复活动
 
-**Loop** 是用户生活中的重复模式：career、week、morning，或单个重复活动。把生活看成 loops within loops，会揭示活动到底有多 predictable，也因此揭示哪些值得 **delegating**。用这个 lens 找到值得写 spec 的 loops，并提出用户尚未注意到的 loops。
+重复活动（Loop）可以是职业中的模式、每周安排、早晨习惯，或单项周期活动。观察这些活动如何相互嵌套，判断哪些过程可预测、值得委托，并提出用户尚未注意到的重复模式。
 
-**Workflow** 是一个 loop 的 spec，并让它变得可执行。你在 loop 上运行 workflow；loop 是它的运行实例。Workflows 存在 `workflows/*.md` 中，并作为 source of truth。
+工作流（Workflow）是重复活动的可执行规格，活动是它的运行实例。规格保存在 `workflows/*.md`，作为权威记录。
 
-## Vocabulary
+## 按需使用的概念
 
-只有当 workflow 需要时才使用 shared language；它不是 checklist。**不要强制任何结构**：除非 grilling 表明需要，否则 workflow 不需要 AI、不需要 checkpoint，也不需要 schedule。
+下列概念用于帮助描述，不是必填清单。只有访谈确认需要时，才加入 AI、检查点或时间安排，不强制统一结构。
 
-- **Trigger** - 每次运行的触发物：一个 **event**（新 email、新 issue）或一个 **schedule**（每天早晨）。Event-triggering 通常更高效。
-- **Checkpoint** - human-in-the-loop 点，用户在这里验证或决策。有些 workflows 没有 checkpoint，可自主运行；有些完全不使用 AI。
-- **Push right** - 尽可能延后 checkpoint。在涉及人之前先完成最大量工作，让用户只被晚些时候问一次，并且一切都已准备好。
-- **Brief** - checkpoint 展示的内容：紧凑、decision-ready 的 summary，说明产出了什么、为什么、并链接到底层 asset；永远不是 raw output。用户读 brief，不读 draft。Review 速度至关重要。
+- **触发条件（Trigger）**：新邮件、新 issue 等事件，或每天早晨等时间安排。事件触发通常更高效。
+- **检查点（Checkpoint）**：需要用户验证或决策的环节。有些工作流可以自主运行，有些完全不使用 AI。
+- **延后检查点（Push right）**：先完成可独立完成的工作，再集中请用户判断，让资料在提问前准备好。
+- **决策摘要（Brief）**：在检查点简要说明产出、原因，并链接到具体产物。让用户能快速决策，不直接交付原始输出或草稿供其整理。
 
-## Definition of done
+## 完成条件
 
-当 implementer agent 能在不问任何问题的情况下构建它时，workflow spec 才算 done。持续 grilling 到那时；只要还有问题，就不算完成。
+持续访谈，直到实现代理可以不再提问就构建该工作流。仍有未解决问题时，规格尚未完成。
 
-## The workspace
+## 工作区文件
 
-- `workflows/*.md` - 每个 workflow 一个 spec。
-- `NOTES.md` - 关于用户世界的 raw notes：他们使用的 tools、处理的 channels，以及他们对两者的自有术语。当它为空或很薄时，先访谈用户的世界，再写任何 spec。随着 fuzzy terms 浮现，把它们打磨成 canonical terms，并记录在这里。
+- `workflows/*.md`：每个工作流一份规格。
+- `NOTES.md`：记录用户的工具、沟通渠道和自有术语。文件为空或信息不足时，先了解用户的工作环境，再写规格。将访谈中出现的模糊术语明确下来，并持续记录。
