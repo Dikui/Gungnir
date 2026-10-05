@@ -114,9 +114,11 @@ Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 
 ## Where it fits
 
-`code-review` 是 build chain 尾部的 review 步骤——`grill-with-docs → to-spec → to-tickets → implement → code-review`——也能在你指向它的任何 branch 或 PR 上独立运行。
+`code-review` 是 build chain 尾部的 review 步骤——`grill-with-docs → to-spec → to-tickets → implement → code-review → retro`——也能在你指向它的任何 branch 或 PR 上独立运行。
 
-- [implement](https://aihero.dev/skills-implement) 是最接近的邻居：它驱动构建；需要收尾 review 时，先提交待审工作，再显式调用本技能。
+- [implement](https://aihero.dev/skills-implement) 驱动单个任务；[implement-spec](https://aihero.dev/skills-implement-spec) 实施整份需求。需要收尾审查时，先提交待审工作，再显式调用本技能；并行实施的审查针对所有任务已汇入的集成分支。
+- [retro](https://aihero.dev/skills-retro) 复盘审查遗漏，提出自动检查或编码规范改进。
+- [pr](https://aihero.dev/skills-pr) 为已审查的工作撰写 PR 正文。上述技能都由用户明确指定。
 - [to-spec](https://aihero.dev/skills-to-spec) 和 [to-tickets](https://aihero.dev/skills-to-tickets) 产出 Spec 轴线所要核对的那份文档；一份含糊的 spec 会让那条轴线也含糊。
 - [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 是整个 codebase 的对口物——这个 skill 只看一个 diff。
 

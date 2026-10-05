@@ -2,7 +2,7 @@
 
 `to-spec` 把你刚刚进行的 conversation 变成一份 **[spec](https://www.aihero.dev/ai-coding-dictionary/spec)**，并作为单个 issue 发布到你的 issue tracker。
 
-它不会访谈你。当你调用它时，决定已经完成，所以它综合的是已知的内容——来自 thread、来自 codebase、来自你的 `CONTEXT.md` 和 ADRs——而不是开启一轮新问题。Spec 是已经做出的决定的记录，而不是做出新决定的地方。
+它不会访谈你。当你调用它时，决定已经完成，所以它综合的是已知的内容——来自 thread、来自 codebase、来自你的 `GLOSSARY.md` 和 ADRs——而不是开启一轮新问题。Spec 是已经做出的决定的记录，而不是做出新决定的地方。
 
 ## When to reach for it
 
@@ -51,7 +51,7 @@ Spec 之所以存在，是因为 context windows 会结束。你在 [grilling](h
 主要是给 agent 的，而且读起来就是那样——完整、密集、参考资料多。值得你过目的部分是 seams 和 out-of-scope 小节，因为那是错误决定最容易抓到、也最贵到事后才发现的两个地方。从头读一遍是人们对它真实的抱怨，也没有 summary 模式：诚实的回答是，如果 spec 让你意外，那是 grilling 太浅，而不是 spec 太长。
 
 **一旦 tickets 开始，我该让 spec 保持冻结，还是让 agent 重写它？**
-没有什么能让它保持同步，所以实际上它是你在那一刻所知道内容的快照，并且在 implementation 第一次教你某些东西时就会过时。一旦工作落地，就把它当作一次性的。被设计来活得比它更长的 artifact 是你的 `CONTEXT.md` 和你的 ADRs——如果 implementation 期间学到的东西值得留存，它属于那里，而不是一份被编辑过的 spec。
+没有什么能让它保持同步，所以实际上它是你在那一刻所知道内容的快照，并且在 implementation 第一次教你某些东西时就会过时。一旦工作落地，就把它当作一次性的。被设计来活得比它更长的 artifact 是你的 `GLOSSARY.md` 和你的 ADRs——如果 implementation 期间学到的东西值得留存，它属于那里，而不是一份被编辑过的 spec。
 
 **我的工作是一个 refactor 或 module boundary，而不是 feature。模板合适吗？**
 不太合适，这是一个已知限制。模板重度依赖 user stories，这对架构工作来说是一个错误的形状——你最终会围绕那些真正关乎 interfaces 和 invariants 的决定，写出没人要求的 stories。改为依靠 implementation-decisions 和 testing-decisions 小节，并让持久的架构决定通过 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 作为 ADRs 落地，而不是试图让 spec 承载它们。
@@ -75,7 +75,7 @@ Spec 之所以存在，是因为 context windows 会结束。你在 [grilling](h
 `to-spec` 是 main build chain 中的一个步骤，而且只在它的 multi-session 分支上：
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → retro
 ```
 
 它上游的邻居是 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，它做本 skill 只负责记录的 deciding，以及 [wayfinder](https://aihero.dev/skills-wayfinder)，其完成的 map 正好在这里并入 chain。下游，[to-tickets](https://aihero.dev/skills-to-tickets) 把 spec 切成 [implement](https://aihero.dev/skills-implement) 要构建的 tracer-bullet tickets。当你不确定哪个 skill 或 flow 合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

@@ -1,6 +1,6 @@
 ---
 name: writing-fragments
-description: 通过访谈收集写作素材，持续保存片段，暂不安排提纲或文章结构。
+description: "通过访谈收集写作素材，持续保存片段，暂不安排提纲或文章结构。"
 disable-model-invocation: true
 ---
 

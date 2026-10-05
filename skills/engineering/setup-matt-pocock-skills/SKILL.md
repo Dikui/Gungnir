@@ -1,12 +1,12 @@
 ---
 name: setup-matt-pocock-skills
-description: 首次使用工程技能前，配置项目的 issue tracker、分流标签和领域文档入口。
+description: "首次使用工程技能前，配置项目的 issue tracker、分流标签和领域文档入口。"
 disable-model-invocation: true
 ---
 
 # 配置工程技能
 
-为当前仓库确定任务存放位置、五种分流状态的标签，以及 `CONTEXT.md`、ADR、已有产品框架图的路径和读取规则。
+为当前仓库确定任务存放位置、五种分流状态的标签，以及 `GLOSSARY.md`、ADR、已有产品框架图的路径和读取规则。
 
 先探索并展示发现，再与用户确认和写入。本技能按项目情况配置，不是一段固定脚本。
 
@@ -16,7 +16,7 @@ disable-model-invocation: true
 
 - `git remote -v` 和 `.git/config`：判断托管平台和仓库。
 - 根目录 `AGENTS.md`、`CLAUDE.md`：查看是否已有 `## Agent skills`。
-- 根目录 `CONTEXT.md`、`CONTEXT-MAP.md`，以及 `docs/adr/`、`src/*/docs/adr/`。
+- 根目录 `GLOSSARY.md`、`GLOSSARY-MAP.md`，以及 `docs/adr/`、`src/*/docs/adr/`。
 - `docs/agents/`：查看此前是否已配置。
 - 已登记的框架图路径，以及默认的 `docs/architecture.md`（若存在）。
 - `.scratch/`：查看是否已使用本地 Markdown 任务约定。
@@ -50,7 +50,7 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 
 ### C. 领域文档
 
-默认使用单上下文：根目录 `CONTEXT.md` 加 `docs/adr/`，无需提问。仅在发现大型多包仓库信号时，才提供多上下文选项：根目录 `CONTEXT-MAP.md` 链接各上下文的 `CONTEXT.md`，由用户确认布局。
+默认使用单上下文：根目录 `GLOSSARY.md` 加 `docs/adr/`，无需提问。仅在发现大型多包仓库信号时，才提供多上下文选项：根目录 `GLOSSARY-MAP.md` 链接各上下文的 `GLOSSARY.md`，由用户确认布局。
 
 已有框架图时，在 `docs/agents/domain.md` 保留或登记实际路径和适用场景。沿用自定义路径，不另建副本；已有规则文件中的图入口也保留。没有图时，不创建占位，也不要求接入 Canvas。
 

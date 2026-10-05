@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 查找难以理解、修改或测试的结构，提出将浅模块改为深模块的方案，提高可测试性和代理浏览代码的效率。
 
-领域术语沿用 `CONTEXT.md`，尊重 `docs/adr/` 中的既有决策。架构术语和原则沿用 `/codebase-design`：module、interface、depth、seam、adapter、leverage、locality，以及删除测试、通过接口测试、有真实替换需求才设置 seam 等原则。不要随意改称 component、service、API 或 boundary。
+领域术语沿用 `GLOSSARY.md`，尊重 `docs/adr/` 中的既有决策。架构术语和原则沿用 `/codebase-design`：module、interface、depth、seam、adapter、leverage、locality，以及删除测试、通过接口测试、有真实替换需求才设置 seam 等原则。不要随意改称 component、service、API 或 boundary。
 
 文中其他技能仅在用户明确指定后调用，见[调用规则](../../../docs/invocation.md)。
 
@@ -19,7 +19,7 @@ disable-model-invocation: true
 - 用户指定模块、子系统或问题时，按指定范围探索。
 - 未指定时，查看足够长的 `git log --oneline`，找出反复修改的文件和区域。没有明显热点时再扩大范围。
 
-先读取 `CONTEXT.md` 和相关 ADR，再派一个子代理浏览代码。自然探索，不机械套规则，重点观察：
+先读取 `GLOSSARY.md` 和相关 ADR，再派一个子代理浏览代码。自然探索，不机械套规则，重点观察：
 
 - 理解一个概念是否需要跳转许多小模块？
 - 哪些接口几乎与实现一样复杂？
@@ -48,7 +48,7 @@ disable-model-invocation: true
 
 末尾用 **Top recommendation** 说明最先建议处理哪个候选及原因。
 
-领域名称使用 `CONTEXT.md` 的词汇，架构名称使用 `/codebase-design` 的词汇。例如已定义 Order 时，使用 Order intake module，不改称 FooBarHandler 或 Order service。
+领域名称使用 `GLOSSARY.md` 的词汇，架构名称使用 `/codebase-design` 的词汇。例如已定义 Order 时，使用 Order intake module，不改称 FooBarHandler 或 Order service。
 
 候选与 ADR 冲突时，只有当前问题确实值得重新讨论该决策，才提出方案，并在卡片中明确说明冲突和理由。不要罗列所有被 ADR 排除的重构。
 
@@ -60,7 +60,7 @@ disable-model-invocation: true
 
 决策形成时，使用 `/domain-modeling` 同步领域文档：
 
-- 新模块需要 `CONTEXT.md` 中没有的概念时，补入术语；文件缺失则按需创建。
-- 模糊术语已明确时，立即更新 `CONTEXT.md`。
+- 新模块需要 `GLOSSARY.md` 中没有的概念时，补入术语；文件缺失则按需创建。
+- 模糊术语已明确时，立即更新 `GLOSSARY.md`。
 - 用户因长期有效的关键理由拒绝方案时，提议记录 ADR，避免未来重复推荐。临时或显然的原因无需记录。
 - 需要比较不同接口时，使用 `/codebase-design` 的 design-it-twice 并行子代理流程。

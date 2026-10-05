@@ -1,6 +1,6 @@
 ## What it does
 
-[`wait-what`](../../skills/productivity/wait-what/SKILL.md) 用于你没听懂当前解释时。代理会回顾相关对话，补足背景、前提和推理，使用你的语言和项目 `CONTEXT.md` 中的术语。
+[`wait-what`](../../skills/productivity/wait-what/SKILL.md) 用于你没听懂当前解释时。代理会回顾相关对话，补足背景、前提和推理，使用你的语言和项目 `GLOSSARY.md` 中的术语。
 
 目标是让你理解。短句只是起点；删掉必要背景，即使更短，也没有完成解释。
 
@@ -33,15 +33,15 @@ skill 说重新讲一遍**那个**，不是"刚才那条消息"。让你迷失�
 
 ## It plugs into the language you already have
 
-技能借鉴 ASD-STE100 的简化表达原则：短句、直接表达、术语一致，并保留必要条件。解释使用你的语言，中文不机械套用英文词数限制。项目 `CONTEXT.md` 提供领域术语；升级到图示、HTML 或视频时继续沿用。
+技能借鉴 ASD-STE100 的简化表达原则：短句、直接表达、术语一致，并保留必要条件。解释使用你的语言，中文不机械套用英文词数限制。项目 `GLOSSARY.md` 提供领域术语；多上下文仓库沿 `GLOSSARY-MAP.md` 找到当前话题对应的词汇表；升级到图示、HTML 或视频时继续沿用。
 
-如果你没有 `CONTEXT.md`，skill 仍然有效。你只是失去领域词汇那一半。
+如果没有 `GLOSSARY.md`，也没有 `GLOSSARY-MAP.md` 指向当前上下文的词汇表，skill 仍然有效。你只是失去领域词汇那一半。
 
 ## It's working if
 
 - 重新解释后，你能理解原先卡住的内容，而不只是看到更少的字。
 - 它补上了你缺少的前提，而不只是删词。
-- 项目的名词替换了那些发明出来的词。你 `CONTEXT.md` 里的术语回来了。
+- 项目的名词替换了那些发明出来的词。你 `GLOSSARY.md` 里的术语回来了。
 - 你连续反馈“没懂”时，它会针对缺口升级解释，而不重复压缩同一段文字。
 
 ## Where it fits

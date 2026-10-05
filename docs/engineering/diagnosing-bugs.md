@@ -18,7 +18,8 @@
 | 别人发来的未确认、未写好的原始 bug report | 先 [triage](https://aihero.dev/skills-triage) |
 | 用来回答设计问题的用完即弃代码，而不是追查缺陷 | [prototype](https://aihero.dev/skills-prototype) |
 | Test-first 构建一个有计划的 behavior | [tdd](https://aihero.dev/skills-tdd) |
-| 没有好的 seam 能锁住这个 bug | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture)——这个 skill 自己会向它移交 |
+| 修复后检查什么措施本可预防缺陷 | 在同一会话中显式调用 [retro](https://aihero.dev/skills-retro) |
+| 没有好的 seam 能锁住这个 bug | 由用户显式调用 [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) |
 
 ## The tight loop is the skill
 
@@ -51,7 +52,7 @@ Phases 是闸门，不是清单。每一个都拒绝打开，直到某件具体�
 | 进入 Phase 5 | Probes 映射到一条具体的预测，一次一个变量，每条 debug log 都按 `[DEBUG-a4f2]` 风格打标签，这样清理就是一次 grep |
 | Done | 原始 repro 不再复现，instrumentation 已移除，而结果被证明正确的 hypothesis 被写进 commit message |
 
-Phase 5 有一个值得知道的逃生舱。Regression test 在修复*之前*被写下来，但仅当存在一条对它**正确的 seam** 时——一条 test 能像在 call site 处发生的那样演练真实 bug 模式的 seam。在唯一可用的 seam 太浅的地方，skill 被指示说明这一点，而不是写一条给出虚假信心的 test。那种缺失本身就是那项 finding，也正是把 post-mortem 路由到 `improve-codebase-architecture` 的东西。
+Phase 5 有一个值得知道的逃生舱。Regression test 在修复*之前*被写下来，但仅当存在一条对它**正确的 seam** 时——一条 test 能像在 call site 处发生的那样演练真实 bug 模式的 seam。在唯一可用的 seam 太浅的地方，skill 被指示说明这一点，而不是写一条给出虚假信心的 test。应如实记录缺少正确测试接口，不写给出虚假信心的测试。
 
 ## Common questions
 
@@ -90,4 +91,4 @@ Snyk 标记它，而那个 flag 是误报。它是这套里唯一随附一个可
 
 `diagnosing-bugs` 是一个随时可调用的 standalone。你在某样东西坏掉的那一刻落入它，并在修复及其 regression test 就位时退出；它不持有状态，也不需要先前的设置。[ask-matt](https://aihero.dev/skills-ask-matt) 把「有东西坏了」路由到这里。
 
-两个邻居要紧。[improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 在真正的 finding 是代码没有能锁住 bug 的 seam 时接下 [handoff](https://www.aihero.dev/ai-coding-dictionary/handoff)——推荐是在修复就位之后、有更多信息时做出的。[triage](https://aihero.dev/skills-triage) 对来自别人的原始报告 bug 坐在它上游，并对同样的前两个 phases 做一个更浅的版本。
+修复完成后，用户可在同一会话显式调用 [retro](https://aihero.dev/skills-retro)，检查什么措施本可预防缺陷。诊断技能本身不调用复盘技能。缺少正确测试接口时，可另行选择 [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture)。[triage](https://aihero.dev/skills-triage) 位于原始缺陷报告的上游，对前两个阶段做范围有限的验证。

@@ -1,6 +1,6 @@
 ---
 name: writing-shape
-description: 与用户从已有素材中确定文章主张和结构，逐段讨论并写入独立的文章文件。
+description: "与用户从已有素材中确定文章主张和结构，逐段讨论并写入独立的文章文件。"
 disable-model-invocation: true
 ---
 

@@ -4,7 +4,7 @@
 
 这些文件是 repo 之间唯一会变化的东西。Skills 本身在任何地方都相同；它们在运行时读取 `docs/agents/issue-tracker.md`，并按它说的去做。这就是为什么这套工具不绑定 GitHub，也为什么任何 skill 文件永远都不需要编辑来指向别处。用 "link the skills to a custom issue tracker" 来调用它，可以用任何你能以编程方式连接的东西，对 skills 零改动。
 
-它是一个 prompt 驱动的 skill，而不是一个确定性的脚本。它读取你的 `git remote`、你已有的 `CLAUDE.md`、你已有的 `CONTEXT.md`，提出它发现的内容，并在写入任何东西之前等你确认。
+它是一个 prompt 驱动的 skill，而不是一个确定性的脚本。它读取你的 `git remote`、你已有的 `CLAUDE.md`、你已有的 `GLOSSARY.md`，提出它发现的内容，并在写入任何东西之前等你确认。
 
 ## When to reach for it
 
@@ -33,7 +33,7 @@
 | --- | --- | --- |
 | **Issue tracker** | 与你的 `git remote` 匹配的那个 | 总是——这是唯一一个真正的选择 |
 | **Triage labels** | 保留五个 canonical 名称（`needs-triage`、`needs-info`、`ready-for-agent`、`ready-for-human`、`wontfix`） | 仅在安装了 `triage` skill 时 |
-| **Domain docs** | single-context：根目录一个 `CONTEXT.md` 加 `docs/adr/` | 仅当它发现 monorepo 信号时，然后它提供 multi-context 的 `CONTEXT-MAP.md` |
+| **Domain docs** | single-context：根目录一个 `GLOSSARY.md` 加 `docs/adr/` | 仅当它发现 monorepo 信号时，然后它提供 multi-context 的 `GLOSSARY-MAP.md` |
 
 tracker 选项：
 
@@ -91,4 +91,4 @@ tracker 选项：
 
 ## Where it fits
 
-`setup-matt-pocock-skills` 是 engineering flow 的 **run-once setup**，是其他一切默认的前提，而不是 chain 中的一个步骤。它的邻居是它的读者：[triage](https://aihero.dev/skills-triage)，它套用在里写下的 label vocabulary；[to-spec](https://aihero.dev/skills-to-spec) 和 [to-tickets](https://aihero.dev/skills-to-tickets)，它们发布到在这里命名的 tracker；以及 [wayfinder](https://aihero.dev/skills-wayfinder)，它读取同一个 tracker 文件的 "Wayfinding operations" 小节，以知道 maps 和子 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) 是如何存储的。它记录的 domain-doc 布局，正是 [domain-modeling](https://aihero.dev/skills-domain-modeling) 之后要填满的——它非惰性地创建 `CONTEXT.md` 和 ADRs，当一个 term 或 decision 真正被解决时，所以 setup 之后一个空 repo 是预期的状态。至于下一步该用哪个 skill，[ask-matt](https://aihero.dev/skills-ask-matt) 为整套工具路由。
+`setup-matt-pocock-skills` 是 engineering flow 的 **run-once setup**，是其他一切默认的前提，而不是 chain 中的一个步骤。它的邻居是它的读者：[triage](https://aihero.dev/skills-triage)，它套用在里写下的 label vocabulary；[to-spec](https://aihero.dev/skills-to-spec) 和 [to-tickets](https://aihero.dev/skills-to-tickets)，它们发布到在这里命名的 tracker；以及 [wayfinder](https://aihero.dev/skills-wayfinder)，它读取同一个 tracker 文件的 "Wayfinding operations" 小节，以知道 maps 和子 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) 是如何存储的。它记录的 domain-doc 布局，正是 [domain-modeling](https://aihero.dev/skills-domain-modeling) 之后要填满的——它非惰性地创建 `GLOSSARY.md` 和 ADRs，当一个 term 或 decision 真正被解决时，所以 setup 之后一个空 repo 是预期的状态。至于下一步该用哪个 skill，[ask-matt](https://aihero.dev/skills-ask-matt) 为整套工具路由。

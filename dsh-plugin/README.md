@@ -2,7 +2,7 @@
 
 ## 这是什么
 
-本插件包把 `mattpocock-skills-zh-CN` 仓库的 35 个可用技能，打包为 DeepSeek Harness（dsh）插件。
+本插件包把 `mattpocock-skills-zh-CN` 仓库的 38 个可用技能，打包为 DeepSeek Harness（dsh）插件。
 
 技能以 `zh-<name>` 命名，并以 `/zh-<name>` 调用，例如 `/zh-grilling`。
 
@@ -20,7 +20,7 @@
 
    ```sh
    (cd dsh-plugin && npm pack)
-   dsh plugin --profile web add "$PWD/dsh-plugin/vinvcn-dsh-mattpocock-skills-zh-1.2.3.tgz"
+   dsh plugin --profile web add "$PWD/dsh-plugin/vinvcn-dsh-mattpocock-skills-zh-1.3.1.tgz"
    ```
 
 2. 启动 dsh：
@@ -75,4 +75,4 @@ dsh plugin --profile web add @vinvcn/dsh-mattpocock-skills-zh
 
 `in-progress` 技能仍为 beta。
 
-当前共 35 个技能。
+当前共 38 个技能。

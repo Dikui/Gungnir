@@ -1,12 +1,12 @@
 ---
 name: to-spec
-description: 将当前讨论整理为需求文档，发布到项目 issue tracker。
+description: "将当前讨论整理为需求文档，发布到项目 issue tracker。"
 disable-model-invocation: true
 ---
 
 根据当前对话和代码库生成需求文档。**不要**访谈用户，只整理已讨论的内容。
 
-使用已有的 tracker 和分流标签配置。缺失时先通过 `/setup-matt-pocock-skills` 配置；调用其他技能须由用户明确指定。
+使用已有的 tracker 和分流标签配置。缺失时，告知用户先显式运行 `/setup-matt-pocock-skills`；调用其他技能须由用户明确指定。
 
 ## 流程
 

@@ -1,6 +1,6 @@
 # Gungnir
 
-Matt Pocock Agent Skills 中文手动调用版，基于 [vinvcn/mattpocock-skills-zh-CN](https://github.com/vinvcn/mattpocock-skills-zh-CN) 的 `e0956923c2bdcdc459314c322773d55deebf42ee` 完整源码。
+Matt Pocock Agent Skills 中文手动调用版，初始基于 [vinvcn/mattpocock-skills-zh-CN](https://github.com/vinvcn/mattpocock-skills-zh-CN) 的 `e0956923c2bdcdc459314c322773d55deebf42ee` 完整源码，现已按内容刷新方式更新至上游 v1.3.1。
 
 本仓库所有技能（包括开发中技能和内部翻译技能）仅允许用户手动调用。Codex 使用 `$技能名`，Claude Code 使用 `/技能名`；不会根据任务描述自动触发。技能涉及其他技能时，也需要用户明确指定。详见 [调用规则](./docs/invocation.md)。
 
@@ -20,7 +20,13 @@ Matt Pocock Agent Skills 中文手动调用版，基于 [vinvcn/mattpocock-skill
 
 本仓库按内容刷新方式同步上游，不同步上游 Git 历史或仓库管理状态。维护规则见 [`.skills/translate-skill/SKILL.md`](./.skills/translate-skill/SKILL.md)。
 
-本仓库的最近一次同步翻译由 Claude（Anthropic）执行，并由仓库维护者通过 PR 纳入 `main`。翻译策略是 **skill-guided content localization**：把上游 `mattpocock/skills` 当作英文内容来源，只翻译自然语言说明，保留目录名、skill name、frontmatter key、命令、代码块、路径、URL、package/tool/API identifiers 和行为关键 labels。用户可见的安装路径统一保持为 `vinvcn/mattpocock-skills-zh-CN`。
+本次 v1.3.1 内容刷新由 Codex 执行，保留中文本地化身份、手动调用策略和 Gungnir 的本地改进。翻译策略是 **skill-guided content localization**：把上游 `mattpocock/skills` 当作英文内容来源，只翻译自然语言说明，保留目录名、skill name、frontmatter key、命令、代码块、路径、URL、package/tool/API identifiers 和行为关键 labels。用户可见的安装路径统一保持为 `vinvcn/mattpocock-skills-zh-CN`。
+
+## 上游内容刷新记录
+
+- 2026-10-05：刷新至 [`mattpocock/skills@24fe0ef`（v1.3.1）](https://github.com/mattpocock/skills/tree/24fe0ef7737efae15c87225755e9f6f5965e4888)。本地内容基准为 `fa0d2a1`。新增整份需求并行实施、PR 正文和会话复盘技能；领域文档统一使用 `GLOSSARY.md` / `GLOSSARY-MAP.md`。保留 Canvas、本地双轴审查和渐进式解释；合并冲突技能移入 deprecated。
+- 采用 [translate-skill](./.skills/translate-skill/SKILL.md) 指导的内容本地化，不导入上游 Git 历史、Changesets 或仓库管理配置。纯英文标点调整按现有中文表达保留；跨技能调用按[本地规则](./docs/invocation.md)适配。已有项目的领域词汇表需从 `CONTEXT.md` / `CONTEXT-MAP.md` 改名后使用新版技能。
+- 验证：翻译检查、40 组技能 YAML 与手动调用策略、32 个公开技能索引、版本同步和代码示例对照通过；dsh 的 20 项现有测试通过，38 个活跃技能构建验证通过；`claude plugin validate . --strict` 通过。
 
 ## 30 秒安装
 
@@ -193,7 +199,7 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 示例
 </summary>
 
-这是我 `course-video-manager` repo 中的一个 [`CONTEXT.md`](https://github.com/mattpocock/course-video-manager/blob/076a5a7a182db0fe1e62971dd7a68bcadf010f1c/CONTEXT.md) 示例。哪一个更容易读？
+这是我 `course-video-manager` repo 中的一个[词汇表](https://github.com/mattpocock/course-video-manager/blob/076a5a7a182db0fe1e62971dd7a68bcadf010f1c/CONTEXT.md)示例。固定提交中的文件仍名为 `CONTEXT.md`，早于本次命名更新。哪一个更容易读？
 
 - **BEFORE**: "There's a problem when a lesson inside a section of a course is made 'real' (i.e. given a spot in the file system)"
 - **AFTER**: "There's a problem with the materialization cascade"
@@ -267,7 +273,7 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 
 - **[ask-matt](./skills/engineering/ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
 - **[canvas](./skills/engineering/canvas/SKILL.md)** - 根据需求、边界和测试场景共创产品框架图，支持人工与 AI 协同调整，并导出 Markdown 供设计任务按需参考。完整插件自带 Canvas MCP，按项目加载并保存 Markdown。
-- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `CONTEXT.md` 与 ADRs。
+- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `GLOSSARY.md` 与 ADRs。
 - **[triage](./skills/engineering/triage/SKILL.md)** - 通过 triage roles state machine 推进 issues。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** - 扫描 codebase 中的 deepening opportunities，生成可视化 HTML report，然后围绕你选中的候选项继续 grilling。
 - **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)** - 配置 issue tracker、triage labels 和 domain docs 布局。每个 repo 运行一次。
@@ -275,15 +281,17 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** - 把 plan、spec 或 conversation 拆成 tracer-bullet tickets，每个 ticket 声明 blocking edges——在 local file 中写成文本，或在真实 tracker 上写成 native blocking links。
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 issue tracker 上的 decision tickets 共享 map，逐一解决直到通往 destination 的路清晰。
 - **[implement](./skills/engineering/implement/SKILL.md)** - 基于 spec 或 ticket 集合实现一段工作，在预先约定的 seams 处驱动 `/tdd`，并在提交前以 `/code-review` 收尾。
+- **[implement-spec](./skills/engineering/implement-spec/SKILL.md)** - 按任务依赖图并行实现整份需求，各任务在独立 worktree 中实施，汇入同一集成分支。配套测试和审查技能须由用户明确指定。
 
 - **[prototype](./skills/engineering/prototype/SKILL.md)** - 构建 throwaway prototype 来回答一个设计问题——state/logic 问题产出一个可分享的单一 HTML 文件，或产出几个可从同一路由切换的 radically different UI 变体。
 - **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：构建一个会对这个 bug 变红的 feedback loop → minimise → hypothesise → instrument → fix → regression-test。
 - **[research](./skills/engineering/research/SKILL.md)** - 对照 high-trust primary sources 调研问题，并把带引用的 findings 保存为 Markdown 文件。
 - **[tdd](./skills/engineering/tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
-- **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** - 主动构建和打磨项目 domain model：挑战术语、用 edge-case scenarios 做压力测试，并内联更新 `CONTEXT.md` 与 ADRs。
+- **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** - 主动构建和打磨项目 domain model：挑战术语、用 edge-case scenarios 做压力测试，并内联更新 `GLOSSARY.md` 与 ADRs。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** - 设计 deep modules 的共享纪律和词汇：小 interface、clean seam、通过 interface 测试。
 - **[code-review](./skills/engineering/code-review/SKILL.md)** - 对 fixed point 以来的 diff 做双轴 review：Standards 与 Spec 分开检查，并用并行 sub-agents 运行。
-- **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)** - 逐个 hunk 处理正在进行的 git merge/rebase conflict，按追溯到各方 primary source 的 intent 解决，然后完成操作——绝不 `--abort`。
+- **[pr](./skills/engineering/pr/SKILL.md)** - 用最小图示、前后验证证据、可回退性和影响范围撰写 PR 正文。
+- **[retro](./skills/engineering/retro/SKILL.md)** - 复盘开发会话，按严重程度提出导航、自动检查、编码规范、工具和信息访问改进。
 - **[wizard](./skills/engineering/wizard/SKILL.md)** - 生成一个交互式 bash wizard，带人走过只有人才能完成的步骤：provisioning infrastructure、设置 credentials 或 CI secrets、操作陌生的第三方 dashboard，或执行一次性 migration/cutover。
 
 #### Productivity
@@ -296,7 +304,7 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 - **[handoff](./skills/productivity/handoff/SKILL.md)** - 把当前对话压缩成 handoff document，让另一个 agent 可以继续。
 - **[teach](./skills/productivity/teach/SKILL.md)** - 使用当前目录作为 stateful teaching workspace，在多个 sessions 中教用户一个新 skill 或概念。
 - **[to-questionnaire](./skills/productivity/to-questionnaire/SKILL.md)** - 把一个你自己答不了的 decision 变成一份 Markdown questionnaire，交给唯一能回答它的人——异步填写，或在一次会议里一起完成。它追问的是“发送”本身（发给谁、你想拿回什么），而不是主题。
-- **[wait-what](./skills/productivity/wait-what/SKILL.md)** - 某条消息没讲明白的瞬间就发它。agent 会补上你缺的 context，用平实的语言重新表述，并使用你 `CONTEXT.md` 里的词汇。
+- **[wait-what](./skills/productivity/wait-what/SKILL.md)** - 某条消息没讲明白的瞬间就发它。agent 会补上你缺的 context，用平实的语言重新表述，并使用你 `GLOSSARY.md` 里的词汇。
 
 - **[grilling](./skills/productivity/grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 design tree 的每个分支都被解决。它是 `grill-me`、`grill-with-docs`、`triage`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用访谈 primitive。
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** - 为 agents 编写文档：skills、AGENTS.md/CLAUDE.md，以及任何 agent 通过 pointer 到达的文档。

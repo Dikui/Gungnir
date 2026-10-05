@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 将工作拆成贯通各层、可独立验证的任务单，每项都注明开始前必须完成的任务。
 
-使用项目已有的 tracker 和分流标签配置。缺失时先通过 `/setup-matt-pocock-skills` 配置；该技能须由用户明确指定后调用。
+使用项目已有的 tracker 和分流标签配置。缺失时，告知用户先显式运行 `/setup-matt-pocock-skills`；不得由本技能自动调用。
 
 ## 1. 收集上下文
 

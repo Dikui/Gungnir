@@ -10,19 +10,25 @@ disable-model-invocation: true
 
 ## 从想法到实现
 
-1. **明确想法**：在项目目录中，用 `/grill-with-docs` 访谈，将术语和决策保存到 `CONTEXT.md`、ADR。没有可记录的项目目录时，用 `/grill-me`。两者都依赖 `/grilling` 的访谈方式。
+1. **明确想法**：在项目目录中，用 `/grill-with-docs` 访谈，将术语和决策保存到 `GLOSSARY.md`、ADR。没有可记录的项目目录时，用 `/grill-me`。两者都依赖 `/grilling` 的访谈方式。
 2. **需要原型时验证**：状态、业务逻辑或界面问题无法只靠对话解决时，用 `/handoff` 导出上下文，在原型目录的新会话中使用 `/prototype`。完成后再用 `/handoff` 将结论带回原对话。
 3. **按规模实施**：
    - 一次会话能完成：在当前上下文使用 `/implement`。
-   - 需要多次会话：先用 `/to-spec` 整理需求，再用 `/to-tickets` 拆成可贯通各层、独立验证的任务，并声明前置依赖。本地每个任务存入 `.scratch/<feature>/issues/` 的独立文件，按依赖顺序处理；远程 tracker 使用原生依赖链接。每个任务开启一次 `/implement`，任务间用 `/clear` 清空上下文。任务须自包含，完成后的上下文可以丢弃。
+   - 需要多次会话：先用 `/to-spec` 整理需求，再用 `/to-tickets` 拆成可贯通各层、独立验证的任务，并声明前置依赖。随后选择一种实施方式：
+     - 每个任务开启一次 `/implement`，任务间用 `/clear` 清空上下文。本地任务存入 `.scratch/<feature>/issues/` 的独立文件，按依赖顺序处理；远程 tracker 使用原生依赖链接。任务须自包含，完成后的上下文可以丢弃。
+     - 使用 `/implement-spec` 一次实施整份需求。它把任务视为依赖图，让无阻塞的任务在独立 worktree 中并行实施，再汇入同一集成分支。
 
-`/implement` 的完整流程配合 `/tdd` 和 `/code-review`：一次完成一个“失败测试 → 最小实现”循环，最后分别审查编码规范和需求符合性，再提交。用户需要完整流程时，应同时指定这些技能。
+`/implement` 的完整流程配合 `/tdd` 和 `/code-review`：一次完成一个“失败测试 → 最小实现”循环，最后分别审查编码规范和需求符合性，再提交。`/implement-spec` 的各实施代理配合 `/tdd`，所有任务完成后对集成分支运行一次 `/code-review`。用户需要完整流程时，应同时指定对应的实施、测试和审查技能。
+
+需要撰写 PR 正文时，可显式指定 `/pr`，用最小图示、前后验证证据、可回退性和影响范围说明变更。
+
+4. **复盘工作环境**：构建结束后，可用 `/retro` 回顾会话。它按严重程度提出导航、自动检查、编码规范、规则文件和工具改进。机器可判断的问题交给确定性检查，需要判断的问题交给编码规范。
 
 只需在没有完整需求文档时用测试驱动一个具体行为，可单独选择 `/tdd`。按指定基准审查分支或 PR，可单独选择 `/code-review`。
 
 ### 保持上下文连续
 
-从访谈到 `/to-tickets` 保留同一上下文，不中途清空或压缩，确保它们基于同一组讨论。之后每个实现任务使用新会话，只读取对应任务单。
+从访谈到 `/to-tickets` 保留同一上下文，不中途清空或压缩，确保它们基于同一组讨论。之后每个实现任务使用新会话，只读取对应任务单。需要复盘时，在清空上下文前运行 `/retro`；已经清空时，提供原会话日志的位置。
 
 若在拆分任务前已接近约 150k token 的 [smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone) 参考范围，则在最近的阶段结束处用 `/compact`，再继续。不要硬撑已经退化的上下文。
 
@@ -31,7 +37,7 @@ disable-model-invocation: true
 | 情况 | 推荐流程 |
 | --- | --- |
 | 外部缺陷报告或功能请求积压 | `/triage` 分类和验证，形成可交给代理的任务，再进入 `/implement`。它不处理你自己创建的任务；`/to-tickets` 的产物已可执行，无需再次分流。 |
-| 难以定位、偶发或回归缺陷 | `/diagnosing-bugs` 先建立能复现该缺陷的检查命令，再验证原因并修复。若发现缺少可测试的 seam，修复后再考虑 `/improve-codebase-architecture`。 |
+| 难以定位、偶发或回归缺陷 | `/diagnosing-bugs` 先建立能复现该缺陷的检查命令，再验证原因并修复。修复后可在同一会话显式调用 `/retro`，检查什么措施本可预防缺陷；若发现缺少可测试的 seam，再考虑 `/improve-codebase-architecture`。 |
 | 一次会话无法规划清楚的大任务 | `/wayfinder` 在 tracker 中建立决策地图，逐项解决问题，直到路径明确。它较重，不用于范围明确的功能。 |
 
 `/wayfinder` 默认产出决策，不直接实现。地图清楚后，先用 `/to-spec` 收拢相互关联的决策，再进入 `/to-tickets` 和 `/implement`。只有最终发现任务很小时，才直接进入 `/implement`。
@@ -39,7 +45,7 @@ disable-model-invocation: true
 ## 架构维护与术语
 
 - `/improve-codebase-architecture` 查找可深化的模块，供维护时选择。选中的方向可回到 `/grill-with-docs` 继续讨论；具体接口设计使用 `/codebase-design`。
-- `/domain-modeling` 维护领域语言：明确模糊术语，拆开一词多义，将难以逆转的决策记为 ADR，保持 `CONTEXT.md` 词汇表准确。
+- `/domain-modeling` 维护领域语言：明确模糊术语，拆开一词多义，将难以逆转的决策记为 ADR，保持 `GLOSSARY.md` 词汇表准确。
 - `/codebase-design` 提供 module、interface、depth、seam、adapter、leverage、locality 等架构术语，用小接口封装复杂行为。`/tdd` 和架构维护流程使用同一套语言。
 
 这些术语技能也仅在用户明确指定后调用。
@@ -58,14 +64,13 @@ disable-model-invocation: true
 
 ## 可单独使用的技能
 
-- `/grill-me`：无状态访谈，不写本地文档或 `CONTEXT.md`。有项目目录时，优先用会保留记录的 `/grill-with-docs`。
+- `/grill-me`：无状态访谈，不写本地文档或 `GLOSSARY.md`。有项目目录时，优先用会保留记录的 `/grill-with-docs`。
 - `/grilling`：基础访谈方式。逐轮提问，代理查事实，用户作决策。需要纯访谈而不附加其他流程时直接使用。
-- `/resolving-merge-conflicts`：逐块追溯双方原始意图，解决并完成正在进行的合并或变基，不使用 `--abort`。它独立于上述实现流程。
 - `/prototype`：验证逻辑、状态或外观问题。临时代码不等于必须删除；原型作为原始依据保留在 main 之外的 `prototype/<name>` 分支，并由实现 issue 引用。
 - `/research`：后台代理调研一手来源，将结论和引用写入仓库 Markdown。用户可同时继续工作，再把结果带回 `/grill-with-docs` 讨论。
 - `/to-questionnaire`：答案掌握在他人手中时，先向用户确认收件人和所需信息，再生成问卷。回答可供 `/grill-with-docs` 或 `/to-spec` 使用。
 - `/wizard`：为只有用户能完成的配置、凭证设置或迁移生成交互式 Bash 向导，打开网址、收集值并写入 `.env` 或 GitHub secrets。代理能自行完成时不使用它。
-- `/wait-what`：用户没听懂时，让代理补充背景，用直白英文和 `CONTEXT.md` 的术语重述上一条消息。提前用访谈统一术语，可以减少这类误解。
+- `/wait-what`：用户没听懂时，让代理补充背景，用直白英文和 `GLOSSARY.md` 的术语重述上一条消息。提前用访谈统一术语，可以减少这类误解。
 - `/teach`：以当前目录保存学习状态，跨会话教授概念或技能。
 - `/writing-for-agents`：编写技能、`AGENTS.md` 及供代理查阅的参考文档。
 

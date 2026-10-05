@@ -20,7 +20,7 @@ disable-model-invocation: true
 
 地图只保存决策摘要和链接。详细答案保存在对应任务单中，不在地图中重复。向用户引用地图或任务单时，用标题作为链接文字，不单独罗列编号或 ID。
 
-从 tracker 配置的 `Wayfinding operations` 一节读取父子关系、依赖关系和待办查询的实现方式。尚无配置时，先通过 `/setup-matt-pocock-skills` 完成配置。没有 tracker 时，默认使用 local-markdown tracker。
+从 tracker 配置的 `Wayfinding operations` 一节读取父子关系、依赖关系和待办查询的实现方式。尚无配置时，告知用户先显式运行 `/setup-matt-pocock-skills`。没有 tracker 时，默认使用 local-markdown tracker。
 
 文中引用的其他技能均须由用户明确指定后调用，见[调用规则](../../../docs/invocation.md)。
 
