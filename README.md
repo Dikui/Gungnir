@@ -24,9 +24,9 @@ Matt Pocock Agent Skills 中文手动调用版，初始基于 [vinvcn/mattpocock
 
 ## 上游内容刷新记录
 
-- 2026-10-05：刷新至 [`mattpocock/skills@24fe0ef`（v1.3.1）](https://github.com/mattpocock/skills/tree/24fe0ef7737efae15c87225755e9f6f5965e4888)。本地内容基准为 `fa0d2a1`。新增整份需求并行实施、PR 正文和会话复盘技能；领域文档统一使用 `GLOSSARY.md` / `GLOSSARY-MAP.md`。保留 Canvas、本地双轴审查和渐进式解释；合并冲突技能移入 deprecated。
+- 2026-10-05：刷新至 [`mattpocock/skills@24fe0ef`（v1.3.1）](https://github.com/mattpocock/skills/tree/24fe0ef7737efae15c87225755e9f6f5965e4888)。本地内容刷新提交为 `113eb7f`（基于 `fa0d2a1`）。新增整份需求并行实施、PR 正文和会话复盘技能；领域文档统一使用 `GLOSSARY.md` / `GLOSSARY-MAP.md`。保留 Canvas、本地双轴审查和渐进式解释；合并冲突技能移入 deprecated。
 - 采用 [translate-skill](./.skills/translate-skill/SKILL.md) 指导的内容本地化，不导入上游 Git 历史、Changesets 或仓库管理配置。纯英文标点调整按现有中文表达保留；跨技能调用按[本地规则](./docs/invocation.md)适配。已有项目的领域词汇表需从 `CONTEXT.md` / `CONTEXT-MAP.md` 改名后使用新版技能。
-- 验证：翻译检查、40 组技能 YAML 与手动调用策略、32 个公开技能索引、版本同步和代码示例对照通过；dsh 的 20 项现有测试通过，38 个活跃技能构建验证通过；`claude plugin validate . --strict` 通过。
+- 验证：翻译检查、40 组技能 YAML 与手动调用策略、32 个公开技能索引、版本同步和代码示例对照通过；dsh 的 20 项现有测试通过，38 个活跃技能构建验证通过；`claude plugin validate . --strict` 通过。独立 plugin manifest 校验通过，仍有原有的根目录 `CLAUDE.md` 不作为插件上下文加载提示；该提示使独立 plugin 的严格校验返回失败。
 
 ## 30 秒安装
 
