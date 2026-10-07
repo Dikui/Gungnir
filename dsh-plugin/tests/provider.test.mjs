@@ -4,7 +4,8 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import * as m from '../index.js'
-import { SKILL_NAMES } from '../scripts/rewrite-references.mjs'
+import { DSH_BUCKETS, SKILL_NAMES } from '../scripts/rewrite-references.mjs'
+import { listSkills } from '../../scripts/skills.mjs'
 
 const PROVIDER_NAME = 'mattpocock-skills-zh'
 const KEBAB_CASE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -48,11 +49,22 @@ test('zh-grill-me disables model invocation but stays user-invocable', async () 
   assert.deepEqual(grillMe.invocation, { modelInvocable: false, userInvocable: true })
 })
 
-test('all bundled skills require manual invocation', async () => {
+test('bundled skills keep the source invocation tiers', async () => {
+  const sources = new Map(listSkills(DSH_BUCKETS).map((skill) => [`zh-${skill.name}`, skill.meta]))
   const candidates = await m.createProvider().list({})
   for (const candidate of candidates) {
-    assert.deepEqual(candidate.invocation, { modelInvocable: false, userInvocable: true }, candidate.name)
+    const meta = sources.get(candidate.name)
+    assert.deepEqual(candidate.invocation, {
+      modelInvocable: meta['disable-model-invocation'] !== 'true',
+      userInvocable: meta['user-invocable'] !== 'false',
+    }, candidate.name)
   }
+})
+
+test('zh-grilling is skill-invoked only', async () => {
+  const candidates = await m.createProvider().list({})
+  const grilling = candidates.find((candidate) => candidate.name === 'zh-grilling')
+  assert.deepEqual(grilling.invocation, { modelInvocable: true, userInvocable: false })
 })
 
 test('get loads the zh-grill-me body and a directory resource base', async () => {
