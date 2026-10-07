@@ -6,7 +6,7 @@
 
 ## When to reach for it
 
-输入 `/grilling`，或者当任务合适时 [agent](https://www.aihero.dev/ai-coding-dictionary/agent) 会自行调用它。它是 grilling 家族中唯一 model-invoked 的 [skill](https://www.aihero.dev/ai-coding-dictionary/skill)，这正是你很少直接输入它的原因：通常是一个你*确实*输入了的 skill 正在替你运行它。
+本仓库中你不能直接输入 `/grilling`，它也不会在普通对话里自动触发：它是 grilling 家族中唯一由其他技能加载的 [skill](https://www.aihero.dev/ai-coding-dictionary/skill)，由你输入的 `/grill-me`、`/grill-with-docs` 等技能替你运行。见[调用规则](../invocation.md)。
 
 直接输入 `/grilling` 得到的只是朴素的访谈，别无其他。当你想比这更多时：
 

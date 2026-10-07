@@ -6,7 +6,7 @@
 
 ## When to reach for it
 
-输入 `/domain-modeling`，或者当任务契合时由 agent 自动调用。实际上，自动调用是 skill 最弱的部分：当 `grill-with-docs` 或 `wayfinder` 说加载它时，[models](https://www.aihero.dev/ai-coding-dictionary/model) 常常加载 `grilling` 而跳过这个。如果一场 [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) 会话跑完，`GLOSSARY.md` 在结尾却未被动过，那就是发生了什么——按名字和另一个 skill 一起调用它。
+输入 `/domain-modeling` 直接调用，或由 `/grill-with-docs`、`/wayfinder` 等技能在执行中加载；本仓库中它不会在普通对话里按任务描述自动触发，见[调用规则](../invocation.md)。实际上，被其他技能加载是这个 skill 最弱的环节：当 `grill-with-docs` 或 `wayfinder` 说加载它时，[models](https://www.aihero.dev/ai-coding-dictionary/model) 常常加载 `grilling` 而跳过这个。如果一场 [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) 会话跑完，`GLOSSARY.md` 在结尾却未被动过，那就是发生了什么——按名字和另一个 skill 一起调用它。
 
 当*词语*是问题时使用它：
 

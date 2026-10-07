@@ -6,7 +6,7 @@
 
 ## When to reach for it
 
-输入 `/tdd`，或者当任务合适时由 [agent](https://www.aihero.dev/ai-coding-dictionary/agent) 自动触发——test-first 地构建 feature 或修 bug，或者当你说 "red-green-refactor" 时。
+输入 `/tdd` 直接调用，或由 `/implement`、`/implement-spec` 在执行中加载——test-first 地构建 feature 或修 bug。本仓库中它不会在普通对话里按任务描述自动触发，见[调用规则](../invocation.md)。
 
 当有具体 behavior 要构建、有 input 和可观察的 output，并且你希望 tests 能承受 refactor 时使用它。
 

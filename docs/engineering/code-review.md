@@ -8,7 +8,7 @@
 
 ## When to reach for it
 
-显式输入 `/code-review` 或 `$code-review`，并提供比较基准。其他技能不会自动调用它，见[调用规则](../invocation.md)。
+显式输入 `/code-review` 或 `$code-review`，并提供比较基准。`/implement`、`/implement-spec` 和 `/tdd` 也会在执行中加载它，但它不会在普通对话里按任务描述自动触发，见[调用规则](../invocation.md)。
 
 | 你的处境 | 指向 |
 | --- | --- |

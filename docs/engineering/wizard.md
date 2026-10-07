@@ -74,11 +74,11 @@ Scoping 发生在写出任何一行之前。[skill](https://www.aihero.dev/ai-co
 
 **它在 Claude Code 之外能用吗？**
 
-artifact 可以，无任何条件：它是一个普通 bash 脚本，不关心是哪个 [harness](https://www.aihero.dev/ai-coding-dictionary/harness) 生成的。Skill 本身是 model-invoked，所以它到处都在列表里——在 Claude Code 中输入 `/wizard`，或在 Codex 中输入 `$wizard`，或者直接描述你卡住的 setup。正因为是 model-invoked，它也避开了 [#693](https://github.com/mattpocock/skills/issues/693)——Claude 的桌面和 web 界面会把 *user-invoked* skills 从 [model](https://www.aihero.dev/ai-coding-dictionary/model) 的列表中丢掉，并报告它们未安装。
+artifact 可以，无任何条件：它是一个普通 bash 脚本，不关心是哪个 [harness](https://www.aihero.dev/ai-coding-dictionary/harness) 生成的。Skill 本身在本仓库只由用户调用：在 Claude Code 中输入 `/wizard`，或在 Codex 中输入 `$wizard`。上游把它改成了 model-invoked，部分原因是 [#693](https://github.com/mattpocock/skills/issues/693)——Claude 的桌面和 web 界面会把 *user-invoked* skills 从 [model](https://www.aihero.dev/ai-coding-dictionary/model) 的列表中丢掉，并报告它们未安装。
 
-**它以前不是 user-invoked 吗？**
+**上游已改为 model-invoked，本仓库为什么没跟？**
 
-是的。它现在是 model-invoked，所以当 agent 撞上一个必须由你完成的步骤时，它会自行触发它。你以前能做的任何事都没有失效——model-invocation 只是*增加*了 agent 的可达范围，从不移除你的，所以 `/wizard` 的行为和以前完全一样。改变的是它淘汰的一种失败模式：agent 在构建中途撞上凭据墙，把六条编号步骤倒进聊天，让你手动照着做。
+本仓库的入口技能只由用户调用，避免在普通对话中按任务描述自动触发；也没有别的技能需要在执行中加载 `wizard`，所以它不属于基础技能，见[调用规则](../invocation.md)。代价是：agent 在构建中途撞上凭据墙时不会自行触发它，需要你输入 `/wizard`。
 
 **它以前在 `in-progress/`——现在在哪？**
 

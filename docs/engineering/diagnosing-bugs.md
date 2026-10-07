@@ -6,7 +6,7 @@
 
 ## When to reach for it
 
-输入 `/diagnosing-bugs`，或者当任务契合时由 agent 自行调用——它是 model-invoked 的，会在 "diagnose" / "debug this" 时触发，或者在关于某样东西 broken、throwing、failing 或 slow 的报告时触发。
+输入 `/diagnosing-bugs` 调用。上游让它在 "diagnose" / "debug this"，或报告某样东西 broken、throwing、failing 或 slow 时自动触发；本仓库中它只由用户调用，见[调用规则](../invocation.md)。
 
 在那些难啃的问题上使用它：一眼看不出就抵抗的 bug、间歇性的 flake、在两个 known-good states 之间悄悄潜入的 regression。它刻意沉重，对于你想一条消息就得到答案的问题，它是一个错误的工具。
 

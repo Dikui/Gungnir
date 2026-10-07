@@ -6,7 +6,7 @@
 
 ## When to reach for it
 
-输入 `/codebase-design`，或者当设计任务契合时由 agent 自动调用。
+输入 `/codebase-design` 直接调用，或由 `/improve-codebase-architecture`、`/tdd` 等技能在执行中加载。本仓库中它不会在普通对话里按任务描述自动触发，见[调用规则](../invocation.md)。
 
 当你已经知道你在重新设计哪段代码、需要思考它的形状时使用它：seam 该放在哪里、interface 能缩到多小、一次 extraction 是否值回票价。它也是你为解决「某个词是什么意思」的争论而取用的东西。
 
