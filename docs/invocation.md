@@ -1,21 +1,50 @@
-# 仅手动调用
+# 调用规则
 
-Gungnir 中的所有技能都为 **User-invoked**，包括 `skills/` 中的正式技能、开发中技能，以及 `.skills/` 中的内部翻译技能。只有用户明确指定技能时才调用，不根据任务描述自动选择。
+Gungnir 的技能分两层：**入口技能**由用户调用，**基础技能**由入口技能调用。任何技能都不应在普通对话中按任务描述自动触发。
 
-每个技能同时设置两项配置：
+## 入口技能（User-invoked）
 
-- Claude Code：`SKILL.md` frontmatter 中的 `disable-model-invocation: true`。
-- Codex：相邻 `agents/openai.yaml` 中的 `policy.allow_implicit_invocation: false`。
+除下表外的所有技能，包括开发中技能和 `.skills/` 中的内部翻译技能。只能由用户显式调用：
 
-两项配置必须保持一致。保留原有技能名称、描述、UI metadata 和工具依赖，用户仍可在技能选择器中找到它们。
+- Claude Code：`SKILL.md` frontmatter 设置 `disable-model-invocation: true`，用 `/research 调研这个问题` 调用。
+- Codex：相邻 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，用 `$research 调研这个问题` 调用。
 
-## 手动调用
+## 基础技能（Skill-invoked）
 
-- Codex：`$research 调研这个问题`。
-- Claude Code：`/research 调研这个问题`。
+| 技能 | 由哪些技能调用 | 用户能否直接调用 |
+| --- | --- | --- |
+| `grilling` | grill-me、grill-with-docs、triage、wayfinder、improve-codebase-architecture、loop-me | 否，从 `/grill-me` 或 `/grill-with-docs` 进入 |
+| `domain-modeling` | grill-with-docs、triage、wayfinder、improve-codebase-architecture | 能 |
+| `codebase-design` | improve-codebase-architecture、tdd、setup-ts-deep-modules | 能 |
+| `writing-for-agents` | retro | 能 |
+| `tdd` | implement、implement-spec | 能 |
+| `code-review` | implement、implement-spec、tdd | 能 |
+| `research` | wayfinder | 能 |
+| `prototype` | wayfinder | 能 |
 
-技能正文中的 `/其他技能` 引用表示流程依赖，不构成自动调用授权。需要这些能力时，由用户明确指定相应技能；例如需要完整实现、测试和审查流程时，同时指定 `implement`、`tdd` 和 `code-review`。
+基础技能允许模型调用，靠两层软约束避免在普通对话中触发：
 
-只是通过文件路径读取普通参考文档，不属于调用另一个技能。
+1. `description` 先说明用途，再写明"仅在用户直接调用，或某些技能的步骤要求加载时使用；不要根据对话内容自行加载"。不写"适用于……时"之类的触发条件。
+2. 正文第一段是加载条件：不满足时停止，并提示用户改用对应的入口技能。
 
-顶层和各 bucket 的 `README.md` 将本版本技能统一列在 **User-invoked** 分组；开发中技能仍遵循原有发布范围。
+配置：
+
+- Claude Code：不设 `disable-model-invocation`；用户不能直接调用的再设 `user-invocable: false`。
+- Codex：`policy.allow_implicit_invocation: true`。
+
+这是软约束，偶尔误触发可以接受。
+
+## 技能之间的引用
+
+- 入口技能需要基础技能时，写"调用 Skill 工具并指定 `grilling`"，或直接写 `/grilling`。
+- 入口技能提到另一个入口技能（如 `/to-spec`、`/setup-matt-pocock-skills`）时，只作推荐，由用户决定是否调用。
+- 只按文件路径读取普通参考文档，不属于调用另一个技能。
+
+## 新增或调整技能
+
+把技能放进基础层前，确认它满足以下两点：
+
+- 至少一个入口技能需要在执行中加载它；
+- 它的描述按上面的格式写明了加载条件。
+
+顶层和各 bucket 的 `README.md` 分别在 **User-invoked** 和 **Skill-invoked** 分组下列出技能。

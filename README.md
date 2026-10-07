@@ -1,10 +1,10 @@
 # Gungnir
 
-Matt Pocock Agent Skills 中文手动调用版，初始基于 [vinvcn/mattpocock-skills-zh-CN](https://github.com/vinvcn/mattpocock-skills-zh-CN) 的 `e0956923c2bdcdc459314c322773d55deebf42ee` 完整源码，现已按内容刷新方式更新至上游 v1.3.1。
+Matt Pocock Agent Skills 中文分层调用版，初始基于 [vinvcn/mattpocock-skills-zh-CN](https://github.com/vinvcn/mattpocock-skills-zh-CN) 的 `e0956923c2bdcdc459314c322773d55deebf42ee` 完整源码，现已按内容刷新方式更新至上游 v1.3.1。
 
-本仓库所有技能（包括开发中技能和内部翻译技能）仅允许用户手动调用。Codex 使用 `$技能名`，Claude Code 使用 `/技能名`；不会根据任务描述自动触发。技能涉及其他技能时，也需要用户明确指定。详见 [调用规则](./docs/invocation.md)。
+本仓库的技能不会在普通对话中按任务描述自动触发。入口技能只由用户调用（Codex 使用 `$技能名`，Claude Code 使用 `/技能名`）；`grilling`、`tdd`、`code-review` 等基础技能由入口技能在执行中加载。详见 [调用规则](./docs/invocation.md)。
 
-下文保留上游项目说明及安装示例；要使用本手动调用版本，请从 `dikui/Gungnir` 获取 `skills/`，不要使用上游安装地址。
+下文保留上游项目说明及安装示例；要使用本版本，请从 `dikui/Gungnir` 获取 `skills/`，不要使用上游安装地址。
 
 ## 为什么需要这个中文版？
 
@@ -263,7 +263,7 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 
 ### Reference
 
-本版本的所有 skills 均为 **User-invoked**：只有用户显式指定名称时才调用，不能由模型或其他技能自动触发。
+本版本的 skills 分为两组：**User-invoked** 只由用户显式调用；**Skill-invoked** 由入口技能在执行中加载，不会在普通对话中主动触发。详见[调用规则](./docs/invocation.md)。
 
 #### Engineering
 
@@ -281,18 +281,22 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** - 把 plan、spec 或 conversation 拆成 tracer-bullet tickets，每个 ticket 声明 blocking edges——在 local file 中写成文本，或在真实 tracker 上写成 native blocking links。
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 issue tracker 上的 decision tickets 共享 map，逐一解决直到通往 destination 的路清晰。
 - **[implement](./skills/engineering/implement/SKILL.md)** - 基于 spec 或 ticket 集合实现一段工作，在预先约定的 seams 处驱动 `/tdd`，并在提交前以 `/code-review` 收尾。
-- **[implement-spec](./skills/engineering/implement-spec/SKILL.md)** - 按任务依赖图并行实现整份需求，各任务在独立 worktree 中实施，汇入同一集成分支。配套测试和审查技能须由用户明确指定。
+- **[implement-spec](./skills/engineering/implement-spec/SKILL.md)** - 按任务依赖图并行实现整份需求，各任务在独立 worktree 中实施，汇入同一集成分支；各任务用 `/tdd` 实现，最后用 `/code-review` 审查集成分支。
+- **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：构建一个会对这个 bug 变红的 feedback loop → minimise → hypothesise → instrument → fix → regression-test。
+- **[pr](./skills/engineering/pr/SKILL.md)** - 用最小图示、前后验证证据、可回退性和影响范围撰写 PR 正文。
+- **[retro](./skills/engineering/retro/SKILL.md)** - 复盘开发会话，按严重程度提出导航、自动检查、编码规范、工具和信息访问改进。
+- **[wizard](./skills/engineering/wizard/SKILL.md)** - 生成一个交互式 bash wizard，带人走过只有人才能完成的步骤：provisioning infrastructure、设置 credentials 或 CI secrets、操作陌生的第三方 dashboard，或执行一次性 migration/cutover。
+
+**Skill-invoked**
+
+由上面的入口技能在执行中加载；除 `grilling` 外，你也可以直接调用。描述和正文开头写明了加载条件，不会在普通对话中主动触发。见[调用规则](./docs/invocation.md)。
 
 - **[prototype](./skills/engineering/prototype/SKILL.md)** - 构建 throwaway prototype 来回答一个设计问题——state/logic 问题产出一个可分享的单一 HTML 文件，或产出几个可从同一路由切换的 radically different UI 变体。
-- **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：构建一个会对这个 bug 变红的 feedback loop → minimise → hypothesise → instrument → fix → regression-test。
 - **[research](./skills/engineering/research/SKILL.md)** - 对照 high-trust primary sources 调研问题，并把带引用的 findings 保存为 Markdown 文件。
 - **[tdd](./skills/engineering/tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** - 主动构建和打磨项目 domain model：挑战术语、用 edge-case scenarios 做压力测试，并内联更新 `GLOSSARY.md` 与 ADRs。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** - 设计 deep modules 的共享纪律和词汇：小 interface、clean seam、通过 interface 测试。
 - **[code-review](./skills/engineering/code-review/SKILL.md)** - 对 fixed point 以来的 diff 做双轴 review：Standards 与 Spec 分开检查，并用并行 sub-agents 运行。
-- **[pr](./skills/engineering/pr/SKILL.md)** - 用最小图示、前后验证证据、可回退性和影响范围撰写 PR 正文。
-- **[retro](./skills/engineering/retro/SKILL.md)** - 复盘开发会话，按严重程度提出导航、自动检查、编码规范、工具和信息访问改进。
-- **[wizard](./skills/engineering/wizard/SKILL.md)** - 生成一个交互式 bash wizard，带人走过只有人才能完成的步骤：provisioning infrastructure、设置 credentials 或 CI secrets、操作陌生的第三方 dashboard，或执行一次性 migration/cutover。
 
 #### Productivity
 
@@ -305,6 +309,10 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 - **[teach](./skills/productivity/teach/SKILL.md)** - 使用当前目录作为 stateful teaching workspace，在多个 sessions 中教用户一个新 skill 或概念。
 - **[to-questionnaire](./skills/productivity/to-questionnaire/SKILL.md)** - 把一个你自己答不了的 decision 变成一份 Markdown questionnaire，交给唯一能回答它的人——异步填写，或在一次会议里一起完成。它追问的是“发送”本身（发给谁、你想拿回什么），而不是主题。
 - **[wait-what](./skills/productivity/wait-what/SKILL.md)** - 某条消息没讲明白的瞬间就发它。agent 会补上你缺的 context，用平实的语言重新表述，并使用你 `GLOSSARY.md` 里的词汇。
+
+**Skill-invoked**
+
+由上面的入口技能在执行中加载；除 `grilling` 外，你也可以直接调用。描述和正文开头写明了加载条件，不会在普通对话中主动触发。见[调用规则](./docs/invocation.md)。
 
 - **[grilling](./skills/productivity/grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 design tree 的每个分支都被解决。它是 `grill-me`、`grill-with-docs`、`triage`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用访谈 primitive。
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** - 为 agents 编写文档：skills、AGENTS.md/CLAUDE.md，以及任何 agent 通过 pointer 到达的文档。
