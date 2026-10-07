@@ -42,7 +42,9 @@ await json(join(output, '.agents/plugins/marketplace.json'), {
   plugins: [{ name: original.name, source: { source: 'local', path: './plugins/' + original.name }, policy: { installation: 'AVAILABLE', authentication: 'ON_INSTALL' }, category: 'Developer Tools' }],
 })
 await json(join(output, '.claude-plugin/marketplace.json'), {
-  name: 'gungnir-local', owner: { name: 'vinvcn' }, plugins: [{ name: original.name, source: './plugins/' + original.name }],
+  name: 'gungnir-local', owner: { name: 'vinvcn' },
+  description: 'Gungnir 本地插件市场，提供简体中文工程技能与项目画布 Canvas MCP。',
+  plugins: [{ name: original.name, source: './plugins/' + original.name }],
 })
 console.log('Plugin package: ' + plugin)
 console.log('Marketplace: ' + output)
