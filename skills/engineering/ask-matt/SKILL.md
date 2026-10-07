@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # 选择技能
 
-帮助用户选择下一步，不要求记住全部技能。下列流程说明技能如何配合；所有技能均须由用户明确指定，本技能只推荐，不自动调用。见[调用规则](../../../docs/invocation.md)。
+帮助用户选择下一步，不要求记住全部技能。下列流程说明技能如何配合；本技能只推荐，由用户调用所选技能。见[调用规则](../../../docs/invocation.md)。
 
 ## 从想法到实现
 
@@ -48,7 +48,7 @@ disable-model-invocation: true
 - `/domain-modeling` 维护领域语言：明确模糊术语，拆开一词多义，将难以逆转的决策记为 ADR，保持 `GLOSSARY.md` 词汇表准确。
 - `/codebase-design` 提供 module、interface、depth、seam、adapter、leverage、locality 等架构术语，用小接口封装复杂行为。`/tdd` 和架构维护流程使用同一套语言。
 
-这些术语技能也仅在用户明确指定后调用。
+这些术语技能可以直接调用，也会被其他技能按需加载。
 
 ## 阶段结束时如何继续
 

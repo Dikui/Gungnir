@@ -1,8 +1,9 @@
 ---
 name: codebase-design
-description: 用深模块原则设计接口、选择可替换位置，并提高代码的可测试性和可维护性。
-disable-model-invocation: true
+description: 用深模块原则设计接口、选择可替换位置，并提高代码的可测试性和可维护性。仅在用户直接调用，或 improve-codebase-architecture、tdd 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
 ---
+
+加载条件：仅在用户直接调用本技能，或其他技能的步骤要求加载本技能时继续；否则停止，并提示用户可直接调用 `/codebase-design`。
 
 # 设计深模块
 

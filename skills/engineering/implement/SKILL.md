@@ -12,4 +12,4 @@ disable-model-invocation: true
 
 完成后，使用 `/code-review` 审查这次工作。
 
-把工作提交到当前分支。文中其他技能仅在用户明确指定后调用。
+把工作提交到当前分支。

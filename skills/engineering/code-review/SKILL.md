@@ -1,8 +1,9 @@
 ---
 name: code-review
-description: "审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。"
-disable-model-invocation: true
+description: 审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。仅在用户直接调用，或 implement、implement-spec、tdd 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
 ---
+
+加载条件：仅在用户直接调用本技能，或其他技能的步骤要求加载本技能时继续；否则停止，并提示用户可直接调用 `/code-review`。
 
 审查用户指定基准与 `HEAD` 之间的差异，分别检查：
 
@@ -11,7 +12,7 @@ disable-model-invocation: true
 
 两个子代理并行审查，各自形成结论。最后分别呈现结果，避免一类问题掩盖另一类问题。
 
-从 `docs/agents/issue-tracker.md` 读取 issue tracker 配置。文件缺失时，告知用户先显式运行 `/setup-matt-pocock-skills`。其他技能仅在用户明确指定后调用，见[调用规则](../../../docs/invocation.md)。
+从 `docs/agents/issue-tracker.md` 读取 issue tracker 配置。文件缺失时，告知用户先显式运行 `/setup-matt-pocock-skills`。
 
 ## 审查步骤
 

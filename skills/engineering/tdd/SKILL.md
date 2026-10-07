@@ -1,8 +1,9 @@
 ---
 name: tdd
-description: 先写测试，再开发功能或修复缺陷；适用于 red-green-refactor 和集成测试。
-disable-model-invocation: true
+description: 先写测试，再开发功能或修复缺陷的 red-green 循环。仅在用户直接调用，或 implement、implement-spec 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
 ---
+
+加载条件：仅在用户直接调用本技能，或其他技能的步骤要求加载本技能时继续；否则停止，并提示用户可直接调用 `/tdd`。
 
 # 测试驱动开发
 
@@ -24,7 +25,7 @@ TDD 是 red → green 循环。本技能 说明如何写值得保留的测试、
 
 询问用户：“公共接口是什么？哪些边界需要测试？”
 
-如果问题在于接口本身——模块应有多深、边界应放在哪里、接口应暴露什么——使用 `/codebase-design` 中的 module、interface、depth、seam、adapter、leverage 和 locality 术语。它提供设计参考，须由用户明确指定后调用。
+如果问题在于接口本身——模块应有多深、边界应放在哪里、接口应暴露什么——使用 `/codebase-design` 中的 module、interface、depth、seam、adapter、leverage 和 locality 术语。需要时通过 Skill 工具加载它。
 
 ## 应避免的做法
 

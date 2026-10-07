@@ -2,4 +2,4 @@ interface:
   display_name: "TDD"
   short_description: "测试驱动的 red-green-refactor"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

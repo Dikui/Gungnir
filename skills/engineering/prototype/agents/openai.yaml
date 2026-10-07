@@ -2,4 +2,4 @@ interface:
   display_name: "Prototype"
   short_description: "通过原型回答设计问题"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

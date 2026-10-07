@@ -10,8 +10,6 @@ disable-model-invocation: true
 
 领域术语沿用 `GLOSSARY.md`，尊重 `docs/adr/` 中的既有决策。架构术语和原则沿用 `/codebase-design`：module、interface、depth、seam、adapter、leverage、locality，以及删除测试、通过接口测试、有真实替换需求才设置 seam 等原则。不要随意改称 component、service、API 或 boundary。
 
-文中其他技能仅在用户明确指定后调用，见[调用规则](../../../docs/invocation.md)。
-
 ## 1. 确定范围并探索
 
 优先检查仍在变化的代码区域，避免为假设中的需求改架构：

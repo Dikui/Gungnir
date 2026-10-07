@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 摘要应包含：
 
-- `suggested skills` 小节：建议接手代理使用的技能，实际调用仍需用户明确指定。
+- `suggested skills` 小节：建议接手代理使用的技能，由用户决定调用哪些技能。
 - 已有产物的路径或 URL，如 PRD、计划、ADR、issue、提交和差异，不重复其内容。
 - 用户传入参数所指定的下一会话重点。
 

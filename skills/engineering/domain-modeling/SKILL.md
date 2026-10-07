@@ -1,8 +1,9 @@
 ---
 name: domain-modeling
-description: 维护项目的领域术语和模型，并记录重要架构决策。
-disable-model-invocation: true
+description: 维护项目的领域术语和模型，并记录重要架构决策。仅在用户直接调用，或 grill-with-docs、triage、wayfinder、improve-codebase-architecture 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
 ---
+
+加载条件：仅在用户直接调用本技能，或其他技能的步骤要求加载本技能时继续；否则停止，并提示用户可直接调用 `/domain-modeling`。
 
 # 领域建模
 

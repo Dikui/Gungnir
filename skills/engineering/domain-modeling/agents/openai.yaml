@@ -2,4 +2,4 @@ interface:
   display_name: "Domain Modeling"
   short_description: "构建并打磨领域模型"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

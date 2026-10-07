@@ -37,7 +37,7 @@ disable-model-invocation: true
 
 每个已分流请求恰好具有一个分类和一个状态。发现多个状态冲突时，先标明并询问维护者，再做其他操作。
 
-以上是标准角色名，实际标签字符串按项目映射使用。缺少映射时，告知用户先显式运行 `/setup-matt-pocock-skills`。文中其他技能均须用户明确指定后调用，见[调用规则](../../../docs/invocation.md)。
+以上是标准角色名，实际标签字符串按项目映射使用。缺少映射时，告知用户先显式运行 `/setup-matt-pocock-skills`。
 
 未标记请求通常先进入 `needs-triage`，再转入其他状态。报告者补充信息后，`needs-info` 回到 `needs-triage`。维护者可随时覆盖状态；遇到异常转换，先说明并询问。
 

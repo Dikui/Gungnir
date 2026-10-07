@@ -22,8 +22,6 @@ disable-model-invocation: true
 
 从 tracker 配置的 `Wayfinding operations` 一节读取父子关系、依赖关系和待办查询的实现方式。尚无配置时，告知用户先显式运行 `/setup-matt-pocock-skills`。没有 tracker 时，默认使用 local-markdown tracker。
 
-文中引用的其他技能均须由用户明确指定后调用，见[调用规则](../../../docs/invocation.md)。
-
 ### 地图格式
 
 每次会话先读取一次地图。未关闭任务通过子 issue 查询获取，不逐条写进地图正文。保留下列标题：

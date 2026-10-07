@@ -1,8 +1,9 @@
 ---
 name: research
-description: 基于一手来源调研问题，并将结论和引用保存为仓库中的 Markdown 文件。
-disable-model-invocation: true
+description: 基于一手来源调研问题，并将结论和引用保存为仓库中的 Markdown 文件。仅在用户直接调用，或 wayfinder 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
 ---
+
+加载条件：仅在用户直接调用本技能，或其他技能的步骤要求加载本技能时继续；否则停止，并提示用户可直接调用 `/research`。
 
 启动后台代理调研，让你可以在它阅读时继续工作。
 

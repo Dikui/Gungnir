@@ -1,8 +1,10 @@
 ---
 name: grilling
-description: 围绕计划、决策或想法持续访谈。适用于用户想检验思路，或使用任何 “grill” 触发语时。
-disable-model-invocation: true
+description: 围绕计划、决策或想法持续访谈的方法。仅在 grill-me、grill-with-docs、triage、wayfinder、improve-codebase-architecture 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+user-invocable: false
 ---
+
+加载条件：仅在其他技能的步骤要求加载本技能时继续；否则停止，并提示用户改用 `/grill-me` 或 `/grill-with-docs`。
 
 持续访谈，直到双方达成共同理解。把议题整理成一棵 **决策树**：每项决策都分出依赖它的后续决策。
 

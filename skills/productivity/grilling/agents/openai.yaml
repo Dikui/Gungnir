@@ -2,4 +2,4 @@ interface:
   display_name: "Grilling"
   short_description: "每次一轮问题地对思路做压力测试"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

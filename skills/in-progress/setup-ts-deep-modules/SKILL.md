@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 用小接口隐藏包内实现。包根目录的文件是公开入口，子目录中的内容都是内部实现。
 
-安装 [dependency-cruiser](https://github.com/sverweij/dependency-cruiser)，配置导入限制，并实际验证它能拦截违规。deep module、interface、seam、depth 等术语沿用 `/codebase-design`；调用该技能须由用户明确指定。
+安装 [dependency-cruiser](https://github.com/sverweij/dependency-cruiser)，配置导入限制，并实际验证它能拦截违规。deep module、interface、seam、depth 等术语沿用 `/codebase-design`，需要时通过 Skill 工具加载它。
 
 ## 目录与规则
 
