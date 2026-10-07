@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import * as m from '../index.js'
+import { SKILL_NAMES } from '../scripts/rewrite-references.mjs'
 
 const PROVIDER_NAME = 'mattpocock-skills-zh'
 const KEBAB_CASE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -24,10 +25,10 @@ test('createProvider returns a named provider whose list and get are thenable', 
   assert.equal(typeof provider.get({}).then, 'function')
 })
 
-test('list resolves to 38 well-formed zh- candidates owned by the provider', async () => {
+test('list resolves to every well-formed zh- candidates owned by the provider', async () => {
   const candidates = await m.createProvider().list({})
-  assert.equal(candidates.length, 38)
-  assert.equal(new Set(candidates.map((candidate) => candidate.name)).size, 38)
+  assert.equal(candidates.length, SKILL_NAMES.length)
+  assert.equal(new Set(candidates.map((candidate) => candidate.name)).size, SKILL_NAMES.length)
   for (const candidate of candidates) {
     assert.equal(candidate.provider, PROVIDER_NAME)
     assert.equal(candidate.source, 'bundled')
@@ -77,7 +78,7 @@ test('apply registers a provider that lists the same catalog', async () => {
   m.apply({ skills: { registerProvider: (create) => { captured = create() } } })
   assert.equal(captured.name, PROVIDER_NAME)
   const candidates = await captured.list({})
-  assert.equal(candidates.length, 38)
+  assert.equal(candidates.length, SKILL_NAMES.length)
   for (const candidate of candidates) {
     assert.equal(candidate.provider, m.name)
   }

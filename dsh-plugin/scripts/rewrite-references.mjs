@@ -5,7 +5,12 @@
  * (not filesystem paths or URLs) are rewritten to the `zh-` prefixed form.
  */
 
+import { listSkills } from '../../scripts/skills.mjs'
+
 const DEFAULT_PREFIX = 'zh-'
+
+/** Buckets copied into the dsh plugin. */
+export const DSH_BUCKETS = ['engineering', 'productivity', 'misc', 'in-progress']
 
 /** Characters that, immediately before a `/`, mean the slash is part of a path. */
 const BEFORE_BLOCKED = 'A-Za-z0-9_/.-'
@@ -13,47 +18,8 @@ const BEFORE_BLOCKED = 'A-Za-z0-9_/.-'
 /** Characters that, immediately after a skill name, mean the match is a path segment. */
 const AFTER_BLOCKED = 'A-Za-z0-9_/-'
 
-/** The 38 localized skill names, sorted. */
-export const SKILL_NAMES = [
-  'ask-matt',
-  'canvas',
-  'claude-handoff',
-  'code-review',
-  'codebase-design',
-  'diagnosing-bugs',
-  'domain-modeling',
-  'git-guardrails-claude-code',
-  'grill-me',
-  'grill-with-docs',
-  'grilling',
-  'handoff',
-  'implement',
-  'implement-spec',
-  'improve-codebase-architecture',
-  'loop-me',
-  'migrate-to-shoehorn',
-  'pr',
-  'prototype',
-  'research',
-  'retro',
-  'scaffold-exercises',
-  'setup-matt-pocock-skills',
-  'setup-pre-commit',
-  'setup-ts-deep-modules',
-  'tdd',
-  'teach',
-  'to-questionnaire',
-  'to-spec',
-  'to-tickets',
-  'triage',
-  'wait-what',
-  'wayfinder',
-  'wizard',
-  'writing-beats',
-  'writing-for-agents',
-  'writing-fragments',
-  'writing-shape'
-]
+/** Localized skill names: every bucket dsh ships, i.e. all but `deprecated/`. */
+export const SKILL_NAMES = listSkills(DSH_BUCKETS).map((skill) => skill.name)
 
 /**
  * Escape a skill name for use inside a regular expression.

@@ -9,13 +9,13 @@ import { cpSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { SKILL_NAMES, rewriteReferences } from './rewrite-references.mjs'
+import { DSH_BUCKETS, SKILL_NAMES, rewriteReferences } from './rewrite-references.mjs'
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const PLUGIN_DIR = dirname(SCRIPT_DIR)
 const REPO_ROOT = dirname(PLUGIN_DIR)
 
-const BUCKETS = ['engineering', 'productivity', 'misc', 'in-progress']
+const BUCKETS = DSH_BUCKETS
 
 const sourceRoot = resolve(process.env.SKILLS_SRC ?? join(REPO_ROOT, 'skills'))
 const outputRoot = resolve(process.env.SKILLS_OUT ?? join(PLUGIN_DIR, 'skills'))
