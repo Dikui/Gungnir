@@ -8,7 +8,7 @@
 
 本仓库中你不能直接输入 `/grilling`，它也不会在普通对话里自动触发：它是 grilling 家族中唯一由其他技能加载的 [skill](https://www.aihero.dev/ai-coding-dictionary/skill)，由你输入的 `/grill-me`、`/grill-with-docs` 等技能替你运行。见[调用规则](../invocation.md)。
 
-直接输入 `/grilling` 得到的只是朴素的访谈，别无其他。当你想比这更多时：
+需要一场朴素的访谈时输入 `/grill-me`；想要更多时，看下表。
 
 | 你有什么 | 拿什么 |
 | --- | --- |
