@@ -13,10 +13,14 @@ disable-model-invocation: true
 - 读取已有的 `GLOSSARY.md` 和 `docs/adr/` 中的相关 ADR。
 - 把 ADR 中记录的决策和理由作为证据。
 - 只给诊断结论和建议。
-- 不修改项目代码或文档。实验用的临时开关改动、步骤 7 写入的实验记录文件除外。
-- 记录开始时的 `git status` 和 `HEAD` 的 SHA，保留已有改动。
-- 实验用的临时代码和配置改动带唯一标记 `[ABLATION-<4 位随机>]`。
-- 正常或提前结束前，按本次标记查找并还原全部临时改动，确认 `HEAD` 与开始时相同，且 `git status` 除实验记录外与开始时一致。
+- 不修改项目代码或文档，以下情况除外：只在独立 worktree 中修改代码；主工作区只新增步骤 7 的实验记录。
+- 在主工作区运行 `git status --porcelain`。有未提交改动时，提醒用户：实验 worktree 基于 `HEAD` 创建，不包含这些改动；若要测的机制在这些改动中，需要先提交。
+- 有未提交改动时，询问用户是否先提交，停下等待回答。用户提交后重新检查再继续；用户选择不提交时，基于当前 `HEAD` 继续，并在实验记录中注明“未包含未提交改动”。代理不自行提交。
+- 确认起点后，记录主工作区开始时的 `git status --porcelain` 和 `HEAD` 的 SHA；没有未提交改动时直接继续。
+- 用 `git worktree add --detach <仓库外的临时目录> HEAD` 建立实验 worktree，记录其 `HEAD` 为 worktree 基准 SHA。
+- 所有实验（开关机制、安装依赖、构建、测量）都在该 worktree 中进行；所有配置在同一 worktree 中测量。
+- worktree 缺少依赖或构建产物时，在其中安装或构建；不复制、不修改主工作区的依赖目录。
+- 正常结束或提前停止时，均执行步骤 7 的记录与清理。
 - 展示或记录命令、输出或环境信息前，将秘密值替换为 `<REDACTED>`。
 - 确认有可量化指标和可重复运行的测量命令。缺少时先与用户确定；无法量化时停止，建议用户调用 `/first-principles` 或 `/adversarial-review`。
 
@@ -39,8 +43,7 @@ disable-model-invocation: true
 
 ### 1. 列机制
 列出每个机制的开关方式：配置项、功能开关或可还原的提交回滚。不能独立开关的合为一组并注明。请用户确认机制清单。
-提交回滚只在工作区应用，不生成提交，例如 `git revert --no-commit <sha>`。
-回滚改动带本次 `[ABLATION-<4 位随机>]` 标记可追踪；不得创建提交、分支或修改 `HEAD`。
+仅在实验 worktree 内用提交、`git revert` 等方式开关机制。
 完成条件：用户确认了清单；每个机制或机制组都有可执行的开关方式。
 
 ### 2. 设计实验
@@ -70,9 +73,10 @@ disable-model-invocation: true
 
 ### 7. 记录并清理
 读取同目录 [EXPERIMENT-FORMAT.md](EXPERIMENT-FORMAT.md) 并按其格式写记录。
-优先沿用仓库已有约定；没有时写入 `docs/experiments/<YYYY-MM-DD>-<name>.md`。
-按开始前的规则清理，并按产出模板报告。提前停止时仍保存已有数据，注明未完成的配置或机制。
-完成条件：记录已写入并报告路径；`HEAD` 与开始时相同，且 `git status` 除实验记录外与开始时一致。
+记录写入用户主工作区，优先沿用仓库已有约定；没有时写入 `docs/experiments/<YYYY-MM-DD>-<name>.md`。写明 worktree 基准 SHA 和是否包含未提交改动。
+正常结束或提前停止时，执行 `git worktree remove --force <目录>`，再执行 `git worktree prune`；如在实验中创建过分支，一并删除。
+按产出模板报告。提前停止时仍保存已有数据，注明未完成的配置或机制。
+完成条件：记录已写入并报告路径；实验 worktree 已删除；主工作区的 `HEAD` 未变，`git status` 除实验记录外与开始时一致。
 
 ## 产出模板
 

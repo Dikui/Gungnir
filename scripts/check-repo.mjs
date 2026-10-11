@@ -66,6 +66,17 @@ for (const s of all) {
   if (!listedInDoc) fail('docs/invocation.md', `Skill-invoked table is missing ${s.name}`)
 }
 
+// Public entry skills must be discoverable through ask-matt.
+const askMattFile = 'skills/engineering/ask-matt/SKILL.md'
+const askMatt = read(askMattFile)
+for (const s of skills.filter((s) => s.public)) {
+  if (s.name === 'ask-matt' || s.meta?.['disable-model-invocation'] !== 'true' || s.meta['user-invocable'] === 'false') continue
+  const name = s.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  if (!new RegExp(`/${name}(?![A-Za-z0-9-])`).test(askMatt)) {
+    fail(askMattFile, `${s.name}: 在 ask-matt 中登记该技能`)
+  }
+}
+
 // Plugin manifest lists exactly the public buckets.
 const plugin = JSON.parse(read('.claude-plugin/plugin.json'))
 const expected = skills.filter((s) => s.public).map((s) => `./${s.path}`).sort()
