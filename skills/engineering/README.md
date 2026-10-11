@@ -8,6 +8,7 @@
 
 - **[ablation](./ablation/SKILL.md)** - 逐个去掉机制并测量，确定收益来自哪个机制。
 - **[ask-matt](./ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
+- **[cohesion-coupling](./cohesion-coupling/SKILL.md)** - 用职责表、依赖图和共同修改记录，诊断模块的内聚与耦合问题。
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `GLOSSARY.md` 与 ADRs。
 - **[triage](./triage/SKILL.md)** - 通过 triage roles state machine 推进 issues。
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)** - 扫描 codebase 中的 deepening opportunities，生成可视化 HTML report，然后围绕你选中的候选项继续 grilling。

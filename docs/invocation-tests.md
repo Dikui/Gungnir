@@ -38,6 +38,7 @@
 | `/tdd` | 正常开始，不被加载条件拦下 |
 | `/ablation` | 正常开始，并出现在 `/` 菜单中 |
 | `/adversarial-review` | 正常开始，并出现在 `/` 菜单中 |
+| `/cohesion-coupling` | 正常开始，并出现在 `/` 菜单中 |
 | `/first-principles` | 正常开始，并出现在 `/` 菜单中 |
 | `/occams-razor` | 正常开始，并出现在 `/` 菜单中 |
 | `/grilling` | 不出现在 `/` 菜单中 |
