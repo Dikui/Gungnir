@@ -1,0 +1,16 @@
+$ git diff --name-only
+docs/engineering/grill-with-docs.md
+docs/engineering/to-tickets.md
+docs/engineering/wayfinder.md
+docs/productivity/grill-me.md
+docs/productivity/grilling.md
+skills/engineering/to-tickets/SKILL.md
+skills/engineering/wayfinder/SKILL.md
+skills/productivity/grilling/SKILL.md
+exit-code: 0
+$ git diff --numstat -- <三个 SKILL.md>
+7	0	skills/engineering/to-tickets/SKILL.md
+4	0	skills/engineering/wayfinder/SKILL.md
+12	0	skills/productivity/grilling/SKILL.md
+exit-code: 0
+三个技能新增行数（含空行）均不超过 15；原有行未删除或替换。

@@ -1,0 +1,21 @@
+$ python3 /Users/dikui/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/productivity/grilling
+Traceback (most recent call last):
+  File "/Users/dikui/.codex/skills/.system/skill-creator/scripts/quick_validate.py", line 10, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+exit-code: 1
+
+$ python3 /Users/dikui/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/engineering/to-tickets
+Traceback (most recent call last):
+  File "/Users/dikui/.codex/skills/.system/skill-creator/scripts/quick_validate.py", line 10, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+exit-code: 1
+
+$ python3 /Users/dikui/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/engineering/wayfinder
+Traceback (most recent call last):
+  File "/Users/dikui/.codex/skills/.system/skill-creator/scripts/quick_validate.py", line 10, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+exit-code: 1
+

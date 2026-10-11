@@ -1,0 +1,6 @@
+dsh-plugin 全目录文件数量：327
+文件路径与 SHA-256 全部等于开始时快照（包含被忽略的 skills 和 node_modules）。
+$ git status --short --untracked-files=all -- dsh-plugin
+exit-code: 0
+临时备份 /private/tmp/gungnir-003-8c8ksl_m 已删除：True
+本次未启动后台服务或模型进程。全部检查子进程已退出。

@@ -1,0 +1,413 @@
+{
+  "name": "@dikui/dsh-skills-zh",
+  "version": "2.0.0",
+  "description": "Gungnir 简体中文技能的 DeepSeek Harness 插件包：以 zh- 前缀暴露全部可用技能。",
+  "private": false,
+  "publishConfig": { "access": "public" },
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "files": ["index.js", "cordis.patch.yml", "LICENSE", "README.md", "skills"],
+  "engines": { "node": "^22.19.0 || >=24" },
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/Dikui/Gungnir.git", "directory": "dsh-plugin" },
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } },
+  "dependencies": { "yaml": "^2.4.2" },
+  "scripts": {
+    "build": "node scripts/copy-skills.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test": "node --test",
+    "version:check": "node scripts/verify-version-sync.mjs",
+    "prepack": "npm run version:check && npm run build && npm test && npm run verify && node scripts/package-license.mjs prepare",
+    "postpack": "node scripts/package-license.mjs clean"
+  }
+}
+/**
+ * Build the dsh-plugin skill tree: copy every skill from the source buckets
+ * into a flat `dsh-plugin/skills/` directory, prefix each frontmatter `name:`,
+ * and rewrite cross-skill references to their `zh-` prefixed form.
+ */
+
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { cpSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { DSH_BUCKETS, SKILL_NAMES, rewriteReferences } from './rewrite-references.mjs'
+
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const PLUGIN_DIR = dirname(SCRIPT_DIR)
+const REPO_ROOT = dirname(PLUGIN_DIR)
+
+const BUCKETS = DSH_BUCKETS
+
+const sourceRoot = resolve(process.env.SKILLS_SRC ?? join(REPO_ROOT, 'skills'))
+const outputRoot = resolve(process.env.SKILLS_OUT ?? join(PLUGIN_DIR, 'skills'))
+const prefix = process.env.SKILL_PREFIX ?? 'zh-'
+
+console.log(`sourceRoot: ${sourceRoot}`)
+console.log(`outputRoot: ${outputRoot}`)
+
+/**
+ * Print a guard violation and exit with a non-zero status.
+ *
+ * @param {string} message - Specific description of the violated guard.
+ */
+function fail(message) {
+  console.error(`copy-skills: ${message}`)
+  process.exit(1)
+}
+
+if (outputRoot === sourceRoot) {
+  fail(`outputRoot must differ from sourceRoot (both are ${sourceRoot})`)
+}
+if (!outputRoot.includes('/dsh-plugin/')) {
+  fail(`outputRoot must be inside a /dsh-plugin/ directory, got ${outputRoot}`)
+}
+
+/** @type {Map<string, string>} child skill name -> owning bucket */
+const owners = new Map()
+
+for (const bucket of BUCKETS) {
+  const bucketDir = join(sourceRoot, bucket)
+  if (!existsSync(bucketDir) || !statSync(bucketDir).isDirectory()) {
+    fail(`missing source bucket directory: ${bucketDir}`)
+  }
+  for (const entry of readdirSync(bucketDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue
+    const skillDir = join(bucketDir, entry.name)
+    if (!existsSync(join(skillDir, 'SKILL.md'))) {
+      fail(`skill directory has no SKILL.md: ${skillDir}`)
+    }
+    if (owners.has(entry.name)) {
+      fail(`duplicate skill name '${entry.name}' in buckets '${owners.get(entry.name)}' and '${bucket}'`)
+    }
+    owners.set(entry.name, bucket)
+  }
+}
+
+rmSync(outputRoot, { recursive: true, force: true })
+mkdirSync(outputRoot, { recursive: true })
+
+/** @type {string[]} */
+const copied = []
+for (const [name, bucket] of owners) {
+  cpSync(join(sourceRoot, bucket, name), join(outputRoot, name), { recursive: true })
+  copied.push(name)
+}
+
+/**
+ * Prefix the `name:` value inside the leading frontmatter block.
+ *
+ * @param {string} text - Markdown file contents.
+ * @returns {string} Contents with the frontmatter name prefixed.
+ */
+function prefixFrontmatterName(text) {
+  const match = text.match(/^(---\r?\n)([\s\S]*?)(\r?\n---)/)
+  if (!match) return text
+  const frontmatter = match[2].replace(
+    /^(name:[ \t]*)(.*)$/m,
+    (_full, key, value) => `${key}${prefix}${value}`
+  )
+  if (frontmatter === match[2]) return text
+  return match[1] + frontmatter + match[3] + text.slice(match[0].length)
+}
+
+/**
+ * Yield every regular file under a directory, recursively.
+ *
+ * @param {string} dir - Directory to walk.
+ * @returns {Generator<string>} Absolute file paths.
+ */
+function* walkFiles(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name)
+    if (entry.isDirectory()) yield* walkFiles(full)
+    else if (entry.isFile()) yield full
+  }
+}
+
+for (const file of walkFiles(outputRoot)) {
+  if (!file.endsWith('.md')) continue
+  const original = readFileSync(file, 'utf8')
+  let text = original
+  if (file.endsWith('SKILL.md')) text = prefixFrontmatterName(text)
+  const rewritten = rewriteReferences(text, SKILL_NAMES, prefix)
+  if (rewritten !== original) writeFileSync(file, rewritten)
+}
+
+console.log(`copied ${copied.length} skills to ${outputRoot}`)
+// Include the canonical repository license in the npm package without keeping
+// a second source copy. npm invokes this helper from prepack and postpack.
+import { constants, copyFileSync, existsSync, readFileSync, unlinkSync } from 'node:fs'
+
+const source = new URL('../../LICENSE', import.meta.url)
+const target = new URL('../LICENSE', import.meta.url)
+const action = process.argv[2]
+
+if (action === 'prepare') {
+  if (existsSync(target)) {
+    if (!readFileSync(target).equals(readFileSync(source))) {
+      throw new Error('Refusing to overwrite a package license that differs from the repository license')
+    }
+  } else {
+    copyFileSync(source, target, constants.COPYFILE_EXCL)
+  }
+} else if (action === 'clean') {
+  if (existsSync(target)) {
+    if (!readFileSync(target).equals(readFileSync(source))) {
+      throw new Error('Refusing to remove a package license that differs from the repository license')
+    }
+    unlinkSync(target)
+  }
+} else {
+  throw new Error('Expected prepare or clean')
+}
+/**
+ * Path-safe rewriter for skill invocations such as `/tdd`.
+ *
+ * Only references whose surrounding characters show they are skill invocations
+ * (not filesystem paths or URLs) are rewritten to the `zh-` prefixed form.
+ */
+
+import { listSkills } from '../../scripts/skills.mjs'
+
+const DEFAULT_PREFIX = 'zh-'
+
+/** Buckets copied into the dsh plugin. */
+export const DSH_BUCKETS = ['engineering', 'productivity', 'misc', 'in-progress']
+
+/** Characters that, immediately before a `/`, mean the slash is part of a path. */
+const BEFORE_BLOCKED = 'A-Za-z0-9_/.-'
+
+/** Characters that, immediately after a skill name, mean the match is a path segment. */
+const AFTER_BLOCKED = 'A-Za-z0-9_/-'
+
+/** Localized skill names: every bucket dsh ships, i.e. all but `deprecated/`. */
+export const SKILL_NAMES = listSkills(DSH_BUCKETS).map((skill) => skill.name)
+
+/**
+ * Escape a skill name for use inside a regular expression.
+ *
+ * @param {string} name - Skill name to escape.
+ * @returns {string} Escaped name.
+ */
+function escapeName(name) {
+  return name.replace(/-/g, '\\-')
+}
+
+/**
+ * Build a global regular expression matching `/<name>` with the boundary rule.
+ *
+ * Candidate names are alternated longest-first so a shorter name is not matched
+ * inside a longer one's occurrence.
+ *
+ * @param {readonly string[]} names - Skill names to match.
+ * @returns {RegExp} Global regular expression.
+ */
+function buildPattern(names) {
+  const alternatives = [...names]
+    .sort((a, b) => b.length - a.length)
+    .map(escapeName)
+    .join('|')
+  return new RegExp(
+    `(?<![${BEFORE_BLOCKED}])/(?:${alternatives})(?![${AFTER_BLOCKED}])`,
+    'g'
+  )
+}
+
+/**
+ * Rewrite known skill references to the prefixed form.
+ *
+ * @param {string} text - Text to rewrite.
+ * @param {readonly string[]} [names] - Skill names; defaults to all known names.
+ * @param {string} [prefix] - Prefix to insert; defaults to `zh-`.
+ * @returns {string} Rewritten text.
+ */
+export function rewriteReferences(text, names = SKILL_NAMES, prefix = DEFAULT_PREFIX) {
+  return text.replace(buildPattern(names), (match) => `/${prefix}${match.slice(1)}`)
+}
+
+/**
+ * List known-skill references that are still unprefixed.
+ *
+ * Uses the same boundary rule as {@link rewriteReferences} and excludes
+ * occurrences already carrying the prefix.
+ *
+ * @param {string} text - Text to inspect.
+ * @param {readonly string[]} [names] - Skill names; defaults to all known names.
+ * @returns {string[]} Unprefixed reference occurrences, including the leading slash.
+ */
+export function findUnrewrittenReferences(text, names = SKILL_NAMES) {
+  const found = []
+  for (const match of text.matchAll(buildPattern(names))) {
+    const nameEnd = match.index + match[0].length
+    if (!text.startsWith(DEFAULT_PREFIX, nameEnd)) found.push(match[0])
+  }
+  return found
+}
+import { readFileSync } from 'node:fs'
+
+const packageUrl = new URL('../package.json', import.meta.url)
+const pluginUrl = new URL('../../.claude-plugin/plugin.json', import.meta.url)
+
+/**
+ * Read and parse a JSON file, reporting failures as a bare message.
+ *
+ * @param {URL} url - File to read.
+ * @returns {{ version?: string }} Parsed JSON object.
+ */
+function readJson(url) {
+  try {
+    return JSON.parse(readFileSync(url, 'utf8'))
+  } catch (error) {
+    console.error(`cannot read ${url.pathname}: ${error.message}`)
+    process.exit(1)
+  }
+}
+
+const packageJson = readJson(packageUrl)
+const pluginJson = readJson(pluginUrl)
+
+if (packageJson.version !== pluginJson.version) {
+  console.error(`version mismatch: ${packageJson.version} != ${pluginJson.version}`)
+  process.exitCode = 1
+} else {
+  console.log('ok')
+}
+/**
+ * Verify the generated dsh-plugin skill tree: presence, count, frontmatter
+ * prefix and description, no unprefixed references, no retired directories,
+ * and a resolvable bundle patch path declared by package.json.
+ */
+
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { basename, dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { SKILL_NAMES, findUnrewrittenReferences } from './rewrite-references.mjs'
+
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const PLUGIN_DIR = dirname(SCRIPT_DIR)
+
+const EXPECTED_SKILLS = SKILL_NAMES.length
+const FORBIDDEN_DIRS = ['deprecated', 'translate-skill']
+
+/**
+ * Print a failure message and exit with a non-zero status.
+ *
+ * @param {string} message - Specific description of the failed check.
+ */
+function fail(message) {
+  console.error(`verify: ${message}`)
+  process.exit(1)
+}
+
+const skillsDir = join(PLUGIN_DIR, 'skills')
+if (!existsSync(skillsDir) || !statSync(skillsDir).isDirectory()) {
+  fail(`missing skills directory: ${skillsDir}`)
+}
+
+const skillDirs = readdirSync(skillsDir, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+
+const skillFiles = skillDirs
+  .map((name) => join(skillsDir, name, 'SKILL.md'))
+  .filter((file) => existsSync(file))
+
+if (skillFiles.length !== EXPECTED_SKILLS) {
+  fail(`expected ${EXPECTED_SKILLS} skills/*/SKILL.md files, found ${skillFiles.length}`)
+}
+
+/**
+ * Extract the leading frontmatter block of a Markdown document.
+ *
+ * @param {string} text - Markdown file contents.
+ * @returns {string | undefined} Frontmatter body, or undefined when absent.
+ */
+function frontmatterOf(text) {
+  const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+  return match?.[1]
+}
+
+for (const file of skillFiles) {
+  const frontmatter = frontmatterOf(readFileSync(file, 'utf8'))
+  if (frontmatter === undefined) {
+    fail(`missing leading frontmatter: ${file}`)
+  }
+  const nameMatch = frontmatter.match(/^name:[ \t]*(.*)$/m)
+  if (!nameMatch || !nameMatch[1].startsWith('zh-')) {
+    fail(`frontmatter name is missing the 'zh-' prefix: ${file}`)
+  }
+  const descriptionMatch = frontmatter.match(/^description:[ \t]*(.*)$/m)
+  if (!descriptionMatch || descriptionMatch[1].trim() === '') {
+    fail(`frontmatter description is empty: ${file}`)
+  }
+}
+
+/**
+ * Yield every path under a directory, recursively, paired with its type.
+ *
+ * @param {string} dir - Directory to walk.
+ * @returns {Generator<{ path: string, isDirectory: boolean }>} Entries.
+ */
+function* walk(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name)
+    yield { path: full, isDirectory: entry.isDirectory() }
+    if (entry.isDirectory()) yield* walk(full)
+  }
+}
+
+for (const entry of walk(skillsDir)) {
+  if (entry.isDirectory && FORBIDDEN_DIRS.includes(basename(entry.path))) {
+    fail(`forbidden directory present: ${entry.path}`)
+  }
+  if (!entry.isDirectory && entry.path.endsWith('.md')) {
+    const found = findUnrewrittenReferences(readFileSync(entry.path, 'utf8'), SKILL_NAMES)
+    if (found.length > 0) {
+      fail(`unrewritten skill reference(s) in ${entry.path}: ${[...new Set(found)].join(', ')}`)
+    }
+  }
+}
+
+const packageJsonPath = join(PLUGIN_DIR, 'package.json')
+if (!existsSync(packageJsonPath)) {
+  fail(`missing package.json: ${packageJsonPath}`)
+}
+const patchPath = JSON.parse(readFileSync(packageJsonPath, 'utf8'))?.dsh?.bundle?.patch
+if (typeof patchPath !== 'string' || patchPath === '') {
+  fail(`package.json declares no dsh.bundle.patch: ${packageJsonPath}`)
+}
+const resolvedPatch = resolve(PLUGIN_DIR, patchPath)
+if (!existsSync(resolvedPatch)) {
+  fail(`declared dsh.bundle.patch does not exist: ${resolvedPatch} (from ${packageJsonPath})`)
+}
+
+console.log(`ok: ${skillFiles.length} skills verified, bundle patch ${patchPath}`)
+AGENTS.md
+docs/tasks/003-progress:
+total 96
+drwxr-xr-x@ 4 dikui  staff    128 Oct 12 00:19 .
+drwxr-xr-x@ 8 dikui  staff    256 Oct 12 00:19 ..
+-rw-r--r--@ 1 dikui  staff  45338 Oct 12 00:19 codex.log
+drwxr-xr-x@ 2 dikui  staff     64 Oct 12 00:19 evidence
+
+dsh-plugin:
+total 56
+drwxr-xr-x  12 dikui  staff   384 Oct 11 23:20 .
+drwxr-xr-x  18 dikui  staff   576 Oct 11 20:18 ..
+-rw-r--r--   1 dikui  staff    28 Oct  7 14:20 .gitignore
+-rw-r--r--@  1 dikui  staff  1786 Oct 11 19:43 README.md
+-rw-r--r--@  1 dikui  staff    67 Oct 11 19:43 cordis.patch.yml
+-rw-r--r--@  1 dikui  staff  4359 Oct 11 19:43 index.js
+drwxr-xr-x@  5 dikui  staff   160 Oct  7 15:09 node_modules
+-rw-r--r--@  1 dikui  staff   803 Oct 11 19:43 package-lock.json
+-rw-r--r--@  1 dikui  staff  1104 Oct 11 19:51 package.json
+drwxr-xr-x   7 dikui  staff   224 Oct 11 19:51 scripts
+drwxr-xr-x@ 31 dikui  staff   992 Oct 11 19:54 skills
+drwxr-xr-x   4 dikui  staff   128 Oct  7 15:29 tests
