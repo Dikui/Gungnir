@@ -1,0 +1,53 @@
+import {createRequire} from 'node:module';
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {execFileSync} from 'node:child_process';
+const require=createRequire('/tmp/002-mockup-browser-p2y6o9px/driver.cjs');
+const {chromium}=require('playwright-core');
+const out=path.resolve('docs/tasks/002-mockup-browser/evidence');
+const sample=path.resolve('docs/tasks/001-mockup/evidence/sample');
+const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
+const processes=execFileSync('ps',['-axo','pid,ppid,command'],{encoding:'utf8'}).split('\n');
+const main=processes.find(row=>row.includes('Google Chrome --disable-field-trial-config') && row.includes('--headless'));
+fs.writeFileSync(path.join(out,'processes-during.txt'),processes.filter(row=>row.includes('playwright_chromiumdev_profile-') || (main && row.trim().split(/\s+/)[1]===main.trim().split(/\s+/)[0])).join('\n')+'\n');
+const context=await browser.newContext({viewport:{width:1280,height:800},colorScheme:'light',reducedMotion:'reduce'});
+const page=await context.newPage(); const events=[],results=[]; let phase='setup';
+page.on('console',m=>events.push({phase,type:m.type(),text:m.text()}));
+page.on('pageerror',e=>events.push({phase,type:'pageerror',text:e.stack}));
+page.on('requestfailed',r=>events.push({phase,type:'requestfailed',url:r.url(),error:r.failure()}));
+const goto=async(file,query='')=>{phase=file+query;await page.goto(pathToFileURL(path.join(sample,file)).href+query);await page.evaluate(()=>document.fonts.ready);};
+const snap=async(id,description,extra={})=>{await page.screenshot({path:path.join(out,id+'.png')});results.push({id,description,url:page.url(),console:events.filter(e=>e.phase===phase),...extra});};
+const overlap=async()=>page.evaluate(()=>{
+  const rect=e=>{let r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom};};
+  const b=document.querySelector('.switcher'),r=b.getBoundingClientRect();
+  const candidates=[...document.querySelectorAll('td,.hint,input,textarea,button')].filter(e=>e.getClientRects().length && !e.closest('.switcher'));
+  return {bar:rect(b),covered:candidates.filter(e=>{const s=e.getBoundingClientRect();return s.left<r.right&&s.right>r.left&&s.top<r.bottom&&s.bottom>r.top;}).map(e=>{const s=e.getBoundingClientRect(),x=(s.left+s.right)/2,y=(s.top+s.bottom)/2;return {tag:e.tagName,text:e.textContent.trim().slice(0,80),value:e.value,rect:rect(e),centerHit:document.elementFromPoint(x,y)?.outerHTML.slice(0,220)};})};
+});
+try {
+  await goto('list.html'); await page.locator('[aria-label="筛选条件"] select').selectOption({label:'进行中'});
+  await snap('32-filter-selected-confirmed','Playwright 原生 selectOption 选中进行中',{selected:await page.locator('[aria-label="筛选条件"] select').inputValue()});
+  const alignment=await page.evaluate(()=>Object.fromEntries(['[aria-label="筛选条件"] select','[aria-label="筛选条件"] input','[data-toggle="#actions"]'].map(s=>{const r=document.querySelector(s).getBoundingClientRect();return [s,{y:r.y,bottom:r.bottom,height:r.height}];})));
+  await page.getByRole('button',{name:'更多操作',exact:true}).click();
+  await snap('33-menu-overlap-confirmed','菜单打开导致第 5 行被底栏遮挡',{overlap:await overlap(),alignment});
+  await goto('settings.html','?frame=mobile');
+  await snap('34-settings-A-overlap-confirmed','手机 A 底栏遮挡辅助说明和保存按钮',{overlap:await overlap()});
+  await goto('settings.html','?frame=mobile&variant=B');
+  await snap('35-settings-B-overlap-confirmed','手机 B 底栏遮挡名称输入框',{overlap:await overlap()});
+  await goto('settings.html','?variant=A');
+  const widthBefore=await page.locator('[data-panel]:visible [data-toggle="#saved"]').evaluate(e=>e.getBoundingClientRect().width);
+  await page.getByRole('tab',{name:'通知',exact:true}).click();
+  const widthAfter=await page.locator('[data-panel]:visible [data-toggle="#saved"]').evaluate(e=>e.getBoundingClientRect().width);
+  await snap('36-tab-button-width','A 方案通知面板保存按钮撑满卡片',{widthBefore,widthAfter});
+  await goto('list.html');
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('.table-wrap').evaluate(e=>{e.scrollLeft=e.scrollWidth;});
+  await snap('37-mobile-list-overlap-confirmed','真实窄视口表格操作列被底栏部分遮挡',{overlap:await overlap()});
+  await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+  await snap('38-mobile-list-scrolled','向下滚动后底部预留区域使最后一行可见',{overlap:await overlap(),scrollY:await page.evaluate(()=>scrollY)});
+} finally {
+  fs.writeFileSync(path.join(out,'supplemental-results.json'),JSON.stringify({results,events},null,2)+'\n');
+  fs.writeFileSync(path.join(out,'supplemental-console.txt'),results.map(r=>`[${r.id}] ${r.url}\n`+(r.console.length?JSON.stringify(r.console):'控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无')).join('\n\n')+'\n');
+  await context.close(); await browser.close();
+  console.log(JSON.stringify({screenshots:results.length,consoleEvents:events.length,results},null,2));
+}

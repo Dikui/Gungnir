@@ -1,0 +1,310 @@
+[
+  {
+    "id": "01-list-default",
+    "path": "evidence/01-list-default.png",
+    "description": "列表默认状态",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "02-list-empty",
+    "path": "evidence/02-list-empty.png",
+    "description": "empty 状态",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=empty",
+    "console": []
+  },
+  {
+    "id": "03-list-loading",
+    "path": "evidence/03-list-loading.png",
+    "description": "loading 状态",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=loading",
+    "console": []
+  },
+  {
+    "id": "04-list-error",
+    "path": "evidence/04-list-error.png",
+    "description": "error 状态",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=error",
+    "console": []
+  },
+  {
+    "id": "05-state-arrow-refresh",
+    "path": "evidence/05-state-arrow-refresh.png",
+    "description": "切换箭头及刷新后 loading 状态",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=loading",
+    "console": []
+  },
+  {
+    "id": "06-modal-open",
+    "path": "evidence/06-modal-open.png",
+    "description": "新建弹窗打开",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "07-modal-tab-trap",
+    "path": "evidence/07-modal-tab-trap.png",
+    "description": "Tab 循环后的弹窗焦点",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "08-modal-close",
+    "path": "evidence/08-modal-close.png",
+    "description": "关闭按钮后焦点回到新建",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "09-modal-escape",
+    "path": "evidence/09-modal-escape.png",
+    "description": "Esc 后焦点回到新建",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "10-filter-select-open",
+    "path": "evidence/10-filter-select-open.png",
+    "description": "原生筛选下拉打开",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "11-filter-select-chosen",
+    "path": "evidence/11-filter-select-chosen.png",
+    "description": "原生筛选已选择进行中",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "12-menu-open",
+    "path": "evidence/12-menu-open.png",
+    "description": "操作菜单打开",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "13-menu-closed",
+    "path": "evidence/13-menu-closed.png",
+    "description": "操作菜单关闭",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "14-drawer-open",
+    "path": "evidence/14-drawer-open.png",
+    "description": "详情抽屉打开",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "15-drawer-closed",
+    "path": "evidence/15-drawer-closed.png",
+    "description": "详情抽屉关闭",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "16-created-toast",
+    "path": "evidence/16-created-toast.png",
+    "description": "创建演示提示打开",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "17-created-toast-closed",
+    "path": "evidence/17-created-toast-closed.png",
+    "description": "创建提示关闭",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "18-retry-toast",
+    "path": "evidence/18-retry-toast.png",
+    "description": "重试演示提示",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=error",
+    "console": []
+  },
+  {
+    "id": "19-retry-toast-closed",
+    "path": "evidence/19-retry-toast-closed.png",
+    "description": "重试提示关闭",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=error",
+    "console": []
+  },
+  {
+    "id": "20-settings-A",
+    "path": "evidence/20-settings-A.png",
+    "description": "设置默认 A",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html",
+    "console": []
+  },
+  {
+    "id": "21-settings-B",
+    "path": "evidence/21-settings-B.png",
+    "description": "切换到 B",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B",
+    "console": []
+  },
+  {
+    "id": "22-variant-keyboard",
+    "path": "evidence/22-variant-keyboard.png",
+    "description": "键盘左右键切换 B",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B",
+    "console": []
+  },
+  {
+    "id": "23-variant-input",
+    "path": "evidence/23-variant-input.png",
+    "description": "输入框内左右键后保持 B",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B",
+    "console": []
+  },
+  {
+    "id": "24-tabs-A",
+    "path": "evidence/24-tabs-A.png",
+    "description": "A 第二标签面板",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=A",
+    "console": []
+  },
+  {
+    "id": "25-tabs-B",
+    "path": "evidence/25-tabs-B.png",
+    "description": "B 第二标签面板",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B",
+    "console": []
+  },
+  {
+    "id": "26-settings-toast",
+    "path": "evidence/26-settings-toast.png",
+    "description": "设置保存演示提示",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B",
+    "console": []
+  },
+  {
+    "id": "27-list-frame-mobile",
+    "path": "evidence/27-list-frame-mobile.png",
+    "description": "list.html 手机效果（首屏）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile",
+    "console": []
+  },
+  {
+    "id": "27-list-frame-mobile-full",
+    "path": "evidence/27-list-frame-mobile-full.png",
+    "description": "list.html 手机效果（整页）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile",
+    "console": []
+  },
+  {
+    "id": "27-list-frame-mobile-table-right",
+    "path": "evidence/27-list-frame-mobile-table-right.png",
+    "description": "表格滚到右侧操作列（整页）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile",
+    "console": []
+  },
+  {
+    "id": "28-settings-frame-mobile",
+    "path": "evidence/28-settings-frame-mobile.png",
+    "description": "settings.html 手机效果（首屏）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile",
+    "console": []
+  },
+  {
+    "id": "28-settings-frame-mobile-full",
+    "path": "evidence/28-settings-frame-mobile-full.png",
+    "description": "settings.html 手机效果（整页）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile",
+    "console": []
+  },
+  {
+    "id": "29-list-390",
+    "path": "evidence/29-list-390.png",
+    "description": "list.html 手机效果（首屏）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "29-list-390-full",
+    "path": "evidence/29-list-390-full.png",
+    "description": "list.html 手机效果（整页）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "29-list-390-table-right",
+    "path": "evidence/29-list-390-table-right.png",
+    "description": "表格滚到右侧操作列（整页）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "30-settings-B-frame-mobile",
+    "path": "evidence/30-settings-B-frame-mobile.png",
+    "description": "settings.html 手机效果（首屏）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B",
+    "console": []
+  },
+  {
+    "id": "30-settings-B-frame-mobile-full",
+    "path": "evidence/30-settings-B-frame-mobile-full.png",
+    "description": "settings.html 手机效果（整页）",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B",
+    "console": []
+  },
+  {
+    "id": "31-static-css-only",
+    "path": "evidence/31-static-css-only.png",
+    "description": "只引入 CSS 的骨架页面",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/002-mockup-browser/evidence/static-page.html",
+    "console": []
+  },
+  {
+    "id": "32-filter-selected-confirmed",
+    "path": "evidence/32-filter-selected-confirmed.png",
+    "description": "Playwright 原生 selectOption 选中进行中",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "33-menu-overlap-confirmed",
+    "path": "evidence/33-menu-overlap-confirmed.png",
+    "description": "菜单打开导致第 5 行被底栏遮挡",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "34-settings-A-overlap-confirmed",
+    "path": "evidence/34-settings-A-overlap-confirmed.png",
+    "description": "手机 A 底栏遮挡辅助说明和保存按钮",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile",
+    "console": []
+  },
+  {
+    "id": "35-settings-B-overlap-confirmed",
+    "path": "evidence/35-settings-B-overlap-confirmed.png",
+    "description": "手机 B 底栏遮挡名称输入框",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B",
+    "console": []
+  },
+  {
+    "id": "36-tab-button-width",
+    "path": "evidence/36-tab-button-width.png",
+    "description": "A 方案通知面板保存按钮撑满卡片",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=A",
+    "console": []
+  },
+  {
+    "id": "37-mobile-list-overlap-confirmed",
+    "path": "evidence/37-mobile-list-overlap-confirmed.png",
+    "description": "真实窄视口表格操作列被底栏部分遮挡",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  },
+  {
+    "id": "38-mobile-list-scrolled",
+    "path": "evidence/38-mobile-list-scrolled.png",
+    "description": "向下滚动后底部预留区域使最后一行可见",
+    "url": "file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html",
+    "console": []
+  }
+]

@@ -1,0 +1,150 @@
+[r2-01-list-default] list.html
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-02-list-empty] list.html?state=empty
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=empty
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-03-list-loading] list.html?state=loading
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=loading
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-04-list-error] list.html?state=error
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=error
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-05-state-arrow-refresh] state-arrows
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=loading
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-06-modal-open] modal
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-07-modal-tab-trap] modal
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-08-modal-close] modal
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-09-modal-escape] modal
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-10-filter-select-open] native-select
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-11-filter-select-chosen] native-select
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-12-menu-open] menu
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-13-menu-closed] menu
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-14-drawer-open] drawer
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-15-drawer-closed] drawer
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-16-created-toast] created-toast
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-17-created-toast-closed] created-toast
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-18-retry-toast] retry-toast
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=error
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-19-retry-toast-closed] retry-toast
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?state=error
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-20-settings-A] settings.html
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-21-settings-B] variant-switch
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-22-variant-keyboard] variant-switch
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-23-variant-input] variant-switch
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-24-tabs-A] tabs-A
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=A
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-25-tabs-B] tabs-B
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-26-settings-toast] settings-toast
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-27-list-frame-mobile] list.html?frame=mobile
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-27-list-frame-mobile-full] list.html?frame=mobile
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-27-list-frame-mobile-table-right] list.html?frame=mobile
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-28-settings-frame-mobile] settings.html?frame=mobile
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-28-settings-frame-mobile-full] settings.html?frame=mobile
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-29-list-390] list.html
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-29-list-390-full] list.html
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-29-list-390-table-right] list.html
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-30-settings-B-frame-mobile] settings.html?frame=mobile&variant=B
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-30-settings-B-frame-mobile-full] settings.html?frame=mobile&variant=B
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-31-static-css-only] css-only
+URL: file:///Users/dikui/Project/Gungnir/docs/tasks/002-mockup-browser/evidence/r2-static/page.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+完整事件流：
+[]

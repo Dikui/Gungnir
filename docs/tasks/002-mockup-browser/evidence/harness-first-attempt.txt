@@ -1,0 +1,11 @@
+locator.evaluateAll: ReferenceError: attr is not defined
+    at eval (eval at evaluate (:370:30), <anonymous>:1:74)
+    at Array.map (<anonymous>)
+    at eval (eval at evaluate (:370:30), <anonymous>:1:53)
+    at UtilityScript.evaluate (<anonymous>:372:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at visibleGroups (/Users/dikui/Project/Gungnir/docs/tasks/002-mockup-browser/evidence/browser-check.mjs:21:68)
+    at /Users/dikui/Project/Gungnir/docs/tasks/002-mockup-browser/evidence/browser-check.mjs:39:49 {
+  log: []
+}
+{"checks":1,"failed":1,"screenshots":0,"consoleEvents":0}

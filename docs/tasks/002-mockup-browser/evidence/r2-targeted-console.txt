@@ -1,0 +1,100 @@
+[r2-32-filter-selected] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-33-alignment-default] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-34-alignment-menu] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-35-desktop-menu-initial] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-35-desktop-menu-bottom] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-35-desktop-menu-folded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-36-list-frame-left-initial] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-36-list-frame-left-bottom] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-36-list-frame-left-folded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile&bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-37-list-frame-right-initial] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-37-list-frame-right-bottom] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-37-list-frame-right-folded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile&bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-38-settings-A-frame-initial] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-38-settings-A-frame-bottom] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-38-settings-A-frame-folded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-39-settings-B-frame-initial] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-39-settings-B-frame-bottom] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-39-settings-B-frame-folded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B&bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-40-list-390-left-initial] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-40-list-390-left-bottom] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-40-list-390-left-folded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-41-list-390-right-initial] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-41-list-390-right-bottom] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-41-list-390-right-folded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-42-bar0-refresh] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile&state=error&bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-42-bar-expanded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html?frame=mobile&state=error
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-43-bar0-refresh] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B&bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-43-bar-expanded] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=B
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-44-folded-keyboard-refresh] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html?frame=mobile&variant=A&bar=0
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-45-save-basic] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-46-save-notification] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/settings.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-47-btn-block-fixture] file:///Users/dikui/Project/Gungnir/docs/tasks/002-mockup-browser/evidence/r2-button-fixture.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+
+[r2-48-resize-back-desktop] file:///Users/dikui/Project/Gungnir/docs/tasks/001-mockup/evidence/sample/list.html
+控制台 error/warning/pageerror/requestfailed：无；其他 console 消息：无
+完整事件流：
+[]
