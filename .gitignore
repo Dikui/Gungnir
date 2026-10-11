@@ -1,6 +1,4 @@
 .chatgpt_exec/
 .agents/
 .claude/
-canvas/node_modules/
-canvas/dist/
 dist/

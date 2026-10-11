@@ -16,7 +16,6 @@
 | 一个 repo，以及一个你可以在一次 session 内敲定的变更 | `grill-with-docs` |
 | 一项大到一次 session 装不下的 effort——一个 greenfield 构建、一个大型 feature | [wayfinder](https://aihero.dev/skills-wayfinder) |
 | 一个完全没有 domain docs 的 repo，也没有任何特定 feature 在脑中 | `grill-with-docs`，瞄准 repo 本身而不是某次变更 |
-| 一个被卡在别人脑内知识上的决策 | [to-questionnaire](https://aihero.dev/skills-to-questionnaire) |
 
 与 wayfinder 的分界归结为 session 数量：`/grill-with-docs` 用于 single-session 规划，`/wayfinder` 用于 multi-session 规划。
 

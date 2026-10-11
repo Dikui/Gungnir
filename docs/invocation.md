@@ -13,9 +13,9 @@ Gungnir 的技能分两层：**入口技能**由用户调用，**基础技能**�
 
 | 技能 | 由哪些技能调用 | 用户能否直接调用 |
 | --- | --- | --- |
-| `grilling` | grill-me、grill-with-docs、triage、wayfinder、improve-codebase-architecture、loop-me | 否，从 `/grill-me` 或 `/grill-with-docs` 进入 |
+| `grilling` | grill-me、grill-with-docs、triage、wayfinder、improve-codebase-architecture | 否，从 `/grill-me` 或 `/grill-with-docs` 进入 |
 | `domain-modeling` | grill-with-docs、triage、wayfinder、improve-codebase-architecture | 能 |
-| `codebase-design` | improve-codebase-architecture、tdd、setup-ts-deep-modules | 能 |
+| `codebase-design` | improve-codebase-architecture、tdd | 能 |
 | `writing-for-agents` | retro | 能 |
 | `tdd` | implement、implement-spec | 能 |
 | `code-review` | implement、implement-spec、tdd | 能 |

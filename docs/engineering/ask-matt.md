@@ -50,7 +50,7 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 **难道没有一张按正确顺序排列的 skills 列表吗？**
 
-人们一直在 README 里要这么一张列表。这个 skill 就是那张列表——它存在的意义就在于此。一张静态表格会写出 `wayfinder → to-spec → to-tickets → implement → code-review → retro`，而对大多数处境来说它都是错的，因为有趣的部分是那些分支——有没有 codebase，build 是否跨越多场 session，这个疑问能否靠交谈来敲定。诚实的代价是 router 靠手维护，会滞后于仓库。`/grilling` 和 `/resolving-merge-conflicts` 都在 router 点名它们之前很久就已发布。
+人们一直在 README 里要这么一张列表。这个 skill 就是那张列表——它存在的意义就在于此。一张静态表格会写出 `wayfinder → to-spec → to-tickets → implement → code-review → retro`，而对大多数处境来说它都是错的，因为有趣的部分是那些分支——有没有 codebase，build 是否跨越多场 session，这个疑问能否靠交谈来敲定。诚实的代价是 router 靠手维护，会滞后于仓库。`/grilling` 在 router 点名它之前很久就已发布。
 
 **它告诉我一半的 skills 没安装。**
 

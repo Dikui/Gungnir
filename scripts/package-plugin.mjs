@@ -15,27 +15,18 @@ for (const path of original.skills) {
   if (!/^\.\/skills\/(engineering|productivity|misc)\/[^/]+$/.test(path)) throw new Error('非法公开 skill 路径：' + path)
   await cp(join(root, path), join(plugin, 'skills', path.split('/').at(-1)), { recursive: true })
 }
-await mkdir(join(plugin, 'canvas'), { recursive: true })
-await cp(join(root, 'canvas/dist'), join(plugin, 'canvas/dist'), { recursive: true })
-await cp(join(root, 'canvas/launch.mjs'), join(plugin, 'canvas/launch.mjs'))
-await cp(join(root, '.mcp.json'), join(plugin, '.mcp.json'))
 await cp(join(root, 'LICENSE'), join(plugin, 'LICENSE'))
 const json = async (path, data) => { await mkdir(dirname(path), { recursive: true }); await writeFile(path, JSON.stringify(data, null, 2) + '\n') }
-await json(join(plugin, '.claude-plugin/plugin.json'), { ...original, skills: ['./skills/'], mcpServers: './.mcp.json' })
+await json(join(plugin, '.claude-plugin/plugin.json'), { ...original, skills: ['./skills/'] })
 await json(join(plugin, '.codex-plugin/plugin.json'), {
-  ...original, skills: './skills/', mcpServers: './.mcp.json',
-  interface: { displayName: 'Gungnir', shortDescription: '工程技能与项目画布共创', longDescription: '简体中文工程技能，以及自动启动、按项目读写 Markdown 的 Canvas MCP。', developerName: 'vinvcn', category: 'Developer Tools', capabilities: ['Read', 'Write', 'Interactive'], defaultPrompt: ['使用 $canvas 打开当前项目的结构图。'] },
+  ...original, skills: './skills/',
+  interface: { displayName: 'Gungnir', shortDescription: '面向项目开发的简体中文工程技能', longDescription: '简体中文工程技能，覆盖需求梳理、任务规划、TDD、代码审查和领域建模。', developerName: 'vinvcn', category: 'Developer Tools', capabilities: ['Read', 'Write'], defaultPrompt: ['使用 $ask-matt 为当前项目选择合适的工程技能。'] },
 })
-// Codex resolves bundled stdio paths in the portable MCP format.
 const codex = JSON.parse(await readFile(join(plugin, '.codex-plugin/plugin.json'), 'utf8'))
 await json(join(plugin, 'plugin.json'), {
   $schema: 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json',
   name: original.name, version: original.version, description: original.description,
   extensions: { 'com.openai': { interface: codex.interface } },
-})
-await json(join(plugin, 'mcp.json'), {
-  $schema: 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json',
-  mcpServers: { canvas: { type: 'stdio', command: 'node', args: ['${PLUGIN_ROOT}/canvas/launch.mjs'], cwd: './' } },
 })
 await json(join(output, '.agents/plugins/marketplace.json'), {
   name: 'gungnir-local', interface: { displayName: 'Gungnir' },
@@ -43,7 +34,7 @@ await json(join(output, '.agents/plugins/marketplace.json'), {
 })
 await json(join(output, '.claude-plugin/marketplace.json'), {
   name: 'gungnir-local', owner: { name: 'vinvcn' },
-  description: 'Gungnir 本地插件市场，提供简体中文工程技能与项目画布 Canvas MCP。',
+  description: 'Gungnir 本地插件市场，提供简体中文工程技能。',
   plugins: [{ name: original.name, source: './plugins/' + original.name }],
 })
 console.log('Plugin package: ' + plugin)

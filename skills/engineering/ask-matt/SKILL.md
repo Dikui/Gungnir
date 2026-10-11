@@ -68,10 +68,7 @@ disable-model-invocation: true
 - `/grilling`：基础访谈方式。逐轮提问，代理查事实，用户作决策。需要纯访谈而不附加其他流程时直接使用。
 - `/prototype`：验证逻辑、状态或外观问题。临时代码不等于必须删除；原型作为原始依据保留在 main 之外的 `prototype/<name>` 分支，并由实现 issue 引用。
 - `/research`：后台代理调研一手来源，将结论和引用写入仓库 Markdown。用户可同时继续工作，再把结果带回 `/grill-with-docs` 讨论。
-- `/to-questionnaire`：答案掌握在他人手中时，先向用户确认收件人和所需信息，再生成问卷。回答可供 `/grill-with-docs` 或 `/to-spec` 使用。
-- `/wizard`：为只有用户能完成的配置、凭证设置或迁移生成交互式 Bash 向导，打开网址、收集值并写入 `.env` 或 GitHub secrets。代理能自行完成时不使用它。
 - `/wait-what`：用户没听懂时，让代理补充背景，用直白英文和 `GLOSSARY.md` 的术语重述上一条消息。提前用访谈统一术语，可以减少这类误解。
-- `/teach`：以当前目录保存学习状态，跨会话教授概念或技能。
 - `/writing-for-agents`：编写技能、`AGENTS.md` 及供代理查阅的参考文档。
 
 ## 首次配置
