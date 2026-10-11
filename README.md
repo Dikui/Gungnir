@@ -262,6 +262,7 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 
 **User-invoked**
 
+- **[adversarial-review](./skills/productivity/adversarial-review/SKILL.md)** - 让独立攻击方寻找计划、需求或代码的反例，核实后报告成立的反例。
 - **[first-principles](./skills/productivity/first-principles/SKILL.md)** - 从目标和已验证事实重新推导方案，判断当前方向是否成立。
 - **[grill-me](./skills/productivity/grill-me/SKILL.md)** - 围绕计划或设计持续追问，直到 design tree 的每个分支都被解决。
 - **[handoff](./skills/productivity/handoff/SKILL.md)** - 把当前对话压缩成 handoff document，让另一个 agent 可以继续。

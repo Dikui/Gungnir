@@ -6,6 +6,7 @@
 
 只能由你显式调用（Claude Code：`disable-model-invocation: true`；Codex：`agents/openai.yaml` 中的 `policy.allow_implicit_invocation: false`）。
 
+- **[adversarial-review](./adversarial-review/SKILL.md)** - 让独立攻击方寻找计划、需求或代码的反例，核实后报告成立的反例。
 - **[first-principles](./first-principles/SKILL.md)** - 从目标和已验证事实重新推导方案，判断当前方向是否成立。
 - **[grill-me](./grill-me/SKILL.md)** - 围绕计划或设计进行持续追问，直到 decision tree 的每个分支都被解决。
 - **[handoff](./handoff/SKILL.md)** - 把当前对话压缩成 handoff document，让另一个 agent 可以继续。
