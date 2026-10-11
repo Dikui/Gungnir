@@ -9,6 +9,7 @@
 - **[first-principles](./first-principles/SKILL.md)** - 从目标和已验证事实重新推导方案，判断当前方向是否成立。
 - **[grill-me](./grill-me/SKILL.md)** - 围绕计划或设计进行持续追问，直到 decision tree 的每个分支都被解决。
 - **[handoff](./handoff/SKILL.md)** - 把当前对话压缩成 handoff document，让另一个 agent 可以继续。
+- **[occams-razor](./occams-razor/SKILL.md)** - 把方案的每个组成追溯到需求或证据，找出可以删除的部分。
 - **[wait-what](./wait-what/SKILL.md)** - 当一条消息没被理解时立即触发。agent 用你缺失的上下文、以直白的语言、借助你的 `GLOSSARY.md` 词汇重新解释。
 
 ## Skill-invoked
