@@ -1,99 +1,52 @@
-## What it does
+## 它会做什么
 
-`to-tickets` 拿一个 plan、一份 [spec](https://www.aihero.dev/ai-coding-dictionary/spec) 或你所在的 conversation，并把它拆成你 issue tracker 上的一组 **[tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)**。每个 ticket 都声明它的 **blocking edges**——在它开始之前必须完成的其他 tickets。
+`to-tickets` 将计划、需求文档或当前讨论拆成可独立验证的任务，注明前置依赖，再发布到项目任务跟踪器。
 
-每个 ticket 都是一颗 **tracer bullet**：一条穿过 change 每一层——schema、API、UI、tests——的窄但完整的路径，可以在它落地的瞬间独立 demo。正是这个约束让它与明显的拆分工作的方式——一次切一层、最后再集成——行为不同。它还会把每个 ticket 定尺寸到适合单个全新的 [context window](https://www.aihero.dev/ai-coding-dictionary/context-window)，因为接手这个 ticket 的会是一个从没见过你 spec 的 [session](https://www.aihero.dev/ai-coding-dictionary/session)。
+每项任务是一条贯通数据结构、接口、界面和测试等各层的窄而完整的路径，完成后可以独立演示或验证，规模适合一次新会话。代理会先查找并完成能让后续实现更容易的预先重构。
 
-## When to reach for it
+## 什么时候使用
 
-你通过输入 `/to-tickets` 调用它——[agent](https://www.aihero.dev/ai-coding-dictionary/agent) 不会自行触发。
+当方案已明确，但工作需要分成多个会话实施时，使用 `/to-tickets`。可以提供需求文档路径或任务编号，也可以直接使用当前讨论；提供已有任务时，代理会完整读取正文和评论。
 
-| 你在哪里 | 运行什么 |
-| --- | --- |
-| 你有一个 spec issue，且 build 横跨几个 sessions | `/to-tickets`，或 `/to-tickets #<spec_issue>` |
-| plan 只在 conversation 里，从未写成文字 | `/to-tickets` 直接读取 thread——不需要 spec |
-| 整个 change 适合一个 context window | [implement](https://aihero.dev/skills-implement)——跳过 tickets |
-| 什么都没决定 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，然后 [to-spec](https://aihero.dev/skills-to-spec) |
-| 一张 [wayfinder](https://aihero.dev/skills-wayfinder) map 已 cleared | 先 [to-spec](https://aihero.dev/skills-to-spec) 折叠 map，然后 `/to-tickets` |
+由你输入 `/to-tickets` 调用，代理不会自行调用。
 
-`to-tickets` 产出的 tickets 按构造就是 agent-ready 的。不要在它们上面运行 [triage](https://aihero.dev/skills-triage)——triage 是为从别人那里到达的工作准备的。
+项目必须已有任务跟踪器和分流标签配置。缺失时，代理会提示你先显式运行 `/setup-dikui-skills`。
 
-## Prerequisites
+## 这是对话，需要你做决定
 
-`to-tickets` 发布到一个 tracker，所以 [setup-dikui-skills](https://aihero.dev/skills-setup-dikui-skills) 必须先为这个 repo 配置好一个，连同 triage-label vocabulary。任一类型都可以：像 GitHub 或 Linear 这样的真实 tracker，或 `.scratch/` 下的 local markdown 文件，后者开箱即受支持。
+发布前，代理用编号列表展示任务标题、前置依赖和交付的完整行为。你需要确认粒度、依赖是否必要且正确，以及哪些任务应合并或继续拆分。
 
-## Tracer bullets, not layers
+代理根据回答调整，直到你批准，再按前置任务优先的顺序发布。它不会关闭或修改父任务。
 
-**Horizontal** slice 交付 change 的一个层。在每一层都落地之前什么都不能工作，而每个 ticket 的 acceptance criteria 不得不伸进另一个 ticket 拥有的工作里。**Vertical** slice——tracer bullet——一次性交付一条穿过所有层的薄路径，所以它可以单独验证，并拥有它评分的一切。
+## 如何判断它有效
 
-这是人们最常打破的规则，后果也有充分记录。一个团队运行了一个按层切分的 26-ticket stack——corpus、producer、aggregator、selector——并且每个关闭的 ticket 大约有二十次 agent 运行，其中约四分之三是返工。他们自己的事后复盘把每个失败类别都追溯到 horizontal slicing，而不是实现。
+- 每项任务都能回答“完成后可以演示什么行为”，而不是只完成某个技术层。
+- 前置依赖明确，没有依赖的任务可以立即开始。
+- 每项任务有验收条件，使用项目领域词汇，并遵守相关 ADR（架构决策记录）。
+- 任务单能支持新会话接手，避免易过时的具体文件路径和代码；必要的原型决策片段注明来源。
+- 发布结果与批准的拆分一致，本地任务各占一个文件，远程任务正确记录依赖。
 
-在发布任何东西之前有两件事发生。`to-tickets` 寻找 prefactoring——"make the change easy, then make the easy change"——并把那部分工作排在最前。然后它把拆分方案呈现为编号列表，并就此考问你：粒度对不对、blocking edges 是否真实、有没有什么该合并或拆分。在你批准之前没有任何东西到达 tracker，而那场质问正是你反驳的地方。
+## 常见问题
 
-## Blocking edges
+**任务太碎，或按技术层拆分怎么办？**
 
-Edges 是这个 artifact 的重点。它们根据 tracker 有两种读法：
+在确认步骤要求合并或重拆。每项应交付完整行为，不能把数据结构、接口和界面分别当成独立交付。整个改动能在一次会话完成时，可以直接用 `/implement`。
 
-| Tracker | edges 在哪里 | 你如何处理它们 |
-| --- | --- | --- |
-| Local markdown | `.scratch/<feature>/issues/<NN>-<slug>.md` 下每个 ticket 一个文件里的文本，blockers-first 编号 | 从上到下，手工 |
-| 真实 tracker（GitHub、Linear） | native blocking links，或 tracker 有 sub-issues 时用 sub-issues | 任何 blockers 已完成的 ticket 都位于 **frontier**，可以被领取 |
+**大范围机械重构也必须逐项独立通过检查吗？**
 
-无论哪种方式，edges 都活在 ticket 里。介质只决定是否有东西能并行地作用于它们。`to-tickets` 产出 artifact；运行它——一次一个 session，或一个 fleet——是你的工作，而不是 skill 的。
+列重命名、共享类型替换等改动按“扩展 → 迁移 → 收缩”拆分：保留旧形式并增加新形式，分批迁移调用方，最后删除旧形式。迁移任务依赖扩展任务，收尾任务依赖全部迁移任务。
 
-## The wide-refactor exception
+若迁移批次仍无法独立通过检查，各批共享集成分支，并作为最后“集成并验证”任务的前置条件，只在最后要求整体通过。
 
-有一种形状打破 tracer-bullet 规则。**Wide refactor** 是一个单一的机械性变更——重命名一个 column、重新定义一个共享 symbol 的类型——其 **blast radius** 扇形展开到整个 codebase，所以一次编辑破坏数千个 call sites，没有任何 vertical slice 能以 green 落地。
+**任务保存在哪里，依赖怎样表达？**
 
-`to-tickets` 改以 **expand–contract** 来切分它：
+- 本地每项保存到 `.scratch/<feature-slug>/issues/<NN>-<slug>.md`，从 `01` 开始编号，`Blocked by` 写明前置任务编号和标题。
+- 远程每项创建一个任务；支持时用原生依赖或子任务关系，否则在 `Blocked by` 中引用前置任务，默认添加 `ready-for-agent` 标签。
 
-- **Expand**——在旧形式旁添加新形式，这样什么都不破坏。
-- **Migrate**——按 blast radius 定批（按 package、按 directory）迁移 call sites，每批一个 ticket，每个都被 expand 所 block。CI 保持 green，因为旧形式仍然存在。
-- **Contract**——一旦没有调用者残留，删除旧形式，放在一个被每个 migrate 批 block 的 ticket 里。
+**发布后会自动分派实施吗？**
 
-凡是连 batches 都无法独自保持 green 的地方，它们共享一个 integration branch，全部 block 一个最终的 integrate-and-verify ticket。Green 只在那里被承诺。
+任务发布后，由你选择实施方式，并先处理前置任务均已完成的任务。该技能不启动实施代理；它生成的任务也不需要再交给 `/triage` 分流。
 
-## Common questions
+## 它在工作流中的位置
 
-**它为一个三行改动产出了十二个 tickets。**
-Over-decomposition 是这个 skill 上被报告最多的摩擦，而且在从业者之间一致：[model](https://www.aihero.dev/ai-coding-dictionary/model) 默认原子单元，丢了会让它们有意义的 grouping。质问步骤正是为此存在——要求它 merge，它会照做。更深层的回答是：tickets 有一个下限——如果整个 change 适合一个 context window，你根本不需要这个 skill。直接去 [implement](https://aihero.dev/skills-implement)。
-
-**tickets 出来是按层分的——一个里全是 schema，另一个里全是 API。**
-这是 vertical-slice 规则针对去写的那个失败，而 skill 有时仍然会产出它。在质问步骤用每个 ticket 一个问题来抓住它：它完成时我能 demo 什么？一个没有答案的 ticket 就是一个 horizontal slice。有些人为此在每个 ticket 里加一行 "demo path"，并报告说这会把 model 推向 vertical decomposition。
-
-**在 GitHub 上 tickets 没有被创建为 spec issue 的 sub-issues。**
-已知且未修复。它已在十几次运行和几个模型中被报告，[最完整地见 issue #554](https://github.com/mattpocock/skills/issues/554)，而且在 Codex 上比 Claude 上更糟。`gh` 从 v2.94 起原生支持这个：`gh issue create --parent <n>`，以及事后的 `gh issue edit <parent> --add-sub-issue <n>`。在 tracker template 优先使用这些之前，运行后自己接好父链接是可靠的做法。
-
-**"Blocked by" 被写进了 issue body，而不是一个真正的 blocking link。**
-同类问题，[报告于 issue #513](https://github.com/mattpocock/skills/issues/513)，那里的 agent 甚至断言 GitHub 根本没有 native blocking relationship。它有的——`gh issue create --blocked-by 12,15`。因为 blockers 先被发布，它们的编号在创建时总是可用的。Body 文本本来是给没有 native edge 的 trackers 的 fallback，而不是默认。
-
-**本地 tickets 去哪了？v1.1 的 notes 说一个根层级的 `tickets.md`。**
-是的，那是一个 bug——一个共享文件在并行 agents 写入它时也会竞争。本地模式现在按依赖顺序，在 `.scratch/<feature-slug>/issues/<NN>-<slug>.md` 下每个 ticket 写一个文件，匹配本地 tracker template 已经描述的布局。`NN` 前缀是一个真实的 ticket ID，所以 `/implement 03` 可以工作，而不是重打一个长标题。
-
-**它读我的 spec 时一直截断。**
-一份非常大的 spec 可能超过一个 tracker issue 能干净回传的大小，也没有本地副本可回退——agent 然后烧掉 [tool calls](https://www.aihero.dev/ai-coding-dictionary/tool-call) 重新抓取 chunks，永远到不了头。不要在 `/to-spec` 和 `/to-tickets` 之间 [clear](https://www.aihero.dev/ai-coding-dictionary/clearing) 或 [compact](https://www.aihero.dev/ai-coding-dictionary/compaction)。在同一个 context window 里运行它们，spec 就完全不必被抓回来。
-
-**acceptance criteria 什么都评不了——有些在任何工作完成之前就通过了。**
-Template 要求 criteria，却没说什么它们能否失败，所以这种事会发生。有三种形状反复出现：一个在 base commit 上就已经为真的 criterion、一个只能由另一个 ticket 拥有的工作满足的 criterion，以及一个重述请求而非从 artifact 推导的 criterion。Vertical slicing 阻止了其中大部分——一个交付了之前不存在 behavior 的 slice 按构造在 base commit 上就是 red 的——但这项检查值得手工做。对每个 criterion，说出能证明它为假的观察，并确认它在 implementer 起点的 commit 上失败。
-
-**tickets 已发布。我实际上怎么运行它们？**
-Skill 止步于 artifact，没有 auto-dispatch 模式。分派是手工的：看板、数出没有未完成 blockers 的 tickets、打开同样多的 agent sessions。每个全新 context 一个 ticket，在它们之间清理。要注意 [implement](https://aihero.dev/skills-implement) 完成时不会可靠地关闭或勾选 ticket，无论是在 GitHub 还是 local markdown 上，所以 ticket 的状态由你更新。
-
-## It's working if
-
-- 每个 ticket 都有一个对 "它完成时我能 demo 什么？" 的回答——而且回答是 behavior，不是层。
-- 在发布任何东西之前，列表作为编号列表带着每个上的 "Blocked by" 行返回给你。
-- 顶部的 ticket 没有 blockers，可以立即开始。
-- ticket body 里没有任何东西是文件路径或行号，除非是 prototype 产出的代码片段。
-- 每个 ticket 读起来都像一个全新 session 能在你不在场的情况下完成的东西。
-- Prefactoring，凡找到的，都在顺序的前面，而不是混进 feature tickets。
-
-## Where it fits
-
-`to-tickets` 是 main build chain 中的一个步骤：
-
-```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review → retro
-```
-
-上游是 [to-spec](https://aihero.dev/skills-to-spec)，它交来一份已定稿的 spec 供你切片——把两者保持在一个不间断的 context window 里。下游是 [implement](https://aihero.dev/skills-implement)，它每个全新 session 构建一个 ticket，为 tests 驱动 [tdd](https://aihero.dev/skills-tdd)，并以 [code-review](https://aihero.dev/skills-code-review) 收尾。也可使用 [implement-spec](https://aihero.dev/skills-implement-spec) 按依赖图并行实施整份需求。完成后可显式调用 [retro](https://aihero.dev/skills-retro) 复盘工作环境。当你不确定哪个 skill 或 flow 合适时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 会为你路由。
+多次会话的工作通常先由 `/to-spec` 收拢需求，再在同一上下文用 `/to-tickets` 拆分。之后每项任务用新会话调用 `/implement`，或用 `/implement-spec` 按依赖图并行实施整份需求。
