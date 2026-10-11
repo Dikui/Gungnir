@@ -1,0 +1,8 @@
+$ npm run verify
+
+> @dikui/dsh-skills-zh@2.0.0 verify
+> node scripts/verify.mjs
+
+ok: 30 skills verified, bundle patch ./cordis.patch.yml
+
+exit-code: 0

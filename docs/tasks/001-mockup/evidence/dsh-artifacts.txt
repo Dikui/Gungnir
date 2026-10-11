@@ -1,0 +1,9 @@
+构建脚本使用源目录名，实际产物目录为 dsh-plugin/skills/mockup/。
+任务预期路径 dsh-plugin/skills/zh-mockup/ 存在：False
+kit/INDEX.md 存在且内容一致：True
+kit/mockup.css 存在且内容一致：True
+kit/mockup.js 存在且内容一致：True
+kit/page.html 存在且内容一致：True
+kit/tokens.css 存在且内容一致：True
+name: zh-mockup：通过
+/prototype → /zh-prototype：通过

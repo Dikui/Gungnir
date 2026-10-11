@@ -1,0 +1,5 @@
+$ npm install --prefix <temporary-dir>/dom --no-save --no-package-lock linkedom@0.18.12
+
+added 15 packages in 7s
+
+exit-code: 0

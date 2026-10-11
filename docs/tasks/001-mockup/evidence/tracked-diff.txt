@@ -1,0 +1,13 @@
+$ git diff -- skills/in-progress/README.md
+diff --git a/skills/in-progress/README.md b/skills/in-progress/README.md
+index 73f94d1..00b2a1c 100644
+--- a/skills/in-progress/README.md
++++ b/skills/in-progress/README.md
+@@ -8,4 +8,6 @@ Plugin 不会提供它们。直接安装某一个：
+ npx skills@latest add Dikui/Gungnir --skill=<name>
+ ```
+ 
+-暂无技能。
++## User-invoked
++
++- **[mockup](./mockup/SKILL.md)** — 生成并维护长期保留的 HTML 界面设计稿，作为前端开发的参照。

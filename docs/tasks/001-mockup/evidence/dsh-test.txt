@@ -1,0 +1,36 @@
+$ npm test
+
+> @dikui/dsh-skills-zh@2.0.0 test
+> node --test
+
+✔ module exposes only the documented named exports (0.41ms)
+✔ createProvider returns a named provider whose list and get are thenable (0.720542ms)
+✔ list resolves to every well-formed zh- candidates owned by the provider (19.704708ms)
+✔ zh-grill-me disables model invocation but stays user-invocable (10.795209ms)
+✔ bundled skills keep the source invocation tiers (12.379125ms)
+✔ zh-grilling is skill-invoked only (4.321041ms)
+✔ get loads the zh-grill-me body and a directory resource base (7.558334ms)
+✔ get resolves undefined for an unreadable path (0.223ms)
+✔ apply registers a provider that lists the same catalog (4.578ms)
+✔ a) rewrites a backticked /tdd invocation (1.127458ms)
+✔ b) rewrites /tdd after CJK text (0.250542ms)
+✔ c) rewrites /tdd at index 0 (1.341ms)
+✔ d) rewrites /code-review after CJK text (0.258459ms)
+✔ e) leaves src/triage/handler.ts unchanged (0.391833ms)
+✔ f) leaves docs/agents/triage-labels.md unchanged (0.154959ms)
+✔ g) leaves /prototype/<name> unchanged (0.1215ms)
+✔ h) leaves non-skill /clear and /compact unchanged (0.216292ms)
+✔ i) leaves URLs unchanged (0.063167ms)
+✔ j) leaves relative markdown links unchanged (0.219666ms)
+✔ k) findUnrewrittenReferences distinguishes prefixed and unprefixed (0.74275ms)
+✔ extra) rewrites multiple invocations in one string (0.054583ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 184.791209
+
+exit-code: 0

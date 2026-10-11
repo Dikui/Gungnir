@@ -1,0 +1,5 @@
+interface:
+  display_name: "Mockup"
+  short_description: "生成并维护长期保留的 HTML 界面设计稿，供后续前端开发参照"
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+首次执行：系统 Python 未安装 PyYAML，ModuleNotFoundError: yaml。
+在临时目录安装后重跑，未修改系统环境。
+$ PYTHONPATH=<temporary-dir>/python python3 <skill-creator>/scripts/quick_validate.py skills/in-progress/mockup
+Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+
+exit-code: 1

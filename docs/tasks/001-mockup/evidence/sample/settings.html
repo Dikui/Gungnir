@@ -1,0 +1,63 @@
+<!--
+页面：工作空间设置
+用途：比较横向标签与侧栏表单两种设置结构，供前端开发参照
+数据：workspaceName: string（占位）
+description: string（占位）
+notification: boolean
+visibility: string
+状态：default
+交互：A / B 方案切换；基本信息 / 通知标签；原生表单；保存演示提示
+已确定：共享设计变量与表单组件；窄屏堆叠
+示意（占位）：工作空间名称和说明；保存不持久化；假设用户希望比较两种结构
+更新：2026-10-11 新增结构不同的 A / B 设置方案
+-->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工作空间设置 · 界面设计稿</title>
+  <link rel="stylesheet" href="kit/tokens.css">
+  <link rel="stylesheet" href="kit/mockup.css">
+  <script src="kit/mockup.js" defer></script>
+  <style>
+    .settings-split { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: var(--space-6); }
+    .settings-rail { flex-direction: column; border-bottom: 0; align-items: stretch; }
+    .settings-rail [data-tab] { text-align: left; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .settings-rail [aria-selected="true"] { background: var(--surface-soft); }
+    @media (max-width: 640px) { .settings-split { grid-template-columns: minmax(0, 1fr); } }
+    @container (max-width: 640px) { .settings-split { grid-template-columns: minmax(0, 1fr); } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <strong>管理工作台（占位）</strong>
+      <nav class="sidenav" aria-label="主导航"><a href="list.html">项目列表</a><a href="settings.html" aria-current="page">工作空间设置</a></nav>
+    </aside>
+    <main class="main" id="main">
+      <header class="topnav"><strong>工作空间（占位）</strong><span class="badge">设置</span></header>
+      <div class="container stack">
+        <section data-variant="A" class="stack">
+          <h1>工作空间设置</h1><p class="muted">方案 A：横向标签集中切换，操作位于表单底部。</p>
+          <div class="card stack" data-tabs>
+            <div class="tabs" aria-label="设置类别"><button type="button" data-tab>基本信息</button><button type="button" data-tab>通知</button></div>
+            <section class="stack" data-panel><h2>基本信息</h2><div class="grid"><label class="field">工作空间名称<input value="示例工作空间（占位）"></label><label class="field">可见范围<select><option>仅成员可见</option><option>组织内可见</option></select></label></div><label class="field">说明<textarea>协作空间说明（占位）</textarea><span class="hint">说明将出现在空间首页。</span></label><div class="row"><button class="btn primary" type="button" data-toggle="#saved">保存（演示）</button><button class="btn secondary" type="button" disabled>撤销（未开放）</button></div></section>
+            <section class="stack" data-panel hidden><h2>通知偏好</h2><label class="check"><input type="checkbox" checked>接收项目更新</label><label class="check"><input type="checkbox">接收每周汇总</label><button class="btn primary" type="button" data-toggle="#saved">保存（演示）</button></section>
+          </div>
+        </section>
+        <section data-variant="B" class="stack" hidden>
+          <div class="row spread"><div class="stack"><h1>管理工作空间</h1><p class="muted">方案 B：左侧分类与说明，右侧编辑；保存位于页面顶部。</p></div><button class="btn primary" type="button" data-toggle="#saved">保存全部（演示）</button></div>
+          <div class="settings-split" data-tabs>
+            <aside class="stack"><h2>设置类别</h2><div class="tabs settings-rail" aria-label="设置类别"><button type="button" data-tab>空间资料</button><button type="button" data-tab>消息偏好</button></div><p class="hint">切换分类继续编辑；所有内容均为示意。</p></aside>
+            <section class="card stack" data-panel><h2>空间资料</h2><p class="muted">维护成员看到的空间名称与说明。</p><label class="field">名称<input value="示例工作空间（占位）"></label><label class="field">说明<textarea>协作空间说明（占位）</textarea></label><label class="field">可见范围<select><option>仅成员可见</option><option>组织内可见</option></select></label></section>
+            <section class="card stack" data-panel hidden><h2>消息偏好</h2><p class="muted">选择需要接收的通知。</p><label class="check"><input type="checkbox" checked>项目更新</label><label class="check"><input type="checkbox">每周汇总</label><label class="field">通知渠道<select><option>站内消息</option><option>邮件（示意）</option></select></label></section>
+          </div>
+        </section>
+        <p class="hint">所有保存按钮仅展示提示，未连接后端。</p>
+      </div>
+    </main>
+  </div>
+  <div class="toast row" id="saved" role="status" hidden><span>已演示保存反馈，未保存数据。</span><button class="btn" type="button" data-close>关闭</button></div>
+</body>
+</html>

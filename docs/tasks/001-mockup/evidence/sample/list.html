@@ -1,0 +1,62 @@
+<!--
+页面：项目列表
+用途：后台项目管理的布局、状态与新建流程参照
+数据：name: string（占位）
+owner: string（占位）
+status: string（占位）
+状态：default / empty / loading / error
+交互：筛选选择；新建弹窗；操作菜单；详情抽屉；演示提示关闭
+已确定：侧栏、表格与四种状态；窄屏侧栏堆叠，表格横向滚动
+示意（占位）：项目与负责人均为占位；筛选不接数据；新建不保存；重试仅演示按钮
+更新：2026-10-11 创建列表设计稿，验证共享组件与交互
+-->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>项目列表 · 界面设计稿</title>
+  <link rel="stylesheet" href="kit/tokens.css">
+  <link rel="stylesheet" href="kit/mockup.css">
+  <script src="kit/mockup.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <strong>管理工作台（占位）</strong>
+      <nav class="sidenav" aria-label="主导航"><a href="list.html" aria-current="page">项目列表</a><a href="settings.html">工作空间设置</a></nav>
+    </aside>
+    <main class="main" id="main">
+      <header class="topnav"><strong>工作空间（占位）</strong><span class="badge">内部管理</span></header>
+      <div class="container stack">
+        <div class="row spread"><div class="stack"><h1>项目列表</h1><p class="muted">查看项目进度，创建新的协作项目。</p></div><button class="btn primary" type="button" data-toggle="#create" aria-controls="create" aria-expanded="false">新建项目</button></div>
+        <section class="card row" aria-label="筛选条件">
+          <label class="field">项目状态<select><option>全部状态</option><option>进行中</option><option>待启动</option></select></label>
+          <label class="field">项目名称<input type="search" placeholder="搜索项目（占位）"></label>
+          <button class="btn secondary" type="button" data-toggle="#actions" aria-controls="actions" aria-expanded="false">更多操作</button><button class="btn" type="button" disabled>导出（未开放）</button>
+          <div class="menu stack" id="actions" hidden><span class="hint">操作菜单（演示）</span><button class="btn" type="button" data-close>收起菜单</button></div>
+        </section>
+        <p class="hint">以下内容为明确标注的占位，筛选仅展示控件状态。</p>
+        <section data-state="default" class="table-wrap" aria-label="项目表格">
+          <table><thead><tr><th scope="col">项目名称</th><th scope="col">负责人</th><th scope="col">状态</th><th scope="col">操作</th></tr></thead>
+            <tbody><tr data-repeat="5"><td>示例项目 <span data-repeat-index>1</span>（占位）</td><td>负责人（占位）</td><td><span class="badge success">进行中（示意）</span></td><td><button class="btn secondary" type="button" data-toggle="#details">查看</button></td></tr></tbody>
+          </table>
+        </section>
+        <section data-state="empty" class="card empty" hidden><div class="placeholder">项目列表插图（占位）</div><h2>还没有项目</h2><p class="muted">创建第一个项目，开始协作。</p><button class="btn primary" type="button" data-toggle="#create">新建项目</button></section>
+        <section data-state="loading" class="card stack" hidden aria-label="正在加载" aria-busy="true"><h2>正在加载项目</h2><div class="skeleton" data-repeat="4" aria-hidden="true"></div></section>
+        <section data-state="error" class="card empty" hidden role="alert"><span class="badge danger">加载失败</span><h2>暂时无法获取项目</h2><p class="muted">请检查连接后重试。</p><button class="btn secondary" type="button" data-toggle="#retry">重试（演示）</button></section>
+      </div>
+    </main>
+  </div>
+  <div class="modal" id="create" role="dialog" aria-modal="true" aria-labelledby="create-title" hidden>
+    <section class="modal-panel stack"><div class="row spread"><h2 id="create-title">新建项目</h2><button class="btn" type="button" data-close>关闭</button></div>
+      <label class="field">项目名称<input placeholder="例如：网站改版（占位）" required></label>
+      <label class="field">负责人<select><option>选择负责人（占位）</option><option>负责人甲（占位）</option></select></label>
+      <p class="hint">仅演示界面，不保存数据。</p><div class="row"><button class="btn primary" type="button" data-close data-toggle="#created">创建（演示）</button><button class="btn secondary" type="button" data-close>取消</button></div>
+    </section>
+  </div>
+  <div class="drawer" id="details" role="dialog" aria-modal="true" aria-labelledby="detail-title" hidden><section class="drawer-panel stack"><div class="row spread"><h2 id="detail-title">项目详情</h2><button class="btn" type="button" data-close>关闭</button></div><p>项目说明（占位）</p><div class="placeholder">项目封面（占位）</div><button class="btn danger" type="button" disabled>归档（未开放）</button></section></div>
+  <div class="toast row" id="created" role="status" hidden><span>已演示创建流程，未保存数据。</span><button class="btn" type="button" data-close>关闭</button></div>
+  <div class="toast row" id="retry" role="status" hidden><span>重试状态仅作示意，未发送请求。</span><button class="btn" type="button" data-close>关闭</button></div>
+</body>
+</html>
