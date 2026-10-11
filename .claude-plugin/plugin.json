@@ -19,6 +19,7 @@
     "productivity"
   ],
   "skills": [
+    "./skills/engineering/ablation",
     "./skills/engineering/ask-matt",
     "./skills/engineering/code-review",
     "./skills/engineering/codebase-design",

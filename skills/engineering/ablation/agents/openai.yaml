@@ -1,0 +1,5 @@
+interface:
+  display_name: "Ablation"
+  short_description: "逐个去掉机制并测量，确定收益来自哪个机制。"
+policy:
+  allow_implicit_invocation: false

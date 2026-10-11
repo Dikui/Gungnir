@@ -231,6 +231,7 @@ AI 时代也是一样。你和 agent 之间存在沟通缺口。修复方式是�
 
 **User-invoked**
 
+- **[ablation](./skills/engineering/ablation/SKILL.md)** - 逐个去掉机制并测量，确定收益来自哪个机制。
 - **[ask-matt](./skills/engineering/ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `GLOSSARY.md` 与 ADRs。
 - **[triage](./skills/engineering/triage/SKILL.md)** - 通过 triage roles state machine 推进 issues。
