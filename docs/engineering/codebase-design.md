@@ -85,4 +85,4 @@ Depth 刻意*不*被定义为 implementation 行数对 interface 行数的比值
 
 ## Where it fits
 
-`codebase-design` 是一个 **随时可调用的 standalone**，是 engineering skills 底下的词汇层，而不是任何 chain 中的一步。它最接近的邻居是 [domain-modeling](https://aihero.dev/skills-domain-modeling)，即针对*问题域*的词而非 module 形状的平行参考——两者通常一起被需要，因为把 deep module 命名得好两者都需要。[improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 是另一个：它调查 codebase 寻找 deepening 候选，并用这份 glossary 写出每一个，所以它找到 module，而这个 skill 是你设计它的工作台。当你拿不准哪个 skill 或 flow 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+`codebase-design` 是一个 **随时可调用的 standalone**，是 engineering skills 底下的词汇层，而不是任何 chain 中的一步。它最接近的邻居是 [domain-modeling](https://aihero.dev/skills-domain-modeling)，即针对*问题域*的词而非 module 形状的平行参考——两者通常一起被需要，因为把 deep module 命名得好两者都需要。[improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 是另一个：它调查 codebase 寻找 deepening 候选，并用这份 glossary 写出每一个，所以它找到 module，而这个 skill 是你设计它的工作台。当你拿不准哪个 skill 或 flow 契合时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 会为你路由。

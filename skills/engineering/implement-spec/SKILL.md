@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 用户已提供一份需求文档。这份需求文档应有关联的任务单，说明如何实现它。
 
-用户应已提供issue tracker。若没有，请告诉用户运行 `/setup-matt-pocock-skills`。
+用户应已提供issue tracker。若没有，请告诉用户运行 `/setup-dikui-skills`。
 
 目标是在一个**集成分支**上实现整份需求文档，并按issue tracker关闭工作的方式完成每张任务单。
 

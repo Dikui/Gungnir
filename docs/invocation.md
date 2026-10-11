@@ -4,7 +4,7 @@ Gungnir 的技能分两层：**入口技能**由用户调用，**基础技能**�
 
 ## 入口技能（User-invoked）
 
-除下表外的所有技能，包括开发中技能和 `.skills/` 中的内部翻译技能。只能由用户显式调用：
+除下表外的所有技能，包括开发中技能。只能由用户显式调用：
 
 - Claude Code：`SKILL.md` frontmatter 设置 `disable-model-invocation: true`，用 `/research 调研这个问题` 调用。
 - Codex：相邻 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，用 `$research 调研这个问题` 调用。
@@ -37,7 +37,7 @@ Gungnir 的技能分两层：**入口技能**由用户调用，**基础技能**�
 ## 技能之间的引用
 
 - 入口技能需要基础技能时，写"通过 Skill 工具加载 `/grilling`"，或直接写 `/grilling`。名字必须带斜杠，dsh 打包时才会改写成 `/zh-grilling`。
-- 入口技能提到另一个入口技能（如 `/to-spec`、`/setup-matt-pocock-skills`）时，只作推荐，由用户决定是否调用。
+- 入口技能提到另一个入口技能（如 `/to-spec`、`/setup-dikui-skills`）时，只作推荐，由用户决定是否调用。
 - 只按文件路径读取普通参考文档，不属于调用另一个技能。
 
 ## 新增或调整技能

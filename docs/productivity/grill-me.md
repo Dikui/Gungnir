@@ -73,4 +73,4 @@ When grilling, ask one question at a time.
 
 这种可移植性正是它与 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 的主要区别——后者运行同样的访谈，但会读取一个 codebase 来对齐，并把学到的东西记录为 `GLOSSARY.md` 和 ADRs。两者都位于 [grilling](https://aihero.dev/skills-grilling) primitive 之上；`grill-me` 是不携带任何东西的 user-invoked 前门。
 
-如果你 grill 的东西确实被证明是软件，你可以把同一段对话交给 [to-spec](https://aihero.dev/skills-to-spec)，继续进入 build flow——这是一个选项，而不是这个 skill 的重点。当你不确定哪条流程合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你引路。
+如果你 grill 的东西确实被证明是软件，你可以把同一段对话交给 [to-spec](https://aihero.dev/skills-to-spec)，继续进入 build flow——这是一个选项，而不是这个 skill 的重点。当你不确定哪条流程合适时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 会为你引路。

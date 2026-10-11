@@ -1,5 +1,5 @@
 ---
-name: ask-matt
+name: ask-dikui
 description: 根据当前任务推荐合适的技能及使用顺序。
 disable-model-invocation: true
 ---
@@ -33,7 +33,7 @@ disable-model-invocation: true
 
 从访谈到 `/to-tickets` 保留同一上下文，不中途清空或压缩，确保它们基于同一组讨论。之后每个实现任务使用新会话，只读取对应任务单。需要复盘时，在清空上下文前运行 `/retro`；已经清空时，提供原会话日志的位置。
 
-若在拆分任务前已接近约 150k token 的 [smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone) 参考范围，则在最近的阶段结束处用 `/compact`，再继续。不要硬撑已经退化的上下文。
+若在拆分任务前已接近约 150k token 的 smart zone 参考范围，则在最近的阶段结束处用 `/compact`，再继续。不要硬撑已经退化的上下文。
 
 ## 其他起点
 
@@ -93,4 +93,4 @@ disable-model-invocation: true
 
 ## 首次配置
 
-首次使用工程流程前，用 `/setup-matt-pocock-skills` 配置 issue tracker、分流标签和领域文档布局。也支持自定义 tracker。
+首次使用工程流程前，用 `/setup-dikui-skills` 配置 issue tracker、分流标签和领域文档布局。也支持自定义 tracker。

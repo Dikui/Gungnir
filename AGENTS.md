@@ -16,12 +16,4 @@ Skills 按 bucket folder 组织在 `skills/` 下：
 
 技能分两层：入口技能只由用户调用（`disable-model-invocation: true`，`agents/openai.yaml` 中 `policy.allow_implicit_invocation: false`）；基础技能由入口技能调用，描述和正文开头写明加载条件，避免在普通对话中触发。基础技能清单、配置和写法见 [docs/invocation.md](./docs/invocation.md)。
 
-本仓库也是一个单 plugin 的 Claude Code marketplace：`.claude-plugin/marketplace.json` 列出唯一的 `mattpocock-skills` plugin。修改 `.claude-plugin/plugin.json` 或 marketplace manifest 后，运行 `claude plugin validate . --strict`。Plugin 的公开 skill 集合继续遵循本仓库 bucket 规则。
-
-## 翻译刷新
-
-从 `mattpocock/skills` 刷新上游内容时，改文件前先使用 `.skills/translate-skill/SKILL.md`。本仓库采用 skill-guided content localization，不做 Git fork-sync：保留简体中文本地化身份，安装命令保持指向 `vinvcn/mattpocock-skills-zh-CN`，不要导入上游 repository-management state。刷新时保留本地的调用分层：基础技能的 `description` 和正文开头的加载条件不要被上游内容覆盖。
-
-刷新时不要导入已删除的技能，清单见 [docs/removed-skills.md](./docs/removed-skills.md)。
-
-刷新时保留本地自有技能，不得因上游没有而删除或覆盖，清单见 [docs/local-skills.md](./docs/local-skills.md)。刷新 `ask-matt` 时，保留本地新增的“遇到问题时选方法”一节及推荐本地技能的流程提示。
+本仓库也是一个单 plugin 的 Claude Code marketplace：`.claude-plugin/marketplace.json` 列出唯一的 `dikui-skills` plugin。修改 `.claude-plugin/plugin.json` 或 marketplace manifest 后，运行 `claude plugin validate . --strict`。Plugin 的公开 skill 集合继续遵循本仓库 bucket 规则。

@@ -76,4 +76,4 @@
 - [code-review](https://aihero.dev/skills-code-review) 位于它之前，因为 PR 正文应描述已经审查的 diff。
 - [implement](https://aihero.dev/skills-implement) 生成正文描述的提交。
 
-不确定当前情况适合哪个技能时，[ask-matt](https://aihero.dev/skills-ask-matt) 可帮助选择整套技能中的流程。
+不确定当前情况适合哪个技能时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 可帮助选择整套技能中的流程。

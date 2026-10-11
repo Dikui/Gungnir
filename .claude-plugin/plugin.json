@@ -1,13 +1,13 @@
 {
-  "name": "mattpocock-skills",
-  "version": "1.3.2",
-  "description": "Matt Pocock 面向真实工程工作的 agent skills：持续追问、spec/ticket flows、TDD、代码审查、领域建模等。即装即用，不是 vibe coding。",
+  "name": "dikui-skills",
+  "version": "2.0.0",
+  "description": "面向项目开发的简体中文工程技能：访谈、需求与任务、TDD、代码审查、领域建模和方法诊断。",
   "author": {
-    "name": "Matt Pocock",
-    "url": "https://www.aihero.dev"
+    "name": "dikui",
+    "url": "https://github.com/Dikui"
   },
-  "homepage": "https://www.aihero.dev/s/skills-newsletter",
-  "repository": "https://github.com/vinvcn/mattpocock-skills-zh-CN",
+  "homepage": "https://github.com/Dikui/Gungnir",
+  "repository": "https://github.com/Dikui/Gungnir",
   "license": "MIT",
   "keywords": [
     "engineering",
@@ -20,7 +20,7 @@
   ],
   "skills": [
     "./skills/engineering/ablation",
-    "./skills/engineering/ask-matt",
+    "./skills/engineering/ask-dikui",
     "./skills/engineering/code-review",
     "./skills/engineering/codebase-design",
     "./skills/engineering/cohesion-coupling",
@@ -34,7 +34,7 @@
     "./skills/engineering/prototype",
     "./skills/engineering/research",
     "./skills/engineering/retro",
-    "./skills/engineering/setup-matt-pocock-skills",
+    "./skills/engineering/setup-dikui-skills",
     "./skills/engineering/tdd",
     "./skills/engineering/to-spec",
     "./skills/engineering/to-tickets",

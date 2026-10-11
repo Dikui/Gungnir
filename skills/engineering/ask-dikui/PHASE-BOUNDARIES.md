@@ -18,7 +18,7 @@
 
 在 boundary 处从上到下工作。第一个 **yes** 胜出。
 
-**1. 你能在这个 session 里继续吗？** 有两个条件让答案为 yes：下一 phase 需要当前 phase 作为 **primary source**，或者你还有足够的 [smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)（约 150k tokens）让下一 phase 装得下。Grilling -> implementation 是标准的 yes：implementation 想要的是逐字的推理过程，而不是它的 summary。Continue 不花成本也不丢任何东西，所以先排除它。
+**1. 你能在这个 会话 里继续吗？** 有两个条件让答案为 yes：下一 阶段 需要当前 阶段 作为 **primary source**，或者你还有足够的 smart zone（约 150k tokens）让下一 阶段 装得下。访谈 → 实现 是标准的 yes：实现 想要的是逐字的推理过程，而不是它的 摘要。继续 不花成本也不丢任何东西，所以先排除它。
 
 **2. 这个 context 对接下来要做的事无关紧要吗？** 这个 session 里的一切——探索、决定、死胡同——都可以丢弃吗？如果是，**`/clear`**。它是整张棋盘上最便宜的一步：不花时间，把整个 window 还给你。`/clear` 也不是终局——旧 session 仍然可以恢复。
 

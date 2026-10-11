@@ -1,12 +1,12 @@
 ## What it does
 
-`ask-matt` 是本仓库 skills 的 router。你描述当前处境——一个不知如何开始的 idea、一堆 incoming bug reports、一场已经持续很久的 [session](https://www.aihero.dev/ai-coding-dictionary/session)——它就会指出契合的 skill 或 skill 序列，以及该序列中人类决策所处的位置。
+`ask-dikui` 是本仓库 skills 的 router。你描述当前处境——一个不知如何开始的 idea、一堆 incoming bug reports、一场已经持续很久的 [session](https://www.aihero.dev/ai-coding-dictionary/session)——它就会指出契合的 skill 或 skill 序列，以及该序列中人类决策所处的位置。
 
 它负责推荐，然后停下。它不 grill、不写 [spec](https://www.aihero.dev/ai-coding-dictionary/spec)、不打开文件、也不触发它刚点名的 skill；你拿回来的是下一步该输入什么，然后由你去输入它。它同时也是这套 skills 的手写地图，而不是对你已安装内容的扫描，所以它不会把你路由到你自己的 skills 或其他作者的 skills 上。
 
 ## When to reach for it
 
-你通过输入 `/ask-matt` 调用它——agent 不会自行取用它。
+你通过输入 `/ask-dikui` 调用它——agent 不会自行取用它。
 
 | 你的处境 | router 返回什么 |
 | --- | --- |
@@ -20,7 +20,7 @@
 
 Router 只点名 skills，它不安装它们。它指向的一切都必须已安装，推荐才具有可操作性，而且它只认识本仓库中那些已推广的 skills。
 
-依赖 tracker 的 routes——triage、`to-spec`、`to-tickets`、`implement`、`implement-spec`——假设 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) 已经在仓库中配置好了一个 issue tracker。router 会乐于在那之前就推荐它们。
+依赖 tracker 的 routes——triage、`to-spec`、`to-tickets`、`implement`、`implement-spec`——假设 [setup-dikui-skills](https://aihero.dev/skills-setup-dikui-skills) 已经在仓库中配置好了一个 issue tracker。router 会乐于在那之前就推荐它们。
 
 ## Flows, not skills
 
@@ -66,7 +66,7 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 **它能路由到我自己的 skills 或另一个作者的 skills 上吗？**
 
-不能。有三份独立的提案要求做一个读取你本地 `skills/` 目录、并从已安装内容中推荐的 router。`ask-matt` 不是那个东西。它是对某一套 skills 的地图，靠手维护，而且对你写的或从别处安装的 skills 一无所知。
+不能。有三份独立的提案要求做一个读取你本地 `skills/` 目录、并从已安装内容中推荐的 router。`ask-dikui` 不是那个东西。它是对某一套 skills 的地图，靠手维护，而且对你写的或从别处安装的 skills 一无所知。
 
 **它让我编辑一个 SKILL.md。**
 
@@ -86,6 +86,6 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 ## Where it fits
 
-`ask-matt` 是一个 **standalone router**，悬于整套 skills 之上。它从不处于某条 chain 中的一步；它指向每一条 chain，而其他 docs 页面都回链到它这个节点，这样它们谁都不用重画这张图。从这里你最常落到 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——main flow 的头部，或 [triage](https://aihero.dev/skills-triage)——那份「到达的工作」而非「你开始的工作」的 on-ramp。
+`ask-dikui` 是一个 **standalone router**，悬于整套 skills 之上。它从不处于某条 chain 中的一步；它指向每一条 chain，而其他 docs 页面都回链到它这个节点，这样它们谁都不用重画这张图。从这里你最常落到 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——main flow 的头部，或 [triage](https://aihero.dev/skills-triage)——那份「到达的工作」而非「你开始的工作」的 on-ramp。
 
 它是它所描述 skills 之上的一个 [secondary source](https://www.aihero.dev/ai-coding-dictionary/secondary-source)。当 router 和某个 `SKILL.md` 冲突时，`SKILL.md` 是对的。

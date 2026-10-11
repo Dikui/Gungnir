@@ -7,7 +7,7 @@ import * as m from '../index.js'
 import { DSH_BUCKETS, SKILL_NAMES } from '../scripts/rewrite-references.mjs'
 import { listSkills } from '../../scripts/skills.mjs'
 
-const PROVIDER_NAME = 'mattpocock-skills-zh'
+const PROVIDER_NAME = 'dikui-skills-zh'
 const KEBAB_CASE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const SKILLS_ROOT = fileURLToPath(new URL('../skills/', import.meta.url))
 const BOGUS_SKILL_PATH = fileURLToPath(new URL('./__no_such_skill__.md', import.meta.url))

@@ -1,12 +1,12 @@
 /**
- * Self-contained skill provider for the bundled `mattpocock-skills-zh` package.
+ * Self-contained skill provider for the bundled `dikui-skills-zh` package.
  *
  * Discovers the generated `skills/<name>/SKILL.md` bundle shipped in this
  * package, parses each file's YAML frontmatter, and registers the results on
  * `ctx.skills` at bundled rank 600. Skill bodies are re-read on every `get`,
  * so edits need no cache invalidation.
  *
- * @module @vinvcn/dsh-mattpocock-skills-zh
+ * @module @dikui/dsh-skills-zh
  */
 
 import { readdir, readFile } from 'node:fs/promises'
@@ -15,7 +15,7 @@ import { join } from 'node:path'
 import { parse } from 'yaml'
 
 /** Provider name registered on `ctx.skills`. */
-const PROVIDER_NAME = 'mattpocock-skills-zh'
+const PROVIDER_NAME = 'dikui-skills-zh'
 /** Bundled-provider rank, matching `BUNDLED_SKILL_RANK` in `dsh-skill`. */
 const RANK = 600
 /** Origin bucket for skills shipped inside this package. */

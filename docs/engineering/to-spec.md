@@ -19,7 +19,7 @@
 
 ## Prerequisites
 
-`to-spec` 把 spec 作为 issue 发布，所以 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) 必须先为这个 repo 配置好一个 tracker 和 triage-label vocabulary。任一类型都可以：像 GitHub 这样的真实 tracker，或 `.scratch/` 下的 local markdown 文件，后者开箱即受支持。
+`to-spec` 把 spec 作为 issue 发布，所以 [setup-dikui-skills](https://aihero.dev/skills-setup-dikui-skills) 必须先为这个 repo 配置好一个 tracker 和 triage-label vocabulary。任一类型都可以：像 GitHub 这样的真实 tracker，或 `.scratch/` 下的 local markdown 文件，后者开箱即受支持。
 
 ## The spec is a decision record
 
@@ -78,4 +78,4 @@ Spec 之所以存在，是因为 context windows 会结束。你在 [grilling](h
 grill-with-docs → to-spec → to-tickets → implement → code-review → retro
 ```
 
-它上游的邻居是 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，它做本 skill 只负责记录的 deciding，以及 [wayfinder](https://aihero.dev/skills-wayfinder)，其完成的 map 正好在这里并入 chain。下游，[to-tickets](https://aihero.dev/skills-to-tickets) 把 spec 切成 [implement](https://aihero.dev/skills-implement) 要构建的 tracer-bullet tickets。当你不确定哪个 skill 或 flow 合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+它上游的邻居是 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，它做本 skill 只负责记录的 deciding，以及 [wayfinder](https://aihero.dev/skills-wayfinder)，其完成的 map 正好在这里并入 chain。下游，[to-tickets](https://aihero.dev/skills-to-tickets) 把 spec 切成 [implement](https://aihero.dev/skills-implement) 要构建的 tracer-bullet tickets。当你不确定哪个 skill 或 flow 合适时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 会为你路由。

@@ -78,4 +78,4 @@ grill-with-docs → to-spec → to-tickets → implement → code-review → ret
 - [code-review](https://aihero.dev/skills-code-review) 是 `retro` 最常建议调整的审查代理：新增编码规范放在它的 Standards 维度读取的位置。
 - [writing-for-agents](https://aihero.dev/skills-writing-for-agents) 为 `retro` 建议的引导文件和技能提供写作风格。只有用户同时明确指定它时，`retro` 才在开始前调用。
 
-不确定当前情况适合哪个技能时，[ask-matt](https://aihero.dev/skills-ask-matt) 可帮助选择整套技能中的流程。
+不确定当前情况适合哪个技能时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 可帮助选择整套技能中的流程。

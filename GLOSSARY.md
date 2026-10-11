@@ -1,6 +1,6 @@
-# Matt Pocock Skills
+# Gungnir 技能
 
-由 Claude Code 加载的一组 agent skills（slash commands 和 behaviors）。Skills 按 bucket 组织，并由 `/setup-matt-pocock-skills` 生成的每仓库配置消费。
+由 Claude Code 加载的一组 agent skills（slash commands 和 behaviors）。Skills 按 bucket 组织，并由 `/setup-dikui-skills` 生成的每仓库配置消费。
 
 ## Language
 
@@ -16,7 +16,7 @@ _Avoid_: ticket（仅在引用外部系统称其为 ticket，或指下面的 **D
 `wayfinder` 的工作单元：`wayfinder:map` 的一个 child **Issue**，承载的问题需要通过 decision 解决，而不是要执行的 build slice。**Decision** qualifier 把它与 implementation ticket 区分开来；`wayfinder` 会先引入完整术语，之后再简称 ticket。
 
 **Triage role**:
-在 triage 期间应用到 **Issue** 上的规范 state-machine label（例如 `needs-triage`、`ready-for-agent`）。每个 role 都会通过 `skills/engineering/setup-matt-pocock-skills/triage-labels.md` 映射到 **Issue tracker** 中真实的 label 字符串。
+在 triage 期间应用到 **Issue** 上的规范 state-machine label（例如 `needs-triage`、`ready-for-agent`）。每个 role 都会通过 `skills/engineering/setup-dikui-skills/triage-labels.md` 映射到 **Issue tracker** 中真实的 label 字符串。
 
 ## Relationships
 

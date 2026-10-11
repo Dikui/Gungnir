@@ -67,4 +67,4 @@
 
 ## Where it fits
 
-这是一份随时可调的 standalone reference。它在链条里没有邻居，因为它位于整个集合之下，而不是任何单个 skill 旁边：这里的每个 skill 都是照着它写出来的，而其他 skills 留下的 documents——一份 `GLOSSARY.md` 及其 ADRs、一份 spec、一张 ticket——正是每当 agent 不得不读它们时它所管辖的文本。[retro](https://aihero.dev/skills-retro) 会使用此写作参考来表达工作环境改进；在本版本中，两项技能仍须由用户明确指定。当你不确定哪个 skill 或流程适合某项任务时，[ask-matt](https://aihero.dev/skills-ask-matt) 会带你在整个集合上路由。
+这是一份随时可调的 standalone reference。它在链条里没有邻居，因为它位于整个集合之下，而不是任何单个 skill 旁边：这里的每个 skill 都是照着它写出来的，而其他 skills 留下的 documents——一份 `GLOSSARY.md` 及其 ADRs、一份 spec、一张 ticket——正是每当 agent 不得不读它们时它所管辖的文本。[retro](https://aihero.dev/skills-retro) 会使用此写作参考来表达工作环境改进；在本版本中，两项技能仍须由用户明确指定。当你不确定哪个 skill 或流程适合某项任务时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 会带你在整个集合上路由。

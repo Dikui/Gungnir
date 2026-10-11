@@ -30,7 +30,6 @@ const allowed = [
   "LICENSE",
   "SKILL",
   "MIT",
-  "Matt Pocock",
 ];
 
 function stripCodeFences(text) {

@@ -49,8 +49,8 @@ test('i) leaves URLs unchanged', () => {
 
 test('j) leaves relative markdown links unchanged', () => {
   assert.equal(
-    rewriteReferences('[ask-matt](./ask-matt/SKILL.md)'),
-    '[ask-matt](./ask-matt/SKILL.md)'
+    rewriteReferences('[ask-dikui](./ask-dikui/SKILL.md)'),
+    '[ask-dikui](./ask-dikui/SKILL.md)'
   )
 })
 

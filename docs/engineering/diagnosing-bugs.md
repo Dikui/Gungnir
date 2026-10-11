@@ -89,6 +89,6 @@ Snyk 标记它，而那个 flag 是误报。它是这套里唯一随附一个可
 
 ## Where it fits
 
-`diagnosing-bugs` 是一个随时可调用的 standalone。你在某样东西坏掉的那一刻落入它，并在修复及其 regression test 就位时退出；它不持有状态，也不需要先前的设置。[ask-matt](https://aihero.dev/skills-ask-matt) 把「有东西坏了」路由到这里。
+`diagnosing-bugs` 是一个随时可调用的 standalone。你在某样东西坏掉的那一刻落入它，并在修复及其 regression test 就位时退出；它不持有状态，也不需要先前的设置。[ask-dikui](https://aihero.dev/skills-ask-dikui) 把「有东西坏了」路由到这里。
 
 修复完成后，用户可在同一会话显式调用 [retro](https://aihero.dev/skills-retro)，检查什么措施本可预防缺陷。诊断技能本身不调用复盘技能。缺少正确测试接口时，可另行选择 [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture)。[triage](https://aihero.dev/skills-triage) 位于原始缺陷报告的上游，对前两个阶段做范围有限的验证。

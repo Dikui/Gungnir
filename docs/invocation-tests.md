@@ -1,13 +1,13 @@
 # 调用分层实测
 
-修改调用规则或从上游刷新内容后，在**新会话**中手动跑一遍（技能列表在会话启动时加载）。规则见[调用规则](./invocation.md)。
+修改调用规则或技能内容后，在**新会话**中手动跑一遍（技能列表在会话启动时加载）。规则见[调用规则](./invocation.md)。
 
 ## 准备
 
 让会话加载本仓库的技能，任选一种：
 
 - Claude Code CLI：`claude --plugin-dir <本仓库路径>`
-- 安装 plugin：`claude plugin install mattpocock-skills@mattpocock`（marketplace 指向本仓库）
+- 安装 plugin：`claude plugin install dikui-skills@dikui`（marketplace 指向本仓库）
 
 ## A. 普通对话不触发基础技能
 

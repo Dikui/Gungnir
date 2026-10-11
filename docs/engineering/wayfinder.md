@@ -22,7 +22,7 @@ Greenfield 不是必要条件。Wayfinder 也常规地用于 legacy 和半成品
 
 ## Prerequisites
 
-Map 及其 tickets 位于 repo 的 issue tracker 上，因此 wayfinder 需要 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) 铺设的 tracker wiring。该步骤会写入一个 "Wayfinding operations" 小节，描述 map、child tickets、blocking edges 和 frontier queries 在 GitHub、GitLab 或 local markdown 上如何表达。Wayfinder 通过你 `CLAUDE.md` / `AGENTS.md` 中的 pointer 解析这份文档，而不是某个固定路径；如果完全没有配置 tracker，它就回退到 local markdown 文件。
+Map 及其 tickets 位于 repo 的 issue tracker 上，因此 wayfinder 需要 [setup-dikui-skills](https://aihero.dev/skills-setup-dikui-skills) 铺设的 tracker wiring。该步骤会写入一个 "Wayfinding operations" 小节，描述 map、child tickets、blocking edges 和 frontier queries 在 GitHub、GitLab 或 local markdown 上如何表达。Wayfinder 通过你 `CLAUDE.md` / `AGENTS.md` 中的 pointer 解析这份文档，而不是某个固定路径；如果完全没有配置 tracker，它就回退到 local markdown 文件。
 
 Tracker 不是装饰。正是 blocking 让 frontier 在 tracker 自己的 UI 中可视化呈现，而一个没有原生依赖链接的 tracker——比如自托管的 Gitea——会让 wayfinder 退化为从 map 文本推断 blockers，这能用，但需要更密切的监督。
 
@@ -100,4 +100,4 @@ Frontier 就是用来向你展示哪些是可领取的，blocking edges 的存�
 
 `wayfinder` 是一个 **situational on-ramp**，而不是默认的正门。以 grill 为起点的 idea → ship 链条仍然是大多数工作的起点；当 idea 大到无法装进一个 session 时，你才爬上 wayfinder，而它会在 [to-spec](https://aihero.dev/skills-to-spec) 处重新汇入那条链条，因为一张已清除的 map 是交接，而不是继续构建。
 
-在底层，它主要是穿着 wayfinder 调度外衣的其他 skills：[grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling) 解决默认的 ticket 类型，[prototype](https://aihero.dev/skills-prototype) 解决谈话解决不了的 tickets，而 [research](https://aihero.dev/skills-research) 以 subagent 运行，让它的阅读永远不会落进你的 session。[handoff](https://aihero.dev/skills-handoff) 是进出的桥——从一个自我膨胀的 conversation 进入 map，或在 session 中途冒出支线任务时离开 map。至于其他一切，[ask-matt](https://aihero.dev/skills-ask-matt) 会在整套中为你引路。
+在底层，它主要是穿着 wayfinder 调度外衣的其他 skills：[grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling) 解决默认的 ticket 类型，[prototype](https://aihero.dev/skills-prototype) 解决谈话解决不了的 tickets，而 [research](https://aihero.dev/skills-research) 以 subagent 运行，让它的阅读永远不会落进你的 session。[handoff](https://aihero.dev/skills-handoff) 是进出的桥——从一个自我膨胀的 conversation 进入 map，或在 session 中途冒出支线任务时离开 map。至于其他一切，[ask-dikui](https://aihero.dev/skills-ask-dikui) 会在整套中为你引路。

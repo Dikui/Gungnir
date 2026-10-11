@@ -20,7 +20,7 @@
 
 ## Prerequisites
 
-`to-tickets` 发布到一个 tracker，所以 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) 必须先为这个 repo 配置好一个，连同 triage-label vocabulary。任一类型都可以：像 GitHub 或 Linear 这样的真实 tracker，或 `.scratch/` 下的 local markdown 文件，后者开箱即受支持。
+`to-tickets` 发布到一个 tracker，所以 [setup-dikui-skills](https://aihero.dev/skills-setup-dikui-skills) 必须先为这个 repo 配置好一个，连同 triage-label vocabulary。任一类型都可以：像 GitHub 或 Linear 这样的真实 tracker，或 `.scratch/` 下的 local markdown 文件，后者开箱即受支持。
 
 ## Tracer bullets, not layers
 
@@ -96,4 +96,4 @@ Skill 止步于 artifact，没有 auto-dispatch 模式。分派是手工的：�
 grill-with-docs → to-spec → to-tickets → implement → code-review → retro
 ```
 
-上游是 [to-spec](https://aihero.dev/skills-to-spec)，它交来一份已定稿的 spec 供你切片——把两者保持在一个不间断的 context window 里。下游是 [implement](https://aihero.dev/skills-implement)，它每个全新 session 构建一个 ticket，为 tests 驱动 [tdd](https://aihero.dev/skills-tdd)，并以 [code-review](https://aihero.dev/skills-code-review) 收尾。也可使用 [implement-spec](https://aihero.dev/skills-implement-spec) 按依赖图并行实施整份需求。完成后可显式调用 [retro](https://aihero.dev/skills-retro) 复盘工作环境。当你不确定哪个 skill 或 flow 合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+上游是 [to-spec](https://aihero.dev/skills-to-spec)，它交来一份已定稿的 spec 供你切片——把两者保持在一个不间断的 context window 里。下游是 [implement](https://aihero.dev/skills-implement)，它每个全新 session 构建一个 ticket，为 tests 驱动 [tdd](https://aihero.dev/skills-tdd)，并以 [code-review](https://aihero.dev/skills-code-review) 收尾。也可使用 [implement-spec](https://aihero.dev/skills-implement-spec) 按依赖图并行实施整份需求。完成后可显式调用 [retro](https://aihero.dev/skills-retro) 复盘工作环境。当你不确定哪个 skill 或 flow 合适时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 会为你路由。

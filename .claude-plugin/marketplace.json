@@ -1,15 +1,15 @@
 {
-  "name": "mattpocock",
+  "name": "dikui",
   "owner": {
-    "name": "Matt Pocock",
-    "url": "https://www.aihero.dev"
+    "name": "dikui",
+    "url": "https://github.com/Dikui"
   },
-  "description": "Matt Pocock 的真实工程 skills，以可安装的 Claude Code plugin 形式提供简体中文本地化版本。",
+  "description": "Gungnir 的简体中文工程技能，以 Claude Code 插件形式提供。",
   "plugins": [
     {
-      "name": "mattpocock-skills",
+      "name": "dikui-skills",
       "source": "./",
-      "description": "Matt Pocock 面向真实工程工作的 agent skills：持续追问、spec/ticket flows、TDD、代码审查、领域建模等。",
+      "description": "面向项目开发的简体中文工程技能：访谈、需求与任务、TDD、代码审查、领域建模和方法诊断。",
       "category": "engineering",
       "keywords": [
         "engineering",

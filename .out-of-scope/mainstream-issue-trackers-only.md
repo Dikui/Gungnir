@@ -1,6 +1,6 @@
 # Issue tracker 集成仅限主流工具
 
-`setup-matt-pocock-skills` 只对**主流** issue tracker 提供一等支持。为小众、新兴或单一厂商的实验性 tracker 增加支持不在范围内。
+`setup-dikui-skills` 只对**主流** issue tracker 提供一等支持。为小众、新兴或单一厂商的实验性 tracker 增加支持不在范围内。
 
 ## 为什么这不在范围内
 
@@ -19,7 +19,3 @@ Stars、存在时间和下载量都是判断时有用的信号，但都不是规
 - `other/custom`，用于想自己接入工作流的用户。
 
 两者都不要求核心 skills 理解具体工具。
-
-## Prior requests
-
-- #99 — "Add dex as an issue tracker backend"（dex 当时约 3 个月大，约 300 stars）

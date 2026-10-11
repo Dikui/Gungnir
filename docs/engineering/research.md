@@ -70,4 +70,4 @@ skill 里没有停止准则，而这表现为两个看似相反、实为同一�
 
 ## Where it fits
 
-一个可随时取用的 standalone，为思考类 skills 供料，而不是坐在 build chain 里。它的文件是某种要*带进* flow 的东西：当事实已经摆在桌面上时，[grilling](https://aihero.dev/skills-grilling) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 会问出更锐利的问题，而 [to-spec](https://aihero.dev/skills-to-spec) 可以对着它做综合。[wayfinder](https://aihero.dev/skills-wayfinder) 是唯一直接调用它的 skill，用 `/research` subagent 解决其地图上的每个 research ticket。完整地图见 [ask-matt](https://aihero.dev/skills-ask-matt)。
+一个可随时取用的 standalone，为思考类 skills 供料，而不是坐在 build chain 里。它的文件是某种要*带进* flow 的东西：当事实已经摆在桌面上时，[grilling](https://aihero.dev/skills-grilling) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 会问出更锐利的问题，而 [to-spec](https://aihero.dev/skills-to-spec) 可以对着它做综合。[wayfinder](https://aihero.dev/skills-wayfinder) 是唯一直接调用它的 skill，用 `/research` subagent 解决其地图上的每个 research ticket。完整地图见 [ask-dikui](https://aihero.dev/skills-ask-dikui)。

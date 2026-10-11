@@ -6,7 +6,7 @@
 
 ## When to reach for it
 
-你通过输入 `/implement` 调用它——agent 不会自行取用它。它带着 `disable-model-invocation: true` 发布，所以其他 skill 也不能调用它。无论 [ask-matt](https://aihero.dev/skills-ask-matt) 还是 [to-tickets](https://aihero.dev/skills-to-tickets) 说"然后每个 ticket 走 `/implement`"，那都是给你的指令，而不是 agent 会在未提示下自己去做的事。
+你通过输入 `/implement` 调用它——agent 不会自行取用它。它带着 `disable-model-invocation: true` 发布，所以其他 skill 也不能调用它。无论 [ask-dikui](https://aihero.dev/skills-ask-dikui) 还是 [to-tickets](https://aihero.dev/skills-to-tickets) 说"然后每个 ticket 走 `/implement`"，那都是给你的指令，而不是 agent 会在未提示下自己去做的事。
 
 工作当前住在哪里，决定了这是否是正确的 skill：
 
@@ -26,7 +26,7 @@
 
 `implement` 提交到你当前所在的 branch。它不会创建分支，也不会问。开始之前确认你正处于你想要工作落在其上的 branch。
 
-如果 tickets 来自 [to-tickets](https://aihero.dev/skills-to-tickets)，它们所在的 tracker 由 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) 配置。`code-review` 读取同一配置，以便在收尾时找到源起 spec。
+如果 tickets 来自 [to-tickets](https://aihero.dev/skills-to-tickets)，它们所在的 tracker 由 [setup-dikui-skills](https://aihero.dev/skills-setup-dikui-skills) 配置。`code-review` 读取同一配置，以便在收尾时找到源起 spec。
 
 ## What one run does
 
@@ -94,4 +94,4 @@ grill-with-docs → to-spec → to-tickets → implement → code-review → ret
 
 这份信任正是 [wayfinder](https://aihero.dev/skills-wayfinder) 在 [to-spec](https://aihero.dev/skills-to-spec) 处并入这条 chain、而不是把它的地图直接循环进 `implement` 的原因。只有当场得出 effort 确实很小时，才从一张地图直接去 `implement`。
 
-当你不确定自己身处哪个 flow 时，[ask-matt](https://aihero.dev/skills-ask-matt) 是覆盖全集的 router。
+当你不确定自己身处哪个 flow 时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 是覆盖全集的 router。

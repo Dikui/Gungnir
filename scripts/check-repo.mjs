@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-import { BUCKETS, ROOT, listSkills, readSkill } from './skills.mjs'
+import { BUCKETS, ROOT, listSkills } from './skills.mjs'
 
 const DESCRIPTION_GATE = '不要根据对话内容自行加载'
 const BODY_GUARD = '加载条件：'
@@ -38,7 +38,7 @@ function indexEntries(text) {
 }
 
 const skills = listSkills()
-const all = [...skills, readSkill(join(ROOT, '.skills/translate-skill'), '.skills')]
+const all = skills
 
 // Invocation tiers: frontmatter and agents/openai.yaml must agree.
 const invocationDoc = read('docs/invocation.md')
@@ -66,14 +66,14 @@ for (const s of all) {
   if (!listedInDoc) fail('docs/invocation.md', `Skill-invoked table is missing ${s.name}`)
 }
 
-// Public entry skills must be discoverable through ask-matt.
-const askMattFile = 'skills/engineering/ask-matt/SKILL.md'
-const askMatt = read(askMattFile)
+// Public entry skills must be discoverable through ask-dikui.
+const askDikuiFile = 'skills/engineering/ask-dikui/SKILL.md'
+const askDikui = read(askDikuiFile)
 for (const s of skills.filter((s) => s.public)) {
-  if (s.name === 'ask-matt' || s.meta?.['disable-model-invocation'] !== 'true' || s.meta['user-invocable'] === 'false') continue
+  if (s.name === 'ask-dikui' || s.meta?.['disable-model-invocation'] !== 'true' || s.meta['user-invocable'] === 'false') continue
   const name = s.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  if (!new RegExp(`/${name}(?![A-Za-z0-9-])`).test(askMatt)) {
-    fail(askMattFile, `${s.name}: 在 ask-matt 中登记该技能`)
+  if (!new RegExp(`/${name}(?![A-Za-z0-9-])`).test(askDikui)) {
+    fail(askDikuiFile, `${s.name}: 在 ask-dikui 中登记该技能`)
   }
 }
 

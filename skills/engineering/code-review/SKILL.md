@@ -12,7 +12,7 @@ description: 审查指定基准之后的代码变更，分别报告编码规范�
 
 两个子代理并行审查，各自形成结论。最后分别呈现结果，避免一类问题掩盖另一类问题。
 
-从 `docs/agents/issue-tracker.md` 读取 issue tracker 配置。文件缺失时，告知用户先显式运行 `/setup-matt-pocock-skills`。
+从 `docs/agents/issue-tracker.md` 读取 issue tracker 配置。文件缺失时，告知用户先显式运行 `/setup-dikui-skills`。
 
 ## 审查步骤
 

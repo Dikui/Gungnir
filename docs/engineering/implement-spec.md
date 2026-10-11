@@ -17,7 +17,7 @@
 
 ## 前提条件
 
-- **issue tracker。** 技能从 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) 配置的跟踪器读取并完成任务单。若尚未配置，它会停止并要求你先运行该技能，不会猜测。
+- **issue tracker。** 技能从 [setup-dikui-skills](https://aihero.dev/skills-setup-dikui-skills) 配置的跟踪器读取并完成任务单。若尚未配置，它会停止并要求你先运行该技能，不会猜测。
 - **带阻塞关系的任务单**，采用 [to-tickets](https://aihero.dev/skills-to-tickets) 生成的形式。没有阻塞关系时，图是平的，所有任务单会同时开始。
 - **能在后台运行子代理，并为每个子代理提供 git worktree 的[运行环境](https://www.aihero.dev/ai-coding-dictionary/harness)。** 并发是重点；逐个运行子代理的环境只会得到更慢的 `implement`。
 
@@ -83,4 +83,4 @@ Worktree 只包含 git 跟踪的内容。读取 gitignored 测试数据、本地
 grill-with-docs → to-spec → to-tickets → implement-spec → retro
 ```
 
-相邻技能是 [to-tickets](https://aihero.dev/skills-to-tickets)，它声明阻塞关系，供此技能读取为任务依赖图；以及 [code-review](https://aihero.dev/skills-code-review)，用户同时明确指定后，在结束前审查集成分支。不确定处于哪种流程时，[ask-matt](https://aihero.dev/skills-ask-matt) 可帮助选择整套技能中的流程。上述引用不构成自动调用授权。
+相邻技能是 [to-tickets](https://aihero.dev/skills-to-tickets)，它声明阻塞关系，供此技能读取为任务依赖图；以及 [code-review](https://aihero.dev/skills-code-review)，用户同时明确指定后，在结束前审查集成分支。不确定处于哪种流程时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 可帮助选择整套技能中的流程。上述引用不构成自动调用授权。

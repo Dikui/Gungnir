@@ -5,7 +5,7 @@ Beta。这些 skills 是有意公开的——试用它们，告诉我们哪里�
 Plugin 不会提供它们。直接安装某一个：
 
 ```bash
-npx skills@latest add vinvcn/mattpocock-skills-zh-CN --skill=<name>
+npx skills@latest add Dikui/Gungnir --skill=<name>
 ```
 
 暂无技能。

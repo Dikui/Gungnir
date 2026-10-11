@@ -17,7 +17,7 @@
 | 把工作交给同事 | 他们需要一份能读的东西 |
 | Fork 一个在 phase 中途发现的 side task | 你继续工作；第二个 agent 拿走那个 fork |
 
-对于其他任何情况——相同的 harness、相同的目录、你已经完成 [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) 并转向实施——`/compact` 才是选择。[ask-matt](https://aihero.dev/skills-ask-matt) 在 phase 边界上携带覆盖全部五个选项的有序 tree。
+对于其他任何情况——相同的 harness、相同的目录、你已经完成 [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) 并转向实施——`/compact` 才是选择。[ask-dikui](https://aihero.dev/skills-ask-dikui) 在 phase 边界上携带覆盖全部五个选项的有序 tree。
 
 ## Branching is the use people skip
 
@@ -73,4 +73,4 @@
 
 ## Where it fits
 
-`handoff` 是一个**随时可调用的 standalone**，它位于 sessions 之间的接缝处，而不是某条 build chain 内部——但它是窄窄一个，而诚实的图景是：在 phase 边界上，你用它会比用其他四个选项少得多。它最近的邻居是 [prototype](https://aihero.dev/skills-prototype)，因为 prototype 住在自己的目录里，而出出进进的往返正是这个 skill 所为之服务的跨越。当你处于一个边界、不确定是该 continue、clear、hand off、delegate 还是 compact 时，[ask-matt](https://aihero.dev/skills-ask-matt) 携带给那五个判序的 tree——并带你路由到该集合的其余部分。
+`handoff` 是一个**随时可调用的 standalone**，它位于 sessions 之间的接缝处，而不是某条 build chain 内部——但它是窄窄一个，而诚实的图景是：在 phase 边界上，你用它会比用其他四个选项少得多。它最近的邻居是 [prototype](https://aihero.dev/skills-prototype)，因为 prototype 住在自己的目录里，而出出进进的往返正是这个 skill 所为之服务的跨越。当你处于一个边界、不确定是该 continue、clear、hand off、delegate 还是 compact 时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 携带给那五个判序的 tree——并带你路由到该集合的其余部分。

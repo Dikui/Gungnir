@@ -20,7 +20,7 @@
 
 ## Prerequisites
 
-`triage` 会读写你的 issue tracker，所以 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) 必须先配置好那个 tracker 和它的 label vocabulary。下面这些 role 名称是 **canonical** 的；你 tracker 里的 label 字符串可能不同，那份映射正是 setup 所提供的。如果你的 tracker 已经精确使用 canonical 名称，就没有什么可映射、没什么可配置。
+`triage` 会读写你的 issue tracker，所以 [setup-dikui-skills](https://aihero.dev/skills-setup-dikui-skills) 必须先配置好那个 tracker 和它的 label vocabulary。下面这些 role 名称是 **canonical** 的；你 tracker 里的 label 字符串可能不同，那份映射正是 setup 所提供的。如果你的 tracker 已经精确使用 canonical 名称，就没有什么可映射、没什么可配置。
 
 Tracker config 还决定外部 pull requests 是否算作一个 request surface，以及谁算作 external。那个 flag 默认关闭，已不再是 setup 问题——如果你想 PRs 在范围内，在 `docs/agents/issue-tracker.md` 里翻转它。
 
@@ -71,7 +71,7 @@ Discovery 只呈现*外部* PRs，因为协作者一个进行中的 branch 不�
 只有在你有人境工作的时候。`triage` 早于那条主干，做的是不同的工作：它是别人提交的 reports 的车道。如果你的 tracker 里一切来自你自己的规划，你很少会打开它。如果你维护任何公开的东西，或你的团队向你提报 bugs，它就是前门。主要用途是拿着来自外部贡献者 issues 的开源 repos。
 
 **agent 试图应用 `ready-for-agent`，而 `gh` 说这个 label 不存在。**
-已知的开放 bug（[#616](https://github.com/mattpocock/skills/issues/616)）。`setup-matt-pocock-skills` 把 label vocabulary 写进 `docs/agents/triage-labels.md`，但不会在你的 tracker 里创建 labels。自己创建那五个 state labels 和两个 category labels，一次，用 `gh label create` 或 tracker 的 UI，然后它就停了。issue 里有一个尚未合并的社区修复分支。
+已知的开放 bug（[#616](https://github.com/mattpocock/skills/issues/616)）。`setup-dikui-skills` 把 label vocabulary 写进 `docs/agents/triage-labels.md`，但不会在你的 tracker 里创建 labels。自己创建那五个 state labels 和两个 category labels，一次，用 `gh label create` 或 tracker 的 UI，然后它就停了。issue 里有一个尚未合并的社区修复分支。
 
 **五个 states 不够——blocked 或 deferred 或 implemented 呢？**
 这是这个 skill 上被提报最多的缺口，有三种形状。一个已完全指定但等另一个 issue 关闭的 issue（[#139](https://github.com/mattpocock/skills/issues/139)）——reporter 的抱怨是 `ready-for-agent` 在那里 "technically true" 但误导，所以一个 agent 领起它然后撞墙。Trigger-gated 的未来工作，是打算做的但还不能行动（[#297](https://github.com/mattpocock/skills/issues/297)）。以及一个用于 "implemented, awaiting verification" 的终态，没有它一个 AFK runner 会重新排队已完成的 tickets。Matt 已同意 blocked 情形是真实的，对名字（`blocked` 对 `paused`）未决定。它们都没发布。人们用的 workaround 是 category 旁边加一个 repo-local 的额外 label，让 canonical state 槽被某个诚实的东西占据，代价是 skill 不知道它。一个社区衍生版走得更远，加了 `needs-slicing`、`tracking` 和 effort labels——那可行，但那是他们的，不是 skill 的。
@@ -96,4 +96,4 @@ Discovery 只呈现*外部* PRs，因为协作者一个进行中的 branch 不�
 
 ## Where it fits
 
-`triage` 是一个 **on-ramp**，不是 main chain 中的一个步骤。Main flow 从你有的一个想法运行——grill、spec、tickets、implement、review——而 `triage` 是留给取而代之*到达*的工作的并行车道。它在同一个地方合并：一个带 brief、标 `ready-for-agent` 的 issue，[implement](https://aihero.dev/skills-implement) 领起它，就像领起 [to-tickets](https://aihero.dev/skills-to-tickets) 的一个 ticket。当一个请求在能被 brief 之前需要打磨时，`triage` 一起运行 [grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling)，一次一轮问题，所以决定在做出时落入 `GLOSSARY.md` 和 ADRs。当你不确定自己在哪条车道时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+`triage` 是一个 **on-ramp**，不是 main chain 中的一个步骤。Main flow 从你有的一个想法运行——grill、spec、tickets、implement、review——而 `triage` 是留给取而代之*到达*的工作的并行车道。它在同一个地方合并：一个带 brief、标 `ready-for-agent` 的 issue，[implement](https://aihero.dev/skills-implement) 领起它，就像领起 [to-tickets](https://aihero.dev/skills-to-tickets) 的一个 ticket。当一个请求在能被 brief 之前需要打磨时，`triage` 一起运行 [grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling)，一次一轮问题，所以决定在做出时落入 `GLOSSARY.md` 和 ADRs。当你不确定自己在哪条车道时，[ask-dikui](https://aihero.dev/skills-ask-dikui) 会为你路由。

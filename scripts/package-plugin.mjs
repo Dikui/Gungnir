@@ -20,7 +20,7 @@ const json = async (path, data) => { await mkdir(dirname(path), { recursive: tru
 await json(join(plugin, '.claude-plugin/plugin.json'), { ...original, skills: ['./skills/'] })
 await json(join(plugin, '.codex-plugin/plugin.json'), {
   ...original, skills: './skills/',
-  interface: { displayName: 'Gungnir', shortDescription: '面向项目开发的简体中文工程技能', longDescription: '简体中文工程技能，覆盖需求梳理、任务规划、TDD、代码审查和领域建模。', developerName: 'vinvcn', category: 'Developer Tools', capabilities: ['Read', 'Write'], defaultPrompt: ['使用 $ask-matt 为当前项目选择合适的工程技能。'] },
+  interface: { displayName: 'Gungnir', shortDescription: '面向项目开发的简体中文工程技能', longDescription: '简体中文工程技能，覆盖需求梳理、任务规划、TDD、代码审查和领域建模。', developerName: 'dikui', category: 'Developer Tools', capabilities: ['Read', 'Write'], defaultPrompt: ['使用 $ask-dikui 为当前项目选择合适的工程技能。'] },
 })
 const codex = JSON.parse(await readFile(join(plugin, '.codex-plugin/plugin.json'), 'utf8'))
 await json(join(plugin, 'plugin.json'), {
@@ -33,7 +33,7 @@ await json(join(output, '.agents/plugins/marketplace.json'), {
   plugins: [{ name: original.name, source: { source: 'local', path: './plugins/' + original.name }, policy: { installation: 'AVAILABLE', authentication: 'ON_INSTALL' }, category: 'Developer Tools' }],
 })
 await json(join(output, '.claude-plugin/marketplace.json'), {
-  name: 'gungnir-local', owner: { name: 'vinvcn' },
+  name: 'gungnir-local', owner: { name: 'dikui' },
   description: 'Gungnir 本地插件市场，提供简体中文工程技能。',
   plugins: [{ name: original.name, source: './plugins/' + original.name }],
 })
