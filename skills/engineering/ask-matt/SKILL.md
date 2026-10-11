@@ -11,14 +11,17 @@ disable-model-invocation: true
 ## 从想法到实现
 
 1. **明确想法**：在项目目录中，用 `/grill-with-docs` 访谈，将术语和决策保存到 `GLOSSARY.md`、ADR。没有可记录的项目目录时，用 `/grill-me`。两者都依赖 `/grilling` 的访谈方式。
+   访谈中怀疑方向本身有问题时，可先用 `/first-principles`。
 2. **需要原型时验证**：状态、业务逻辑或界面问题无法只靠对话解决时，用 `/handoff` 导出上下文，在原型目录的新会话中使用 `/prototype`。完成后再用 `/handoff` 将结论带回原对话。
 3. **按规模实施**：
    - 一次会话能完成：在当前上下文使用 `/implement`。
-   - 需要多次会话：先用 `/to-spec` 整理需求，再用 `/to-tickets` 拆成可贯通各层、独立验证的任务，并声明前置依赖。随后选择一种实施方式：
+   - 需要多次会话：先用 `/to-spec` 整理需求。想先审一遍需求漏洞时，可用 `/adversarial-review` 审查需求文档；需求或方案明显膨胀时，可用 `/occams-razor` 检查方案组成的依据。再用 `/to-tickets` 拆成可贯通各层、独立验证的任务，并声明前置依赖。随后选择一种实施方式：
      - 每个任务开启一次 `/implement`，任务间用 `/clear` 清空上下文。本地任务存入 `.scratch/<feature>/issues/` 的独立文件，按依赖顺序处理；远程 tracker 使用原生依赖链接。任务须自包含，完成后的上下文可以丢弃。
      - 使用 `/implement-spec` 一次实施整份需求。它把任务视为依赖图，让无阻塞的任务在独立 worktree 中并行实施，再汇入同一集成分支。
 
 `/implement` 的完整流程配合 `/tdd` 和 `/code-review`：一次完成一个“失败测试 → 最小实现”循环，最后分别审查编码规范和需求符合性，再提交。`/implement-spec` 的各实施代理配合 `/tdd`，所有任务完成后对集成分支运行一次 `/code-review`。用户需要完整流程时，应同时指定对应的实施、测试和审查技能。
+
+实现中加入多项优化、需要确认哪个起作用时，可用 `/ablation`。
 
 需要撰写 PR 正文时，可显式指定 `/pr`，用最小图示、前后验证证据、可回退性和影响范围说明变更。
 
@@ -42,9 +45,27 @@ disable-model-invocation: true
 
 `/wayfinder` 默认产出决策，不直接实现。地图清楚后，先用 `/to-spec` 收拢相互关联的决策，再进入 `/to-tickets` 和 `/implement`。只有最终发现任务很小时，才直接进入 `/implement`。
 
+## 遇到问题时选方法
+
+遇到下列情况时，推荐对应技能，由用户调用。
+
+| 触发信号 | 技能 | 调用前准备 |
+| --- | --- | --- |
+| 怀疑解决方向选错，方案主要依赖“大家都这样做” | `/first-principles` | 当前方案 |
+| 想找出计划、需求或代码的反例 | `/adversarial-review` | 审查对象；代码需提供基准 |
+| 方案越来越复杂，说不清每个部分为什么存在 | `/occams-razor` | 需求文档或需求清单 |
+| 加了多项优化或机制，不清楚收益来自哪个 | `/ablation` | 可量化指标和可重复的测量命令 |
+| 模块职责和依赖混乱，改一处牵动多处 | `/cohesion-coupling` | 要分析的模块或目录 |
+
+- `/grill-me` 通过用户回答问题打磨方案；`/first-principles` 由代理查证前提、从头推导，给出保持、调整或换方向的结论。
+- `/code-review` 按编码规范和需求审查代码差异；`/adversarial-review` 由与作者隔离的攻击方针对主张找反例并逐条核实，也能审查计划和需求文档。
+- Claude Code 自带的 `/simplify` 简化代码写法；`/occams-razor` 判断方案各组成是否有需求或证据依据。
+- `/improve-codebase-architecture` 寻找可深化的模块并讨论改造方案；`/cohesion-coupling` 提供职责、依赖和共同修改的证据与重组方向，不讨论具体接口设计。
+- `/diagnosing-bugs` 定位缺陷或性能回退的原因；`/ablation` 在收益已存在时测量各机制的贡献。
+
 ## 架构维护与术语
 
-- `/improve-codebase-architecture` 查找可深化的模块，供维护时选择。选中的方向可回到 `/grill-with-docs` 继续讨论；具体接口设计使用 `/codebase-design`。
+- `/improve-codebase-architecture` 查找可深化的模块，供维护时选择。需要先拿到职责、依赖和共同修改的证据时，可先用 `/cohesion-coupling`。选中的方向可回到 `/grill-with-docs` 继续讨论；具体接口设计使用 `/codebase-design`。
 - `/domain-modeling` 维护领域语言：明确模糊术语，拆开一词多义，将难以逆转的决策记为 ADR，保持 `GLOSSARY.md` 词汇表准确。
 - `/codebase-design` 提供 module、interface、depth、seam、adapter、leverage、locality 等架构术语，用小接口封装复杂行为。`/tdd` 和架构维护流程使用同一套语言。
 
