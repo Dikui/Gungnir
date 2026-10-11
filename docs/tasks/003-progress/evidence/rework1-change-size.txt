@@ -1,0 +1,24 @@
+$ git diff --stat
+ docs/engineering/wayfinder.md                   |  2 +-
+ docs/productivity/grilling.md                   |  2 +-
+ docs/tasks/003-progress/evidence/walkthrough.md | 52 +++++++++++++++++++---
+ docs/tasks/003-progress/report.md               | 58 +++++++++++++++++++++++++
+ skills/engineering/wayfinder/SKILL.md           |  4 +-
+ skills/productivity/grilling/SKILL.md           |  4 +-
+ 6 files changed, 112 insertions(+), 10 deletions(-)
+exit-code: 0
+
+$ git diff --numstat -- skills/productivity/grilling/SKILL.md skills/engineering/wayfinder/SKILL.md
+3	1	skills/engineering/wayfinder/SKILL.md
+3	1	skills/productivity/grilling/SKILL.md
+exit-code: 0
+
+$ wc -l skills/productivity/grilling/SKILL.md skills/engineering/wayfinder/SKILL.md
+      45 skills/productivity/grilling/SKILL.md
+     123 skills/engineering/wayfinder/SKILL.md
+     168 total
+exit-code: 0
+
+$ git diff --check
+exit-code: 0
+

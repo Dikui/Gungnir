@@ -1,0 +1,10 @@
+原基线：290 条；提交版本：316 条；返工最终：316 条。
+原基线路径及问题行内容（忽略行号）：完全相同，新增 0。
+与提交版本对比：各文件提示行数相同，新增提示行 0。
+旧走查引用因行号与计数解释变化，部分提示行内容变化；新场景与本次报告没有新增提示行。
+原基线及提交版本、返工最终审计退出码均为 1。
+提交后才进入扫描范围的文件与提示数：
+docs/tasks/003-progress.md: 9
+docs/tasks/003-progress/evidence/walkthrough.md: 5
+docs/tasks/003-progress/last-message.md: 1
+docs/tasks/003-progress/report.md: 11

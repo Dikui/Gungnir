@@ -1,0 +1,9 @@
+$ npm run build (cwd: dsh-plugin)
+
+> @dikui/dsh-skills-zh@2.0.0 build
+> node scripts/copy-skills.mjs
+
+sourceRoot: /Users/dikui/Project/Gungnir/skills
+outputRoot: /Users/dikui/Project/Gungnir/dsh-plugin/skills
+copied 30 skills to /Users/dikui/Project/Gungnir/dsh-plugin/skills
+exit-code: 0

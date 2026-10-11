@@ -1,0 +1,5 @@
+dsh-plugin 全目录 327 个文件，路径与 SHA-256 完全等于返工开始时快照。
+$ git status --short --untracked-files=all -- dsh-plugin
+exit-code: 0
+备份目录 /private/tmp/gungnir-003-rework1-nbw67c26 已删除。审计用临时目录已删除。
+全部检查子进程已退出；未启动后台服务、浏览器或模型进程。

@@ -80,3 +80,61 @@ dsh 产物原本已存在且被忽略。先备份开始时的实际文件，检�
 ## 7. 清理
 
 所有检查命令的子进程均已结束。本次未启动后台服务、浏览器或模型进程。dsh 产物及依赖目录恢复到开始内容；临时备份目录已删除。仅保留要求的报告与证据，没有留下本次生成的 dsh 产物变动。证据见 [cleanup.txt](evidence/cleanup.txt)。
+
+## 返工 1
+
+本次仅修改 grilling、wayfinder 两个技能及其说明文章中与计数口径有关的句子，另按要求更新走查和追加本节。两个技能均净增 2 行，没有改动 to-tickets、其他技能或检查脚本，没有提交 git。报告第一行的会话编号保持原值。
+
+### 改动内容
+
+- grilling：因回答失效的未回答问题从分母移除；一个回答覆盖的其他问题算已回答。已回答问题保留计数，分子只增不减，分母随回答增减。
+- wayfinder：分子仅计因解决而关闭的任务单；范围外关闭和删除的任务单均不计入分子分母。按地图范围外部分的任务链接识别范围外关闭，不额外逐张读取任务正文。进度格式不变。
+- 两篇文章同步计数口径，其他流程及提前结束规则保持不变。
+
+### 检查结果与证据
+
+| 检查 | 结果 | 证据 |
+| --- | --- | --- |
+| 开始状态 | 保留原有未跟踪文件；已跟踪文件无预存改动。 | [开始状态](evidence/rework1-initial-status.txt) |
+| 仓库检查 | 通过，退出码 0。 | [输出](evidence/rework1-check-repo.txt) |
+| 英文审计 | 原有提示仍导致退出码 1；返工未新增提示。 | [输出](evidence/rework1-audit-english.txt) |
+| 英文审计对比 | 原基线扫描范围内仍为 290 条；提交版本及返工最终均为 316 条。 | [对比](evidence/rework1-audit-comparison.txt) |
+| 已提交版本审计 | 从当前提交读取文件到临时目录，执行原检查，识别扫描范围变化。 | [提交版本输出](evidence/rework1-committed-baseline.txt) |
+| dsh 构建 | 通过，退出码 0。 | [输出](evidence/rework1-dsh-build.txt) |
+| dsh 测试 | 通过，退出码 0。 | [输出](evidence/rework1-dsh-test.txt) |
+| dsh 验证 | 通过，退出码 0。 | [输出](evidence/rework1-dsh-verify.txt) |
+| 产物内容与引用 | 新句子完整保留，全文与原前缀及引用转换结果一致。 | [核对](evidence/rework1-dsh-content.txt) |
+| 行数、空白与范围 | 两个技能净增各 2 行；空白检查通过。 | [规模与检查](evidence/rework1-change-size.txt) |
+| 最终正文差异 | 仅四份正文及要求的走查、报告有已跟踪改动。 | [差异](evidence/rework1-diff.txt) |
+| 行号快照 | 记录最终技能行号，旧快照未覆盖。 | [快照](evidence/rework1-skill-lines.txt) |
+| 恢复与清理 | dsh 全目录恢复到返工开始时的文件内容和状态。 | [清理证据](evidence/rework1-cleanup.txt) |
+
+原基线为 290 条。上一版提交后，任务说明、走查、报告和最终答复四份文档进入英文审计扫描范围，增加 26 条已有提示；这是提交后的扫描范围变化。本次补查提交版本为 316 条，返工最终也是 316 条。原基线覆盖的路径及问题内容完全相同。本次没有新增英文重度行；既有走查引用的行号与计数解释有所更新。不修改原报告或范围外任务输入来消除这些已有提示。
+
+### 场景复核
+
+完整结果及引用见 [场景走查](evidence/walkthrough.md)。
+
+- h：已回答 2 题，移除 1 道失效未问题后，目前已知 5 题，下一轮末行为 `进度：2/5`。
+- i：被同一回答覆盖的另一个问题算已回答，保留在分母中；两题原本均未回答时，分子增加 2。
+- j：排除范围外关闭的 1 张后，末行为 `地图进度：2/7 · 待明确 2 项`。
+- a–g 的输出及下一步行为没有变化。a 的计数说明更新；f 明确本场景未列出范围外关闭或删除任务，仍为 `地图进度：3/8 · 待明确 2 项`。grilling 原第 31 行之后和 wayfinder 原第 100 行之后的引用各顺延 2 行，相关引用已就地更新。
+
+### 最终状态与清理
+
+完整状态见 [最终状态](evidence/rework1-final-status.txt)。
+
+范围检查见 [范围证据](evidence/rework1-final-scope.txt)。已跟踪改动如下：
+
+```text
+ M docs/engineering/wayfinder.md
+ M docs/productivity/grilling.md
+ M docs/tasks/003-progress/evidence/walkthrough.md
+ M docs/tasks/003-progress/report.md
+ M skills/engineering/wayfinder/SKILL.md
+ M skills/productivity/grilling/SKILL.md
+```
+
+新命令输出均使用要求的返工前缀，旧证据未覆盖（走查按要求更新并追加）。原有任务 002 截图、返工输入和日志均保留。没有暂存或提交文件。
+
+dsh 全目录 327 个文件的路径与 SHA-256 均与返工开始快照相同，git 状态也相同。打包备份及审计临时目录已删除；全部检查子进程已结束，没有启动后台服务、浏览器或模型进程。
