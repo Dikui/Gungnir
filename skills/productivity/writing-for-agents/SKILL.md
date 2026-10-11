@@ -7,7 +7,7 @@ description: 编写或精简供代理阅读的技能、AGENTS.md、CLAUDE.md 和
 
 让代理清楚地知道何时读取文档、该做什么、何时完成。目标是让执行过程稳定，输出可以随任务变化。
 
-编写技能时，另读 [SKILL-MECHANICS.md](SKILL-MECHANICS.md)。本仓库的技能分为入口技能和基础技能，调用规则以[仓库说明](../../../docs/invocation.md)为准。
+编写技能时，另读 [SKILL-MECHANICS.md](SKILL-MECHANICS.md)。在 Gungnir 仓库中编写技能时，技能分为入口技能和基础技能，调用规则以仓库根目录的 `docs/invocation.md` 为准。
 
 ## 写清楚指令
 
