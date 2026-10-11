@@ -1,4 +1,0 @@
-$ node scripts/check-repo.mjs
-ok: 30 skills checked
-
-exit-code: 0

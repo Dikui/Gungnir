@@ -1,0 +1,5 @@
+interface:
+  display_name: "Diff Review"
+  short_description: "按规范和 spec 审查 diff"
+policy:
+  allow_implicit_invocation: true

@@ -7,7 +7,7 @@
 让会话加载本仓库的技能，任选一种：
 
 - Claude Code CLI：`claude --plugin-dir <本仓库路径>`
-- 安装 plugin：`claude plugin install dikui-skills@dikui`（marketplace 指向本仓库）
+- 安装 plugin：`claude plugin install gungnir@gungnir`（marketplace 指向本仓库）
 
 ## A. 普通对话不触发基础技能
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | 帮我拷问一下这个方案：周末把数据库从 MySQL 迁到 Postgres | grilling |
 | 写一个解析 ISO 日期的函数，并加上测试 | tdd |
-| 帮我看下最近一次提交的代码有没有问题 | code-review |
+| 帮我看下最近一次提交的代码有没有问题 | diff-review |
 | 这个模块接口应该怎么设计才好测？ | codebase-design |
 | 我们项目里"订单"和"交易"是一回事吗？ | domain-modeling |
 | 查一下 Node 22 的 `fs.cp` 是否稳定 | research |
@@ -29,7 +29,7 @@
 | --- | --- |
 | `/grill-me 我计划周末迁移数据库` | 加载 `grilling` 并开始一轮编号提问 |
 | `/grill-with-docs 梳理订单领域` | 加载 `grilling` 和 `domain-modeling` |
-| `/implement`（附一份小需求） | 加载 `tdd`，结束前加载 `code-review` |
+| `/implement`（附一份小需求） | 加载 `tdd`，结束前加载 `diff-review` |
 
 ## C. 用户直接调用
 

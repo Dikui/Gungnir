@@ -10,9 +10,9 @@ await mkdir(plugin, { recursive: false }).catch(async e => {
   if (e.code === 'ENOENT') { await mkdir(dirname(plugin), { recursive: true }); await mkdir(plugin) }
   else throw new Error('输出目录已存在，请选择新的输出目录，避免混入旧技能：' + plugin)
 })
-// Only publish the public buckets already registered in the Claude manifest.
+// Publish every skill registered in the Claude manifest.
 for (const path of original.skills) {
-  if (!/^\.\/skills\/(engineering|productivity|misc)\/[^/]+$/.test(path)) throw new Error('非法公开 skill 路径：' + path)
+  if (!/^\.\/skills\/(engineering|productivity)\/[^/]+$/.test(path)) throw new Error('非法公开 skill 路径：' + path)
   await cp(join(root, path), join(plugin, 'skills', path.split('/').at(-1)), { recursive: true })
 }
 await cp(join(root, 'LICENSE'), join(plugin, 'LICENSE'))
@@ -29,11 +29,11 @@ await json(join(plugin, 'plugin.json'), {
   extensions: { 'com.openai': { interface: codex.interface } },
 })
 await json(join(output, '.agents/plugins/marketplace.json'), {
-  name: 'gungnir-local', interface: { displayName: 'Gungnir' },
+  name: 'gungnir', interface: { displayName: 'Gungnir' },
   plugins: [{ name: original.name, source: { source: 'local', path: './plugins/' + original.name }, policy: { installation: 'AVAILABLE', authentication: 'ON_INSTALL' }, category: 'Developer Tools' }],
 })
 await json(join(output, '.claude-plugin/marketplace.json'), {
-  name: 'gungnir-local', owner: { name: 'dikui' },
+  name: 'gungnir', owner: { name: 'dikui' },
   description: 'Gungnir 本地插件市场，提供简体中文工程技能。',
   plugins: [{ name: original.name, source: './plugins/' + original.name }],
 })

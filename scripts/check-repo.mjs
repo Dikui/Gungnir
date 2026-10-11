@@ -1,6 +1,6 @@
 // Check the repo invariants from AGENTS.md and docs/invocation.md:
 // invocation tiers, plugin manifest, README indexes and version sync.
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { BUCKETS, ROOT, listSkills } from './skills.mjs'
@@ -14,6 +14,13 @@ function fail(file, msg) {
   console.error(`✗ ${file}: ${msg}`)
 }
 const read = (rel) => readFileSync(join(ROOT, rel), 'utf8')
+
+// Reject unregistered buckets instead of silently omitting their skills.
+for (const entry of readdirSync(join(ROOT, 'skills'), { withFileTypes: true })) {
+  if (entry.isDirectory() && !BUCKETS.includes(entry.name)) {
+    fail(`skills/${entry.name}`, `unexpected bucket; allowed: ${BUCKETS.join(', ')}`)
+  }
+}
 
 /**
  * Collect `- **[name](link)**` index entries and the invocation group heading they sit under.
@@ -48,6 +55,7 @@ for (const s of all) {
     fail(file, 'missing or malformed frontmatter')
     continue
   }
+  if (s.meta.name !== s.name) fail(file, `name must match directory ${s.name}`)
   const userOnly = s.meta['disable-model-invocation'] === 'true'
   s.group = userOnly ? 'User-invoked' : 'Skill-invoked'
   const implicit = s.openaiYaml?.match(/allow_implicit_invocation:\s*(true|false)/)?.[1]
@@ -66,10 +74,10 @@ for (const s of all) {
   if (!listedInDoc) fail('docs/invocation.md', `Skill-invoked table is missing ${s.name}`)
 }
 
-// Public entry skills must be discoverable through ask-dikui.
+// Entry skills must be discoverable through ask-dikui.
 const askDikuiFile = 'skills/engineering/ask-dikui/SKILL.md'
 const askDikui = read(askDikuiFile)
-for (const s of skills.filter((s) => s.public)) {
+for (const s of skills) {
   if (s.name === 'ask-dikui' || s.meta?.['disable-model-invocation'] !== 'true' || s.meta['user-invocable'] === 'false') continue
   const name = s.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   if (!new RegExp(`/${name}(?![A-Za-z0-9-])`).test(askDikui)) {
@@ -77,27 +85,27 @@ for (const s of skills.filter((s) => s.public)) {
   }
 }
 
-// Plugin manifest lists exactly the public buckets.
+// Plugin manifest lists every repository skill.
 const plugin = JSON.parse(read('.claude-plugin/plugin.json'))
-const expected = skills.filter((s) => s.public).map((s) => `./${s.path}`).sort()
+const expected = skills.map((s) => `./${s.path}`).sort()
 const actual = [...plugin.skills].sort()
 for (const path of expected) if (!actual.includes(path)) fail('.claude-plugin/plugin.json', `missing ${path}`)
 for (const path of actual) if (!expected.includes(path)) fail('.claude-plugin/plugin.json', `unexpected ${path}`)
 
-// Top README indexes every public skill under its invocation group, and nothing else.
+// Top README indexes every skill under its invocation group, and nothing else.
 const readme = read('README.md')
 const top = indexEntries(readme)
-for (const s of skills.filter((s) => s.public)) {
+for (const s of skills) {
   const entry = top.get(s.name)
   if (!entry) fail('README.md', `missing index entry for ${s.name}`)
   else if (entry.link !== `./${s.path}/SKILL.md`) fail('README.md', `${s.name} should link to ./${s.path}/SKILL.md`)
   else if (s.group && entry.group !== s.group) fail('README.md', `${s.name} should be listed under ${s.group}`)
 }
-for (const m of readme.matchAll(/\(\.\/skills\/(in-progress|deprecated)\/([^/)]+)/g)) {
-  fail('README.md', `must not reference ${m[1]} skill ${m[2]}`)
+for (const name of top.keys()) {
+  if (!skills.some((s) => s.name === name)) fail('README.md', `lists unknown skill ${name}`)
 }
 
-// Each bucket README indexes its own skills; public buckets also group them.
+// Each bucket README indexes its own skills under their invocation groups.
 for (const bucket of BUCKETS) {
   const file = `skills/${bucket}/README.md`
   const entries = indexEntries(read(file))
@@ -105,7 +113,7 @@ for (const bucket of BUCKETS) {
     const entry = entries.get(s.name)
     if (!entry) fail(file, `missing index entry for ${s.name}`)
     else if (entry.link !== `./${s.name}/SKILL.md`) fail(file, `${s.name} should link to ./${s.name}/SKILL.md`)
-    else if (s.public && s.group && entry.group !== s.group) fail(file, `${s.name} should be listed under ${s.group}`)
+    else if (s.group && entry.group !== s.group) fail(file, `${s.name} should be listed under ${s.group}`)
   }
   for (const name of entries.keys()) {
     if (!skills.some((s) => s.bucket === bucket && s.name === name)) fail(file, `lists unknown skill ${name}`)

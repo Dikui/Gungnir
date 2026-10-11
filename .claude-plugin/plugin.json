@@ -1,6 +1,6 @@
 {
-  "name": "dikui-skills",
-  "version": "2.0.0",
+  "name": "gungnir",
+  "version": "3.0.0",
   "description": "面向项目开发的简体中文工程技能：访谈、需求与任务、TDD、代码审查、领域建模和方法诊断。",
   "author": {
     "name": "dikui",
@@ -21,7 +21,7 @@
   "skills": [
     "./skills/engineering/ablation",
     "./skills/engineering/ask-dikui",
-    "./skills/engineering/code-review",
+    "./skills/engineering/diff-review",
     "./skills/engineering/codebase-design",
     "./skills/engineering/cohesion-coupling",
     "./skills/engineering/diagnosing-bugs",
@@ -30,7 +30,8 @@
     "./skills/engineering/implement",
     "./skills/engineering/implement-spec",
     "./skills/engineering/improve-codebase-architecture",
-    "./skills/engineering/pr",
+    "./skills/engineering/mockup",
+    "./skills/engineering/pr-body",
     "./skills/engineering/prototype",
     "./skills/engineering/research",
     "./skills/engineering/retro",

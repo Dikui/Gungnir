@@ -14,7 +14,7 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const PLUGIN_DIR = dirname(SCRIPT_DIR)
 
 const EXPECTED_SKILLS = SKILL_NAMES.length
-const FORBIDDEN_DIRS = ['deprecated', 'translate-skill']
+const FORBIDDEN_DIRS = ['translate-skill']
 
 /**
  * Print a failure message and exit with a non-zero status.

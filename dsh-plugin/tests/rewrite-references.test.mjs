@@ -18,8 +18,8 @@ test('c) rewrites /tdd at index 0', () => {
   assert.equal(rewriteReferences('/tdd'), '/zh-tdd')
 })
 
-test('d) rewrites /code-review after CJK text', () => {
-  assert.equal(rewriteReferences('完成 `/code-review`'), '完成 `/zh-code-review`')
+test('d) rewrites /diff-review after CJK text', () => {
+  assert.equal(rewriteReferences('完成 `/diff-review`'), '完成 `/zh-diff-review`')
 })
 
 test('e) leaves src/triage/handler.ts unchanged', () => {
@@ -61,7 +61,7 @@ test('k) findUnrewrittenReferences distinguishes prefixed and unprefixed', () =>
 
 test('extra) rewrites multiple invocations in one string', () => {
   assert.equal(
-    rewriteReferences('使用 /grilling 与 /to-spec'),
-    '使用 /zh-grilling 与 /zh-to-spec'
+    rewriteReferences('使用 /grilling 与 /to-spec，完成 /diff-review 后使用 /pr-body'),
+    '使用 /zh-grilling 与 /zh-to-spec，完成 /zh-diff-review 后使用 /zh-pr-body'
   )
 })

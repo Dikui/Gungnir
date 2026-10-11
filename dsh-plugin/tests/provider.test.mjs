@@ -7,7 +7,7 @@ import * as m from '../index.js'
 import { DSH_BUCKETS, SKILL_NAMES } from '../scripts/rewrite-references.mjs'
 import { listSkills } from '../../scripts/skills.mjs'
 
-const PROVIDER_NAME = 'dikui-skills-zh'
+const PROVIDER_NAME = 'gungnir'
 const KEBAB_CASE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const SKILLS_ROOT = fileURLToPath(new URL('../skills/', import.meta.url))
 const BOGUS_SKILL_PATH = fileURLToPath(new URL('./__no_such_skill__.md', import.meta.url))
@@ -30,6 +30,10 @@ test('list resolves to every well-formed zh- candidates owned by the provider', 
   const candidates = await m.createProvider().list({})
   assert.equal(candidates.length, SKILL_NAMES.length)
   assert.equal(new Set(candidates.map((candidate) => candidate.name)).size, SKILL_NAMES.length)
+  assert.equal(candidates.length, 30)
+  const names = new Set(candidates.map((candidate) => candidate.name))
+  for (const name of ['zh-mockup', 'zh-diff-review', 'zh-pr-body']) assert.ok(names.has(name), name)
+  for (const name of ['zh-code-review', 'zh-pr']) assert.ok(!names.has(name), name)
   for (const candidate of candidates) {
     assert.equal(candidate.provider, PROVIDER_NAME)
     assert.equal(candidate.source, 'bundled')

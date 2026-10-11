@@ -4,7 +4,7 @@ Gungnir 的技能分两层：**入口技能**由用户调用，**基础技能**�
 
 ## 入口技能（User-invoked）
 
-除下表外的所有技能，包括开发中技能。只能由用户显式调用：
+除下表外的所有技能。只能由用户显式调用：
 
 - Claude Code：`SKILL.md` frontmatter 设置 `disable-model-invocation: true`，用 `/research 调研这个问题` 调用。
 - Codex：相邻 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: false`，用 `$research 调研这个问题` 调用。
@@ -18,7 +18,7 @@ Gungnir 的技能分两层：**入口技能**由用户调用，**基础技能**�
 | `codebase-design` | improve-codebase-architecture、tdd | 能 |
 | `writing-for-agents` | retro | 能 |
 | `tdd` | implement、implement-spec | 能 |
-| `code-review` | implement、implement-spec、tdd | 能 |
+| `diff-review` | implement、implement-spec、tdd | 能 |
 | `research` | wayfinder | 能 |
 | `prototype` | wayfinder | 能 |
 

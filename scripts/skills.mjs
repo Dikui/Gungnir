@@ -4,9 +4,8 @@ import { fileURLToPath } from 'node:url'
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
-// Buckets shipped by the Claude Code plugin; in-progress and deprecated stay out.
-export const PUBLIC_BUCKETS = ['engineering', 'productivity', 'misc']
-export const BUCKETS = [...PUBLIC_BUCKETS, 'in-progress', 'deprecated']
+// Repository skill buckets; every skill ships with the Claude Code plugin.
+export const BUCKETS = ['engineering', 'productivity']
 
 /**
  * Parse the flat `key: value` frontmatter used by this repo's SKILL.md files.
@@ -41,7 +40,6 @@ export function readSkill(dir, bucket) {
     bucket,
     dir,
     path: dir.slice(ROOT.length + 1),
-    public: PUBLIC_BUCKETS.includes(bucket),
     meta: parsed?.meta ?? null,
     body: parsed?.body ?? '',
     openaiYaml: existsSync(yamlPath) ? readFileSync(yamlPath, 'utf8') : null,

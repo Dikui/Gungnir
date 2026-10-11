@@ -1,3 +1,0 @@
-$ node --check skills/in-progress/mockup/kit/mockup.js
-
-exit-code: 0

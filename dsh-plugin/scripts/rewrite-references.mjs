@@ -10,7 +10,7 @@ import { listSkills } from '../../scripts/skills.mjs'
 const DEFAULT_PREFIX = 'zh-'
 
 /** Buckets copied into the dsh plugin. */
-export const DSH_BUCKETS = ['engineering', 'productivity', 'misc', 'in-progress']
+export const DSH_BUCKETS = ['engineering', 'productivity']
 
 /** Characters that, immediately before a `/`, mean the slash is part of a path. */
 const BEFORE_BLOCKED = 'A-Za-z0-9_/.-'
@@ -18,7 +18,7 @@ const BEFORE_BLOCKED = 'A-Za-z0-9_/.-'
 /** Characters that, immediately after a skill name, mean the match is a path segment. */
 const AFTER_BLOCKED = 'A-Za-z0-9_/-'
 
-/** Localized skill names: every bucket dsh ships, i.e. all but `deprecated/`. */
+/** Localized skill names: every skill in the repository. */
 export const SKILL_NAMES = listSkills(DSH_BUCKETS).map((skill) => skill.name)
 
 /**

@@ -1,9 +1,0 @@
-$ wc -l skills/in-progress/mockup/SKILL.md skills/in-progress/mockup/kit/tokens.css skills/in-progress/mockup/kit/mockup.css skills/in-progress/mockup/kit/mockup.js skills/in-progress/mockup/kit/page.html
-      72 skills/in-progress/mockup/SKILL.md
-      43 skills/in-progress/mockup/kit/tokens.css
-      95 skills/in-progress/mockup/kit/mockup.css
-     149 skills/in-progress/mockup/kit/mockup.js
-      37 skills/in-progress/mockup/kit/page.html
-     396 total
-
-exit-code: 0

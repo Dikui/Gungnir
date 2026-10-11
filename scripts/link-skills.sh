@@ -15,17 +15,14 @@ set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 DESTS=("$HOME/.claude/skills" "$HOME/.agents/skills")
 
-# Collect the repo's skills once, link into every destination. `deprecated/`
-# is retired, and `misc/` is kept around but rarely used: both are skipped in
-# this daily-driver install. Public plugin indexes still include `misc/`.
-# `in-progress/` IS linked here for local feedback, but stays out of the plugin.
+# Collect every repository skill once, then link into every destination.
 names=()
 srcs=()
 while IFS= read -r -d '' skill_md; do
   src="$(dirname "$skill_md")"
   names+=("$(basename "$src")")
   srcs+=("$src")
-done < <(find "$REPO/skills" -name SKILL.md -not -path '*/node_modules/*' -not -path '*/deprecated/*' -not -path '*/misc/*' -print0)
+done < <(find "$REPO/skills" -name SKILL.md -not -path '*/node_modules/*' -print0)
 
 for DEST in "${DESTS[@]}"; do
   # If $DEST is a symlink that resolves into this repo, we'd end up writing the

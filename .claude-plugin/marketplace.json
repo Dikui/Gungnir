@@ -1,5 +1,5 @@
 {
-  "name": "dikui",
+  "name": "gungnir",
   "owner": {
     "name": "dikui",
     "url": "https://github.com/Dikui"
@@ -7,7 +7,7 @@
   "description": "Gungnir 的简体中文工程技能，以 Claude Code 插件形式提供。",
   "plugins": [
     {
-      "name": "dikui-skills",
+      "name": "gungnir",
       "source": "./",
       "description": "面向项目开发的简体中文工程技能：访谈、需求与任务、TDD、代码审查、领域建模和方法诊断。",
       "category": "engineering",

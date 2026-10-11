@@ -2,7 +2,7 @@
 
 ## 这是什么
 
-本插件包把 Gungnir 仓库中除 `deprecated/` 外的全部技能（含 `in-progress/`），打包为 DeepSeek Harness（dsh）插件。
+本插件包把 Gungnir 仓库中的全部技能，打包为 DeepSeek Harness（dsh）插件。
 
 技能以 `zh-<name>` 命名，并以 `/zh-<name>` 调用，例如 `/zh-grilling`。
 
@@ -13,14 +13,14 @@
 1. 把插件装进 web profile：
 
    ```sh
-   dsh plugin --profile web add @dikui/dsh-skills-zh
+   dsh plugin --profile web add @dikui/gungnir
    ```
 
    该包尚未发布到 npm 之前，用打包出的 tarball 绝对路径代替包名：
 
    ```sh
    (cd dsh-plugin && npm pack)
-   dsh plugin --profile web add "$PWD/dsh-plugin/dikui-dsh-skills-zh-2.0.0.tgz"
+   dsh plugin --profile web add "$PWD/dsh-plugin/dikui-gungnir-3.0.0.tgz"
    ```
 
 2. 启动 dsh：
@@ -34,7 +34,7 @@
 确认插件已挂载：
 
 ```sh
-dsh --profile web --dump-config | grep 'id: dikui-skills-zh'
+dsh --profile web --dump-config | grep 'id: gungnir'
 ```
 
 ## 构建期改写
@@ -66,13 +66,11 @@ npm whoami
 发布成功后无需 tarball，直接安装：
 
 ```sh
-dsh plugin --profile web add @dikui/dsh-skills-zh
+dsh plugin --profile web add @dikui/gungnir
 ```
 
 ## 局限
 
 正文中裸写的技能名不会被重写。
-
-`in-progress` 技能仍为 beta。
 
 技能清单在构建时从仓库 `skills/` 目录生成。

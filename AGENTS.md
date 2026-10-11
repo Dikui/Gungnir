@@ -4,11 +4,8 @@ Skills 按 bucket folder 组织在 `skills/` 下：
 
 - `engineering/` - 日常代码工作
 - `productivity/` - 日常非代码工作流工具
-- `misc/` - 保留但很少使用
-- `in-progress/` - beta：有意公开、欢迎反馈，但不随 plugin 发布
-- `deprecated/` - 不再使用
 
-`engineering/`、`productivity/` 或 `misc/` 中的每个 skill，都必须在顶层 `README.md` 中有引用，并在 `.claude-plugin/plugin.json` 中有条目。`in-progress/` 和 `deprecated/` 中的 skills 不得出现在这两个位置。
+仓库中的每个技能都必须在顶层 `README.md` 中有引用，并在 `.claude-plugin/plugin.json` 中有条目；所有技能都公开。
 
 顶层 `README.md` 中的每个 skill 条目都必须把 skill 名称链接到对应的 `SKILL.md`。
 
@@ -16,4 +13,4 @@ Skills 按 bucket folder 组织在 `skills/` 下：
 
 技能分两层：入口技能只由用户调用（`disable-model-invocation: true`，`agents/openai.yaml` 中 `policy.allow_implicit_invocation: false`）；基础技能由入口技能调用，描述和正文开头写明加载条件，避免在普通对话中触发。基础技能清单、配置和写法见 [docs/invocation.md](./docs/invocation.md)。
 
-本仓库也是一个单 plugin 的 Claude Code marketplace：`.claude-plugin/marketplace.json` 列出唯一的 `dikui-skills` plugin。修改 `.claude-plugin/plugin.json` 或 marketplace manifest 后，运行 `claude plugin validate . --strict`。Plugin 的公开 skill 集合继续遵循本仓库 bucket 规则。
+本仓库也是一个单 plugin 的 Claude Code marketplace：`.claude-plugin/marketplace.json` 列出唯一的 `gungnir` plugin。修改 `.claude-plugin/plugin.json` 或 marketplace manifest 后，运行 `claude plugin validate . --strict`。

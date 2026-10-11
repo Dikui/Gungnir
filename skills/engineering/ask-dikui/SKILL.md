@@ -19,15 +19,15 @@ disable-model-invocation: true
      - 每个任务开启一次 `/implement`，任务间用 `/clear` 清空上下文。本地任务存入 `.scratch/<feature>/issues/` 的独立文件，按依赖顺序处理；远程 tracker 使用原生依赖链接。任务须自包含，完成后的上下文可以丢弃。
      - 使用 `/implement-spec` 一次实施整份需求。它把任务视为依赖图，让无阻塞的任务在独立 worktree 中并行实施，再汇入同一集成分支。
 
-`/implement` 的完整流程配合 `/tdd` 和 `/code-review`：一次完成一个“失败测试 → 最小实现”循环，最后分别审查编码规范和需求符合性，再提交。`/implement-spec` 的各实施代理配合 `/tdd`，所有任务完成后对集成分支运行一次 `/code-review`。用户需要完整流程时，应同时指定对应的实施、测试和审查技能。
+`/implement` 的完整流程配合 `/tdd` 和 `/diff-review`：一次完成一个“失败测试 → 最小实现”循环，最后分别审查编码规范和需求符合性，再提交。`/implement-spec` 的各实施代理配合 `/tdd`，所有任务完成后对集成分支运行一次 `/diff-review`。用户需要完整流程时，应同时指定对应的实施、测试和审查技能。
 
 实现中加入多项优化、需要确认哪个起作用时，可用 `/ablation`。
 
-需要撰写 PR 正文时，可显式指定 `/pr`，用最小图示、前后验证证据、可回退性和影响范围说明变更。
+需要撰写 PR 正文时，可显式指定 `/pr-body`，用最小图示、前后验证证据、可回退性和影响范围说明变更。
 
 4. **复盘工作环境**：构建结束后，可用 `/retro` 回顾会话。它按严重程度提出导航、自动检查、编码规范、规则文件和工具改进。机器可判断的问题交给确定性检查，需要判断的问题交给编码规范。
 
-只需在没有完整需求文档时用测试驱动一个具体行为，可单独选择 `/tdd`。按指定基准审查分支或 PR，可单独选择 `/code-review`。
+只需在没有完整需求文档时用测试驱动一个具体行为，可单独选择 `/tdd`。按指定基准审查分支或 PR，可单独选择 `/diff-review`。
 
 ### 保持上下文连续
 
@@ -58,7 +58,7 @@ disable-model-invocation: true
 | 模块职责和依赖混乱，改一处牵动多处 | `/cohesion-coupling` | 要分析的模块或目录 |
 
 - `/grill-me` 通过用户回答问题打磨方案；`/first-principles` 由代理查证前提、从头推导，给出保持、调整或换方向的结论。
-- `/code-review` 按编码规范和需求审查代码差异；`/adversarial-review` 由与作者隔离的攻击方针对主张找反例并逐条核实，也能审查计划和需求文档。
+- `/diff-review` 按编码规范和需求审查代码差异；`/adversarial-review` 由与作者隔离的攻击方针对主张找反例并逐条核实，也能审查计划和需求文档。
 - Claude Code 自带的 `/simplify` 简化代码写法；`/occams-razor` 判断方案各组成是否有需求或证据依据。
 - `/improve-codebase-architecture` 寻找可深化的模块并讨论改造方案；`/cohesion-coupling` 提供职责、依赖和共同修改的证据与重组方向，不讨论具体接口设计。
 - `/diagnosing-bugs` 定位缺陷或性能回退的原因；`/ablation` 在收益已存在时测量各机制的贡献。
@@ -87,6 +87,7 @@ disable-model-invocation: true
 
 - `/grill-me`：无状态访谈，不写本地文档或 `GLOSSARY.md`。需要纯访谈、不附加其他流程时使用。有项目目录时，优先用会保留记录的 `/grill-with-docs`。
 - `/prototype`：验证逻辑、状态或外观问题。临时代码不等于必须删除；原型作为原始依据保留在 main 之外的 `prototype/<name>` 分支，并由实现 issue 引用。
+- `/mockup`：生成并维护长期保留、随需求更新的 HTML 界面设计稿，作为前端开发参照。只想验证一个设计问题、用完即弃的原型选 `/prototype`。
 - `/research`：后台代理调研一手来源，将结论和引用写入仓库 Markdown。用户可同时继续工作，再把结果带回 `/grill-with-docs` 讨论。
 - `/wait-what`：用户没听懂时，补足缺失的背景，使用用户的语言，沿用 `GLOSSARY.md` 术语，并按理解情况逐步升级解释方式。提前用访谈统一术语，可以减少这类误解。
 - `/writing-for-agents`：编写技能、`AGENTS.md` 及供代理查阅的参考文档。

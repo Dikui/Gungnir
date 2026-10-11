@@ -53,7 +53,7 @@ disable-model-invocation: true
 历史不足 200 个提交时，注明实际数量。
 完成条件：统计命令和前若干对结果已给出。
 ### 4. 坏味道
-读取并对照 [code-review 坏味道表](../code-review/SKILL.md)。
+读取并对照 [diff-review 坏味道表](../diff-review/SKILL.md)。
 重点看 Shotgun Surgery、Divergent Change、Feature Envy。
 同时检查 Message Chains、Middle Man。用“可能存在”措辞。
 完成条件：重点坏味道均已检查；线索附位置和证据，未覆盖部分已说明。

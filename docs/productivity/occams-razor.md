@@ -35,7 +35,7 @@ ADR 中记录的决策和理由算作依据。代理不能因未读相关 ADR �
 
 `/simplify` 简化代码写法；`occams-razor` 处理方案层面的组成是否有依据。
 
-**它与 `code-review` 坏味道表中的 Speculative Generality 有什么区别？**
+**它与 `diff-review` 坏味道表中的 Speculative Generality 有什么区别？**
 
 Speculative Generality 在审查代码差异时作为一条检查线索；`occams-razor` 对整个方案逐项追溯依据，并给出删除清单。
 
