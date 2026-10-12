@@ -13,4 +13,4 @@ Skills 按 bucket folder 组织在 `skills/` 下：
 
 技能分两层：入口技能只由用户调用（`disable-model-invocation: true`，`agents/openai.yaml` 中 `policy.allow_implicit_invocation: false`）；基础技能由入口技能调用，描述和正文开头写明加载条件，避免在普通对话中触发。基础技能清单、配置和写法见 [docs/invocation.md](./docs/invocation.md)。
 
-本仓库也是一个单 plugin 的 Claude Code marketplace：`.claude-plugin/marketplace.json` 列出唯一的 `gungnir` plugin。修改 `.claude-plugin/plugin.json` 或 marketplace manifest 后，运行 `claude plugin validate . --strict`。
+本仓库也是一个单 plugin 的 Claude Code marketplace：`.claude-plugin/marketplace.json` 列出唯一的 `gungnir` plugin。修改 `.claude-plugin/plugin.json` 或 marketplace manifest 后，运行 `claude plugin validate . --strict`。根目录 `CLAUDE.md` 会触发一条已知警告（插件根目录的 CLAUDE.md 不作为项目上下文加载），严格模式因此退出码为 1；这条可以忽略，只需确认没有其他警告或错误。
