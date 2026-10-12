@@ -86,6 +86,52 @@ git add -- docs/tasks/run/report.md
 scan --staged
 assert_has 'category 3 agent artifact blocks' block 3
 
+# Check each path independently, including nested project directories.
+for prefix in '' 'packages/a/'; do
+    for path in '.claude/settings.json' '.claude/CLAUDE.md' '.claude/skills/x/SKILL.md' '.claude/agents/a.md' '.claude/commands/c.md' '.claude/hooks/h.sh' '.claude/output-styles/s.md' '.claude/custom/file' '.agents/skills/x/SKILL.md'; do
+        newrepo
+        path="$prefix$path"
+        mkdir -p "$(dirname "$path")"
+        printf 'shared project configuration\n' > "$path"
+        git add -- "$path"
+        scan --staged
+        if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass "shared path has no category 3 or other findings: $path"; else fail "shared path: $path"; fi
+    done
+    for path in '.claude/settings.local.json' 'CLAUDE.local.md'; do
+        newrepo
+        path="$prefix$path"
+        mkdir -p "$(dirname "$path")"
+        printf 'local configuration\n' > "$path"
+        git add -- "$path"
+        scan --staged
+        if [ "$result" -eq 0 ] && awk -F '\t' -v path="$path" 'NF!=5 || $1!="warn" || $2!=10 || $3!=path { bad=1 } END { exit (bad || NR!=1) }' "$tmp/out"; then pass "local file has only category 10 warning: $path"; else fail "local file: $path"; fi
+    done
+    for path in '.claude/worktrees/x/file' '.claude/projects/p/s.jsonl' '.claude/todos/t.json' '.claude/shell-snapshots/s.sh' '.claude/file-history/f/file' '.claude/statsig/state.json' '.agents/other/file' '.agents/skills-extra/file' '.agents/file' '.agents/skills/x/.agents/other/file' '.agents/skills/x/.claude/projects/p/file'; do
+        newrepo
+        path="$prefix$path"
+        mkdir -p "$(dirname "$path")"
+        printf 'local agent state\n' > "$path"
+        git add -- "$path"
+        scan --staged
+        if [ "$result" -eq 1 ] && has block 3; then pass "local agent path blocks category 3: $path"; else fail "local agent path: $path"; fi
+    done
+    newrepo
+    path="$prefix.claude/.credentials.json"
+    mkdir -p "$(dirname "$path")"
+    printf '{}\n' > "$path"
+    git add -- "$path"
+    scan --staged
+    if [ "$result" -eq 1 ] && has block 1 && ! has block 3 && ! has warn 3; then pass "login credential filename blocks only category 1: $path"; else fail "login credential filename: $path"; fi
+
+    newrepo
+    path="$prefix.claude/settings.json"
+    mkdir -p "$(dirname "$path")"
+    printf '{"value": "%s"}\n' "$key" > "$path"
+    git add -- "$path"
+    scan --staged
+    if [ "$result" -eq 1 ] && has block 1 && ! has block 3 && ! has warn 3; then pass "shared settings still block credential content: $path"; else fail "shared settings credential content: $path"; fi
+done
+
 newrepo
 printf '%s\n' '/Users/fixture/work/file' > paths.txt
 git add -- paths.txt

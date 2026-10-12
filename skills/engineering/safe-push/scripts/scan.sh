@@ -182,6 +182,11 @@ function finding(cat,lev,reason,    i,f) {
 function personal(s) {
     return s ~ /\/Users\/[^ \/]+\/|\/home\/[^ \/]+\/|[A-Za-z]:\\Users\\[^\\ ]+\\|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|(^|[^0-9])(10\.[0-9]+\.[0-9]+\.[0-9]+|192\.168\.[0-9]+\.[0-9]+|172\.(1[6-9]|2[0-9]|3[01])\.[0-9]+\.[0-9]+)/
 }
+function local_agents_path(s,    parts,n,i) {
+    n=split(s,parts,"/")
+    for(i=1;i<=n;i++) if(parts[i]==".agents" && parts[i+1]!="skills") return 1
+    return 0
+}
 FILENAME==ARGV[1] {
     if($0=="```safe-push-deny") { mode="deny"; next }
     if($0=="```safe-push-allow") { mode="allow"; next }
@@ -214,10 +219,10 @@ FILENAME==ARGV[1] {
         next
     }
     if(type=="F") {
-        if(content ~ /(^|\/)\.env($|\.)|\.(pem|p12|pfx|key|crt|cer)$/) finding(1,"block","credential-bearing file name; inspect locally")
-        if(content ~ /(^|\/)(docs\/tasks|\.claude|\.agents|\.chatgpt_exec)(\/|$)|(^|\/)(last-message\.md|[^\/]*scratchpad[^\/]*)$/) finding(3,"block","agent work artifact")
+        if(content ~ /(^|\/)\.env($|\.)|\.(pem|p12|pfx|key|crt|cer)$|(^|\/)\.claude\/\.credentials\.json$/) finding(1,"block","credential-bearing file name; inspect locally")
+        if(content ~ /(^|\/)(docs\/tasks|\.chatgpt_exec)(\/|$)|(^|\/)\.claude\/(worktrees|projects|todos|shell-snapshots|file-history|statsig)(\/|$)|(^|\/)(last-message\.md|[^\/]*scratchpad[^\/]*)$/ || local_agents_path(content)) finding(3,"block","agent work artifact")
         if(content ~ /(^|\/)(dist|build|node_modules|coverage|__pycache__)(\/|$)|\.(log|exe|dll|dylib|so|zip|png|jpg|pdf)$/) finding(6,"warn","build/log/binary artifact candidate")
-        if(content ~ /(^|\/)(\.DS_Store|\.idea|settings\.local\.json)(\/|$)|\.override\.|\.swp$/) finding(10,"warn","local/editor file")
+        if(content ~ /(^|\/)(\.DS_Store|\.idea|settings\.local\.json|CLAUDE\.local\.md)(\/|$)|\.override\.|\.swp$/) finding(10,"warn","local/editor file")
         if(content ~ /(^|\/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml)$/) finding(9,"warn","lockfile changed; review task relevance")
     }
     if(credential(content)) finding(1,"block","credential pattern [REDACTED]")
