@@ -35,6 +35,7 @@
     "./skills/engineering/prototype",
     "./skills/engineering/research",
     "./skills/engineering/retro",
+    "./skills/engineering/safe-push",
     "./skills/engineering/setup-dikui-skills",
     "./skills/engineering/tdd",
     "./skills/engineering/to-spec",

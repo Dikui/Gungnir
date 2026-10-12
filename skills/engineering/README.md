@@ -22,6 +22,7 @@
 - **[pr-body](./pr-body/SKILL.md)** - 用最小图示、前后验证证据、可回退性和影响范围撰写 PR 正文。
 - **[mockup](./mockup/SKILL.md)** - 生成并维护长期保留的 HTML 界面设计稿，作为前端开发的参照。
 - **[retro](./retro/SKILL.md)** - 复盘开发会话，按严重程度提出导航、自动检查、编码规范、工具和信息访问改进。
+- **[safe-push](./safe-push/SKILL.md)** - 检查不应入库的内容，经确认后提交并推送代码。
 
 ## Skill-invoked
 

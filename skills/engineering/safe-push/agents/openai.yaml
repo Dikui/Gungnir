@@ -1,0 +1,5 @@
+interface:
+  display_name: "Safe Push"
+  short_description: "检查暂存区与未推送提交中的敏感内容和推送风险，经确认后提交并推送"
+policy:
+  allow_implicit_invocation: false
