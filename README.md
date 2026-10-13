@@ -85,7 +85,7 @@ claude plugin uninstall dikui-skills@dikui
 - **[retro](./skills/engineering/retro/SKILL.md)**
   复盘一次编码会话。
 - **[safe-push](./skills/engineering/safe-push/SKILL.md)**
-  检查不应入库的内容，经确认后提交并推送代码。
+  检查不应入库的内容，确认版本号后提交并推送代码。
 - **[setup-dikui-skills](./skills/engineering/setup-dikui-skills/SKILL.md)**
   首次使用工程技能前，配置项目的 issue tracker、分流标签和领域文档入口。
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**
