@@ -41,7 +41,7 @@ disable-model-invocation: true
 | --- | --- |
 | 外部缺陷报告或功能请求积压 | `/triage` 分类和验证，形成可交给代理的任务，再进入 `/implement`。它不处理你自己创建的任务；`/to-tickets` 的产物已可执行，无需再次分流。 |
 | 难以定位、偶发或回归缺陷 | `/diagnosing-bugs` 先建立能复现该缺陷的检查命令，再验证原因并修复。修复后可在同一会话显式调用 `/retro`，检查什么措施本可预防缺陷；若发现缺少可测试的 seam，再考虑 `/improve-codebase-architecture`。 |
-| 一次会话无法规划清楚的大任务 | `/wayfinder` 在 tracker 中建立决策地图，逐项解决问题，直到路径明确。它较重，不用于范围明确的功能。 |
+| 一次会话无法规划清楚的大任务 | `/wayfinder` 适合从 0 设计的较大开发，会先分析方向，再在 tracker 中建立决策地图，逐项解决问题，直到路径明确。它较重，不用于范围明确的功能。 |
 
 `/wayfinder` 默认产出决策，不直接实现。地图清楚后，先用 `/to-spec` 收拢相互关联的决策，再进入 `/to-tickets` 和 `/implement`。只有最终发现任务很小时，才直接进入 `/implement`。
 
