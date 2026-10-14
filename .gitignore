@@ -2,4 +2,5 @@
 .agents/
 .claude/
 dist/
-docs/tasks/
+.scratch/tasks/
+.scratch/prototype/
