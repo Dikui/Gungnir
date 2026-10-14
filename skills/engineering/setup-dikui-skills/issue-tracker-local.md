@@ -9,6 +9,8 @@
 - Implementation issues 每个 ticket 一个文件，路径为 `.scratch/<feature-slug>/issues/<NN>-<slug>.md`，从 `01` 开始编号；绝不要写成一个 combined tickets file
 - Triage state 记录为每个 issue file 顶部附近的 `Status:` 行（role 字符串见 `triage-labels.md`）
 - Comments 和 conversation history 追加到文件底部的 `## Comments` heading 下
+- `.scratch/<feature-slug>/` 需要提交到仓库；`.scratch/tasks/` 和 `.scratch/prototype/` 不提交（见 `layout.md`）
+- 一个功能的任务单全部关闭后，提示用户删除该功能目录（git 历史保留）
 
 ## When a skill says "publish to the issue tracker"
 

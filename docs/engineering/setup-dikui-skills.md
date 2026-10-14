@@ -1,24 +1,26 @@
 ## 它会做什么
 
-`setup-dikui-skills` 为当前仓库配置任务跟踪工具、分流标签和领域文档入口。代理先读取远程地址、规则文件、现有配置和仓库布局，再展示发现、讨论选项、展示草稿并写入。
+`setup-dikui-skills` 初始化当前仓库，让代理可以接手开发：配置规则文件、任务跟踪工具、分流标签、领域文档入口、文档布局和提交保护。代理先读取远程地址、规则文件、现有配置和仓库布局，再展示发现、讨论选项、展示草稿并写入。
 
-任务与领域配置分别写入 `docs/agents/issue-tracker.md`、`docs/agents/domain.md`。安装了 `/triage` 且完成标签选项时，还写入 `docs/agents/triage-labels.md`。规则文件中的 `## Agent skills` 指向这些配置。
+任务与领域配置分别写入 `docs/agents/issue-tracker.md`、`docs/agents/domain.md`。安装了 `/triage` 且完成标签选项时，还写入 `docs/agents/triage-labels.md`。文档布局约定写入 `docs/agents/layout.md`，规定各类文档放哪、是否提交、何时清理。规则文件中的 `## Agent skills` 指向这些配置。
 
 ## 什么时候使用
 
-首次使用工程技能前，为当前仓库运行一次；切换任务跟踪工具或重新配置时再运行。由你输入 `/setup-dikui-skills` 调用，代理不会自行调用。
+首次使用工程技能前，为当前仓库运行一次；切换任务跟踪工具或重新配置时再运行。通常由你输入 `/setup-dikui-skills` 调用；与其他技能一样，代理也可在对话中隐式调用。
 
 已有部分配置的项目也可以使用。代理会读取现状并原位更新已有入口，保留周围的用户内容。
 
 ## 这是对话，需要你做决定
 
-代理按任务跟踪工具、分流标签、领域文档的顺序逐项讨论，先给推荐答案。探索已能确定答案时跳过提问；写入前展示草稿，让你有机会修改。
+代理按任务跟踪工具、分流标签、领域文档、文档布局、提交保护的顺序逐项讨论，先给推荐答案。探索已能确定答案时跳过提问；写入前展示草稿，让你有机会修改。
 
 | 选项 | 需要决定什么 |
 | --- | --- |
 | 任务跟踪工具 | GitHub 使用 `gh`，GitLab 使用 `glab`；也可选择 `.scratch/<feature>/` 下的本地 Markdown，或描述其他平台的工作流 |
 | 分流标签 | 仅在安装 `/triage` 时讨论；默认保留五个标准名称，不同意时再收集名称映射 |
 | 领域文档 | 默认根目录 `GLOSSARY.md` 加 `docs/adr/`；仅发现大型多包仓库信号时，才询问是否用 `GLOSSARY-MAP.md` 链接各上下文词汇表 |
+| 文档布局与 `.gitignore` | 按布局模板生成 `docs/agents/layout.md`；已有不同目录名时替换为实际路径；`.gitignore` 只追加缺失的 `.scratch/tasks/`、`.scratch/prototype/` |
+| 提交保护 | 是否安装 git hooks（`.githooks/`）：pre-commit 扫描暂存区，pre-push 拒绝强推、删除分支和推到受保护分支；已有 hook 方案时不替换，由你决定如何接入 |
 
 已有产品框架图时，登记实际路径和适用场景，沿用自定义位置；没有图时不创建占位。架构决策记录（ADR）和词汇表按领域文档规则读取。
 
@@ -38,7 +40,11 @@
 
 **它会修改哪个规则文件？**
 
-优先编辑已有 `CLAUDE.md`，否则编辑已有 `AGENTS.md`。两者都没有时，询问你创建哪一个；已有其中之一时不新建另一个。选择依据是文件是否存在。
+规则文件固定为：`AGENTS.md` 写主体，`CLAUDE.md` 只写 `@AGENTS.md`。`AGENTS.md` 不存在则创建；`CLAUDE.md` 不存在则创建，已存在且不含 `@AGENTS.md` 时只在开头加一行，不迁移原有内容。`## Agent skills` 写在 `AGENTS.md`，原来写在 `CLAUDE.md` 的原位保留并提示你。
+
+**hooks 会随仓库同步吗？**
+
+`core.hooksPath` 是本地 git 设置，不随仓库同步。其他 clone 或新机器需执行一次 `git config core.hooksPath .githooks`，或重新运行本技能。
 
 **更新技能后必须重新配置吗？**
 

@@ -37,3 +37,5 @@ description: "用代码实现 /to-spec 和 /to-tickets 的结果。"
 8. 若已有草稿 PR，将其标记为可供审查。否则，按issue tracker关闭工作的方式完成每张任务单，并汇报集成分支。
 
 9. 清理所有**实施子代理**的 worktree。
+
+tracker 为本地 Markdown 时，功能的任务单全部关闭后，提示用户删除 `.scratch/<feature>/`（git 历史保留）。

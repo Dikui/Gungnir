@@ -46,6 +46,8 @@ Multi-context repo（根目录存在 `GLOSSARY-MAP.md`）：
         └── docs/adr/
 ```
 
+这些路径与 `docs/agents/layout.md` 的文档布局一致；项目使用不同目录名时，以该文件登记的实际路径为准。
+
 ## Use the glossary's vocabulary
 
 当你的输出命名某个 domain concept 时（issue title、refactor proposal、hypothesis、test name），使用 `GLOSSARY.md` 中定义的 term。不要漂移到 glossary 明确避免的 synonyms。

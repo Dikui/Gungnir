@@ -1,11 +1,11 @@
 ---
 name: setup-dikui-skills
-description: "首次使用工程技能前，配置项目的 issue tracker、分流标签和领域文档入口。"
+description: "初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局和提交保护。"
 ---
 
 # 配置工程技能
 
-为当前仓库确定任务存放位置、五种分流状态的标签，以及 `GLOSSARY.md`、ADR、已有产品框架图的路径和读取规则。
+初始化当前仓库，让代理可以接手开发：确定规则文件（`AGENTS.md` 写主体，`CLAUDE.md` 只引用它）、任务存放位置、五种分流状态的标签、`GLOSSARY.md`、ADR 和已有产品框架图的读取规则、文档布局与 `.gitignore`，以及提交保护（git hooks）。
 
 先探索并展示发现，再与用户确认和写入。本技能按项目情况配置，不是一段固定脚本。
 
@@ -19,12 +19,15 @@ description: "首次使用工程技能前，配置项目的 issue tracker、分�
 - `docs/agents/`：查看此前是否已配置。
 - 已登记的框架图路径，以及默认的 `docs/architecture.md`（若存在）。
 - `.scratch/`：查看是否已使用本地 Markdown 任务约定。
+- `.gitignore`：查看已忽略的路径。
+- 已有 hook 方案：husky、lefthook、pre-commit 框架、`.git/hooks/` 中非 sample 的脚本、已设置的 `core.hooksPath`、已有 `.githooks/`。
+- 已有文档目录及其名称，对照 [layout.md](./layout.md) 的表（如已有 `docs/decisions/` 代替 `docs/adr/`）。
 - 相邻目录或可用技能中是否存在 `triage`：决定是否配置分流标签。
 - `pnpm-workspace.yaml`、`package.json` 的 `workspaces`，或已有内容且各自包含 `src/` 的 `packages/*`：判断是否为大型多包仓库。无这些信号时，按单上下文处理。
 
 ## 2. 展示发现并确认选项
 
-总结已有和缺失的配置。按 A、B、C 顺序逐项讨论，每次只处理一个选项，先给推荐答案。仅在选择确有差异时补充一行解释。探索已能确定答案时跳过提问。
+总结已有和缺失的配置。按 A 到 E 的顺序逐项讨论，每次只处理一个选项，先给推荐答案。仅在选择确有差异时补充一行解释。探索已能确定答案时跳过提问。
 
 ### A. Issue tracker
 
@@ -53,17 +56,34 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 
 已有框架图时，在 `docs/agents/domain.md` 保留或登记实际路径和适用场景。沿用自定义路径，不另建副本；已有规则文件中的图入口也保留。没有图时，不创建占位。
 
+### D. 文档布局与 `.gitignore`
+
+按 [layout.md](./layout.md) 生成 `docs/agents/layout.md`。项目已有不同的目录名时，把表中路径替换为实际路径。向 `.gitignore` 只追加缺失的不提交路径（`.scratch/tasks/`、`.scratch/prototype/`），不改动已有行。
+
+### E. 提交保护
+
+说明 hooks 做什么：pre-commit 扫描暂存区；pre-push 拒绝强推、删除分支、推到 `docs/agents/push-rules.md` 中 `safe-push-protected` 块登记的分支，并扫描推送的提交。用户确认后，在仓库根目录运行 `<skill-dir>/hooks/install.sh`（`<skill-dir>` 是本技能的安装目录）。成功后得到 `.githooks/pre-commit`、`.githooks/pre-push`、`.githooks/lib/scan.sh`，并设置本地 `core.hooksPath=.githooks`。
+
+退出码 0 为成功，2 为错误。退出码 3 表示检测到已有 hook 方案：脚本未做任何改动，stdout 列出命中项。此时不替换已有方案，向用户说明如何把 `.githooks/lib/scan.sh --staged` 接入现有 hook，由用户决定。
+
+安装后验证：在临时分支上，用运行时拼接的假密钥试提交一次，确认被拒；然后删除临时分支、恢复原分支，工作区与开始时一致。
+
 ## 3. 展示草稿
 
 写入前展示以下内容，并让用户有机会修改：
 
-- 将加入 `CLAUDE.md` 或 `AGENTS.md` 的 `## Agent skills`。
-- `docs/agents/issue-tracker.md` 和 `docs/agents/domain.md`。
+- 规则文件改动：`AGENTS.md` 的创建或更新、`CLAUDE.md` 的创建或开头加 `@AGENTS.md`，以及将加入 `AGENTS.md` 的 `## Agent skills`。
+- `docs/agents/issue-tracker.md`、`docs/agents/domain.md` 和 `docs/agents/layout.md`。
+- 将追加到 `.gitignore` 的行。
 - 仅在安装了 `triage` 时，展示 `docs/agents/triage-labels.md`。
 
 ## 4. 写入配置
 
-选择规则文件：优先编辑已有 `CLAUDE.md`，否则编辑已有 `AGENTS.md`。两者都不存在时，询问用户创建哪一个，不替用户选择。已有其中之一时不新建另一个。
+规则文件固定为：`AGENTS.md` 写主体，`CLAUDE.md` 只写 `@AGENTS.md`。
+
+- 确保存在 `AGENTS.md`，不存在则创建。
+- `CLAUDE.md` 不存在则创建为只含 `@AGENTS.md`；已存在且不含 `@AGENTS.md` 时，在开头加一行，不迁移原有内容。
+- `## Agent skills` 写在 `AGENTS.md`。若原来写在 `CLAUDE.md`，原位保留并提示用户，不擅自搬动。
 
 已有 `## Agent skills` 时原位更新，不重复追加，也不覆盖周围的用户内容。使用以下结构：
 
@@ -81,9 +101,17 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 ### Domain docs
 
 [one-line summary of layout - "single-context" or "multi-context"]. 涉及业务或架构设计时，参阅 `docs/agents/domain.md` 中的资料入口与按需读取规则。
+
+### Document layout
+
+文档放置约定见 `docs/agents/layout.md`。
+
+### Commit rules
+
+禁止 `--no-verify`、`git add -A` / `git add .` 和强推。hooks 由 `.githooks/` 提供。
 ```
 
-仅在安装了 `triage` 且实际完成选项 B 时，保留 `### Triage labels` 并写入 `docs/agents/triage-labels.md`；否则两者都省略。
+仅在安装了 `triage` 且实际完成选项 B 时，保留 `### Triage labels` 并写入 `docs/agents/triage-labels.md`；否则两者都省略。`### Commit rules` 的禁止项始终写入；“hooks 由 `.githooks/` 提供”一句仅在选项 E 实际安装了 hooks 时写入。
 
 以下模板作为起点：
 
@@ -92,9 +120,12 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 - [issue-tracker-local.md](./issue-tracker-local.md)：本地 Markdown。
 - [triage-labels.md](./triage-labels.md)：标签映射，仅在安装 `triage` 时使用。
 - [domain.md](./domain.md)：领域文档布局和读取规则。
+- [layout.md](./layout.md)：文档布局约定，写入 `docs/agents/layout.md`。
 
 其他 tracker 按用户描述编写 `docs/agents/issue-tracker.md`。
 
 ## 5. 完成
 
-说明配置结果，以及哪些工程技能会读取这些文件。用户可随时直接修改 `docs/agents/*.md`；只有切换 tracker 或重新配置时，才需再次运行本技能。
+说明配置结果，以及哪些工程技能会读取这些文件。若安装了 hooks，提醒：`core.hooksPath` 是本地 git 设置，不随仓库同步；其他 clone 或新机器需执行一次 `git config core.hooksPath .githooks`，或重新运行本技能。
+
+用户可随时直接修改 `docs/agents/*.md`；只有切换 tracker 或重新配置时，才需再次运行本技能。
