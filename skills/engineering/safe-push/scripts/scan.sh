@@ -190,6 +190,7 @@ function local_agents_path(s,    parts,n,i) {
 FILENAME==ARGV[1] {
     if($0=="```safe-push-deny") { mode="deny"; next }
     if($0=="```safe-push-allow") { mode="allow"; next }
+    if($0=="```safe-push-protected") { mode=""; next }
     if($0=="```") { mode=""; next }
     if(mode=="" || $0 ~ /^[[:space:]]*(#|$)/) next
     s=$0; sub(/^[[:space:]]+/,"",s)
@@ -220,7 +221,7 @@ FILENAME==ARGV[1] {
     }
     if(type=="F") {
         if(content ~ /(^|\/)\.env($|\.)|\.(pem|p12|pfx|key|crt|cer)$|(^|\/)\.claude\/\.credentials\.json$/) finding(1,"block","credential-bearing file name; inspect locally")
-        if(content ~ /(^|\/)(docs\/tasks|\.chatgpt_exec)(\/|$)|(^|\/)\.claude\/(worktrees|projects|todos|shell-snapshots|file-history|statsig)(\/|$)|(^|\/)(last-message\.md|[^\/]*scratchpad[^\/]*)$/ || local_agents_path(content)) finding(3,"block","agent work artifact")
+        if(content ~ /(^|\/)(docs\/tasks|\.scratch\/tasks|\.chatgpt_exec)(\/|$)|(^|\/)\.claude\/(worktrees|projects|todos|shell-snapshots|file-history|statsig)(\/|$)|(^|\/)(last-message\.md|[^\/]*scratchpad[^\/]*)$/ || local_agents_path(content)) finding(3,"block","agent work artifact")
         if(content ~ /(^|\/)(dist|build|node_modules|coverage|__pycache__)(\/|$)|\.(log|exe|dll|dylib|so|zip|png|jpg|pdf)$/) finding(6,"warn","build/log/binary artifact candidate")
         if(content ~ /(^|\/)(\.DS_Store|\.idea|settings\.local\.json|CLAUDE\.local\.md)(\/|$)|\.override\.|\.swp$/) finding(10,"warn","local/editor file")
         if(content ~ /(^|\/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml)$/) finding(9,"warn","lockfile changed; review task relevance")
