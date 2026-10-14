@@ -1,7 +1,6 @@
 ---
 name: triage
 description: 对 issue 和范围内的外部 PR 分类、验证并更新处理状态，整理出可交给代理的任务说明。
-disable-model-invocation: true
 ---
 
 # 分流请求

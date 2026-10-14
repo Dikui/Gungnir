@@ -8,7 +8,7 @@
 
 当同一个词被用来指不同概念、领域关系不清楚，或设计讨论产生了需要保留的架构决策时，输入 `/domain-modeling`。
 
-可直接调用，也会被 `/grill-with-docs`、`/triage`、`/wayfinder` 和 `/improve-codebase-architecture` 等技能加载。代理不会根据普通对话内容自行加载。
+可直接调用，也会被 `/grill-with-docs`、`/triage`、`/wayfinder` 和 `/improve-codebase-architecture` 等技能加载。
 
 只想查一个已定义的词时，读取 `GLOSSARY.md` 即可；本技能用于修改领域模型。
 

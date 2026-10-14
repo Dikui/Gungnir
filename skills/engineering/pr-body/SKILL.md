@@ -1,7 +1,6 @@
 ---
 name: pr-body
 description: "编写 PR 正文时使用。"
-disable-model-invocation: true
 metadata:
   credits:
     skill: show-me

@@ -1,12 +1,11 @@
 // Check the repo invariants from AGENTS.md and docs/invocation.md:
-// invocation tiers, plugin manifest, README indexes and version sync.
+// implicit invocation, documented tiers, plugin manifest, README indexes and version sync.
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { BUCKETS, ROOT, listSkills } from './skills.mjs'
 
 const DESCRIPTION_GATE = '不要根据对话内容自行加载'
-const BODY_GUARD = '加载条件：'
 
 let failed = false
 function fail(file, msg) {
@@ -47,8 +46,12 @@ function indexEntries(text) {
 const skills = listSkills()
 const all = skills
 
-// Invocation tiers: frontmatter and agents/openai.yaml must agree.
+// All skills allow implicit invocation; the documentation table defines their tiers.
 const invocationDoc = read('docs/invocation.md')
+const skillInvoked = new Set([...invocationDoc.matchAll(/^\| `([^`]+)` \|/gm)].map((match) => match[1]))
+for (const name of skillInvoked) {
+  if (!skills.some((s) => s.name === name)) fail('docs/invocation.md', `lists unknown Skill-invoked skill ${name}`)
+}
 for (const s of all) {
   const file = `${s.path}/SKILL.md`
   if (!s.meta) {
@@ -56,29 +59,21 @@ for (const s of all) {
     continue
   }
   if (s.meta.name !== s.name) fail(file, `name must match directory ${s.name}`)
-  const userOnly = s.meta['disable-model-invocation'] === 'true'
-  s.group = userOnly ? 'User-invoked' : 'Skill-invoked'
-  const implicit = s.openaiYaml?.match(/allow_implicit_invocation:\s*(true|false)/)?.[1]
+  s.group = skillInvoked.has(s.name) ? 'Skill-invoked' : 'User-invoked'
+  if (Object.hasOwn(s.meta, 'disable-model-invocation')) fail(file, 'disable-model-invocation must not be set')
+  const policy = s.openaiYaml?.match(/^policy:[ \t]*\n((?:[ \t]+[^\n]*\n?)*)/m)?.[1]
+  const implicit = policy?.match(/^[ \t]+allow_implicit_invocation:[ \t]*(true|false)[ \t]*(?:#.*)?$/m)?.[1]
   if (!implicit) fail(`${s.path}/agents/openai.yaml`, 'missing policy.allow_implicit_invocation')
-  else if (implicit !== String(!userOnly)) {
-    fail(`${s.path}/agents/openai.yaml`, `allow_implicit_invocation should be ${!userOnly} for a ${s.group} skill`)
-  }
-  const listedInDoc = invocationDoc.includes(`| \`${s.name}\` |`)
-  if (userOnly) {
-    if (s.meta['user-invocable'] === 'false') fail(file, 'user-invocable: false needs model invocation enabled')
-    if (listedInDoc) fail('docs/invocation.md', `${s.name} is listed as Skill-invoked but sets disable-model-invocation`)
-    continue
-  }
-  if (!s.meta.description?.includes(DESCRIPTION_GATE)) fail(file, `Skill-invoked description must contain "${DESCRIPTION_GATE}"`)
-  if (!s.body.trimStart().startsWith(BODY_GUARD)) fail(file, `Skill-invoked body must start with "${BODY_GUARD}"`)
-  if (!listedInDoc) fail('docs/invocation.md', `Skill-invoked table is missing ${s.name}`)
+  else if (implicit !== 'true') fail(`${s.path}/agents/openai.yaml`, 'policy.allow_implicit_invocation must be true')
+  if (s.meta.description?.includes(DESCRIPTION_GATE)) fail(file, 'description must not prohibit implicit invocation')
+  if (s.body.trimStart().startsWith('加载条件：')) fail(file, 'body must not start with "加载条件："')
 }
 
 // Entry skills must be discoverable through ask-dikui.
 const askDikuiFile = 'skills/engineering/ask-dikui/SKILL.md'
 const askDikui = read(askDikuiFile)
 for (const s of skills) {
-  if (s.name === 'ask-dikui' || s.meta?.['disable-model-invocation'] !== 'true' || s.meta['user-invocable'] === 'false') continue
+  if (s.name === 'ask-dikui' || s.group !== 'User-invoked' || s.meta['user-invocable'] === 'false') continue
   const name = s.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   if (!new RegExp(`/${name}(?![A-Za-z0-9-])`).test(askDikui)) {
     fail(askDikuiFile, `${s.name}: 在 ask-dikui 中登记该技能`)

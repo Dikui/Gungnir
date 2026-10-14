@@ -1,7 +1,6 @@
 ---
 name: occams-razor
 description: 把方案的每个组成追溯到需求或证据，找出可以删除的部分。
-disable-model-invocation: true
 ---
 
 # 奥卡姆剃刀

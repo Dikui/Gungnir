@@ -2,7 +2,6 @@
 name: handoff
 description: 将当前对话整理成交接文档，供其他代理继续工作。
 argument-hint: "下一个会话将用于什么？"
-disable-model-invocation: true
 ---
 
 编写交接文档，总结当前对话，让新的代理可以接手。保存到操作系统的临时目录，不要放在当前工作区。

@@ -1,7 +1,6 @@
 ---
 name: implement-spec
 description: "用代码实现 /to-spec 和 /to-tickets 的结果。"
-disable-model-invocation: true
 ---
 
 用户已提供一份需求文档。这份需求文档应有关联的任务单，说明如何实现它。

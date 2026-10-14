@@ -10,7 +10,7 @@
 
 当你要确认一批已提交变更是否符合仓库规范、是否实现了约定需求时，调用 `/diff-review` 并提供比较基准，例如 `main`、提交 SHA 或 `HEAD~5`。
 
-可直接调用，也会被 `/implement`、`/implement-spec`、`/tdd` 加载。代理不会根据普通对话内容自行加载。
+可直接调用，也会被 `/implement`、`/implement-spec`、`/tdd` 加载。
 
 ## 这是对话，需要你做决定
 

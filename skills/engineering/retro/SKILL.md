@@ -1,7 +1,6 @@
 ---
 name: retro
 description: "复盘一次编码会话。"
-disable-model-invocation: true
 ---
 
 用户要求进行**复盘**。你要提出改进编码代理**环境**的建议，让后续运行更顺利。

@@ -1,7 +1,6 @@
 ---
 name: improve-codebase-architecture
 description: 查找可用小接口封装复杂行为的模块，生成可视化架构报告，再与用户讨论选中的方案。
-disable-model-invocation: true
 ---
 
 # 改进代码架构

@@ -2,4 +2,4 @@ interface:
   display_name: "Cohesion & Coupling"
   short_description: "用职责表、依赖图和共同修改记录，诊断模块的内聚与耦合问题。"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

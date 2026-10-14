@@ -4,7 +4,7 @@
 
 ## User-invoked
 
-只能由你显式调用（Claude Code：`disable-model-invocation: true`；Codex：`agents/openai.yaml` 中的 `policy.allow_implicit_invocation: false`）。
+通常由你调用，也允许模型在对话中隐式调用；分组只说明谁通常调用谁。
 
 - **[ablation](./ablation/SKILL.md)** - 逐个去掉机制并测量，确定收益来自哪个机制。
 - **[ask-dikui](./ask-dikui/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
@@ -26,7 +26,7 @@
 
 ## Skill-invoked
 
-由上面的入口技能在执行中加载；除 `grilling` 外，你也可以直接调用。描述和正文开头写明了加载条件，不会在普通对话中主动触发。见[调用规则](../../docs/invocation.md)。
+通常由入口技能在执行中加载，也允许模型在对话中隐式调用；除 `grilling` 外，你也可以直接调用。见[调用规则](../../docs/invocation.md)。
 
 - **[prototype](./prototype/SKILL.md)** - 构建 throwaway prototype 来回答一个 design 问题：可以是回答 state/logic 问题的可运行终端 app，也可以是多个可切换的 UI 变体。
 - **[research](./research/SKILL.md)** - 对照高可信 primary sources 调研问题，并把带引用的 findings 保存为 repo 中的 Markdown 文件，作为 background agent 运行。

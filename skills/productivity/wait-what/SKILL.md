@@ -1,7 +1,6 @@
 ---
 name: wait-what
 description: "用户没听懂时，补足背景，并按理解情况逐步升级解释方式。"
-disable-model-invocation: true
 ---
 
 # 渐进式解释

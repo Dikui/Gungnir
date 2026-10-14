@@ -1,7 +1,6 @@
 ---
 name: wayfinder
 description: 为一次会话无法规划清楚的大任务建立决策地图，逐项解决问题，直到实施路径明确。
-disable-model-invocation: true
 ---
 
 将模糊的大任务整理成 issue tracker 中的决策地图。先明确目标，再逐项解决实施前需要决定的问题。

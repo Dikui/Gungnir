@@ -1,7 +1,6 @@
 ---
 name: adversarial-review
 description: 让独立攻击方寻找计划、需求或代码的反例，核实后报告成立的反例。
-disable-model-invocation: true
 ---
 
 # 对抗审查

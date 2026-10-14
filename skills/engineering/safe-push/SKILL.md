@@ -1,7 +1,6 @@
 ---
 name: safe-push
 description: 检查不应入库的内容，确认版本号，经确认后提交并推送代码。
-disable-model-invocation: true
 ---
 
 # 检查、提交与推送

@@ -2,4 +2,4 @@ interface:
   display_name: "Diagnosing Bugs"
   short_description: "诊断棘手缺陷和回退"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

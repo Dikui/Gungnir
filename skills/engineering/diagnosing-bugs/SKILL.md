@@ -1,7 +1,6 @@
 ---
 name: diagnosing-bugs
 description: 通过复现、缩小场景、验证假设和回归测试，诊断棘手缺陷或性能回退。
-disable-model-invocation: true
 ---
 
 # 诊断缺陷

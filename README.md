@@ -51,10 +51,10 @@ claude plugin uninstall dikui-skills@dikui
 
 ## 调用方式
 
-入口技能（**User-invoked**）由用户显式调用：Claude Code 使用 `/技能名`，Codex 使用 `$技能名`。
+所有技能都允许模型在对话中隐式调用。入口技能（**User-invoked**）通常由用户调用：Claude Code 使用 `/技能名`，Codex 使用 `$技能名`。
 首次使用时运行 `/setup-dikui-skills` 配置项目；选择方法时运行 `/ask-dikui`。
 
-基础技能（**Skill-invoked**）由入口技能在执行中加载，加载条件见各技能的描述和正文开头。完整层级、直接调用限制和配置见 [调用规则](./docs/invocation.md)。
+基础技能（**Skill-invoked**）通常由入口技能在执行中加载。分组只说明谁通常调用谁，不代表调用限制；`grilling` 保留 `user-invocable: false`，不能由用户直接调用。完整层级和配置见 [调用规则](./docs/invocation.md)。
 
 ## 技能索引
 
@@ -100,18 +100,17 @@ claude plugin uninstall dikui-skills@dikui
 **Skill-invoked**
 
 - **[diff-review](./skills/engineering/diff-review/SKILL.md)**
-  审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。仅在用户直接调用，或 implement、implement-spec、tdd 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+  审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)**
-  用深模块原则设计接口、选择可替换位置，并提高代码的可测试性和可维护性。仅在用户直接调用，或 improve-codebase-architecture、tdd 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+  用深模块原则设计接口、选择可替换位置，并提高代码的可测试性和可维护性。
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)**
-  维护项目的领域术语和模型，并记录重要架构决策。仅在用户直接调用，或 grill-with-docs、triage、wayfinder、
-  improve-codebase-architecture 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+  维护项目的领域术语和模型，并记录重要架构决策。
 - **[prototype](./skills/engineering/prototype/SKILL.md)**
-  用临时原型验证一个设计问题：逻辑和状态是否合理，或界面应该是什么样。仅在用户直接调用，或 wayfinder 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+  用临时原型验证一个设计问题：逻辑和状态是否合理，或界面应该是什么样。
 - **[research](./skills/engineering/research/SKILL.md)**
-  基于一手来源调研问题，并将结论和引用保存为仓库中的 Markdown 文件。仅在用户直接调用，或 wayfinder 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+  基于一手来源调研问题，并将结论和引用保存为仓库中的 Markdown 文件。
 - **[tdd](./skills/engineering/tdd/SKILL.md)**
-  先写测试，再开发功能或修复缺陷的 red-green 循环。仅在用户直接调用，或 implement、implement-spec 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+  先写测试，再开发功能或修复缺陷的 red-green 循环。
 
 ### Productivity
 
@@ -133,10 +132,9 @@ claude plugin uninstall dikui-skills@dikui
 **Skill-invoked**
 
 - **[grilling](./skills/productivity/grilling/SKILL.md)**
-  围绕计划、决策或想法持续访谈的方法。仅在 grill-me、grill-with-docs、triage、wayfinder、
-  improve-codebase-architecture 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+  围绕计划、决策或想法持续访谈的方法。
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)**
-  编写或精简供代理阅读的技能、AGENTS.md、CLAUDE.md 和参考文档。仅在用户直接调用，或 retro 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+  编写或精简供代理阅读的技能、AGENTS.md、CLAUDE.md 和参考文档。
 
 ### Misc
 

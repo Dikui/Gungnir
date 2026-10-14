@@ -2,4 +2,4 @@ interface:
   display_name: "Improve Codebase Architecture"
   short_description: "寻找并追问架构改进机会"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

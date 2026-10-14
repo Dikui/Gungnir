@@ -1,7 +1,6 @@
 ---
 name: to-spec
 description: "将当前讨论整理为需求文档，发布到项目 issue tracker。"
-disable-model-invocation: true
 ---
 
 根据当前对话和代码库生成需求文档。**不要**访谈用户，只整理已讨论的内容。

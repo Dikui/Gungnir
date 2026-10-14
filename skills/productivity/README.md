@@ -4,7 +4,7 @@
 
 ## User-invoked
 
-只能由你显式调用（Claude Code：`disable-model-invocation: true`；Codex：`agents/openai.yaml` 中的 `policy.allow_implicit_invocation: false`）。
+通常由你调用，也允许模型在对话中隐式调用；分组只说明谁通常调用谁。
 
 - **[adversarial-review](./adversarial-review/SKILL.md)** - 让独立攻击方寻找计划、需求或代码的反例，核实后报告成立的反例。
 - **[first-principles](./first-principles/SKILL.md)** - 从目标和已验证事实重新推导方案，判断当前方向是否成立。
@@ -15,7 +15,7 @@
 
 ## Skill-invoked
 
-由上面的入口技能在执行中加载；除 `grilling` 外，你也可以直接调用。描述和正文开头写明了加载条件，不会在普通对话中主动触发。见[调用规则](../../docs/invocation.md)。
+通常由入口技能在执行中加载，也允许模型在对话中隐式调用；除 `grilling` 外，你也可以直接调用。见[调用规则](../../docs/invocation.md)。
 
 - **[grilling](./grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 decision tree 的每个分支都被解决。
 - **[writing-for-agents](./writing-for-agents/SKILL.md)** - 为 agent 编写文档：skills、`AGENTS.md`/`CLAUDE.md`，以及任何 agent 通过指针触达的文档。

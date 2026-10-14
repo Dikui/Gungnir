@@ -1,7 +1,6 @@
 ---
 name: cohesion-coupling
 description: 用职责表、依赖图和共同修改记录，诊断模块的内聚与耦合问题。
-disable-model-invocation: true
 ---
 
 # 内聚与耦合

@@ -1,7 +1,6 @@
 ---
 name: ask-dikui
 description: 根据当前任务推荐合适的技能及使用顺序。
-disable-model-invocation: true
 ---
 
 # 选择技能

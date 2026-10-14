@@ -2,4 +2,4 @@ interface:
   display_name: "Safe Push"
   short_description: "检查不应入库的内容，确认版本号，经确认后提交并推送代码"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

@@ -1,7 +1,6 @@
 ---
 name: to-tickets
 description: 将计划、需求文档或当前讨论拆成可独立验证的任务，注明依赖后发布到项目 tracker。
-disable-model-invocation: true
 ---
 
 # 拆分任务

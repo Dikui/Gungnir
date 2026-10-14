@@ -1,7 +1,6 @@
 ---
 name: mockup
 description: 生成并维护长期保留的 HTML 界面设计稿，作为前端开发的参照。
-disable-model-invocation: true
 ---
 
 # HTML 界面设计稿

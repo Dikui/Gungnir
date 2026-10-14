@@ -1,7 +1,6 @@
 ---
 name: implement
 description: "按需求文档或任务单实现功能。"
-disable-model-invocation: true
 ---
 
 实现用户在需求文档或任务单中描述的工作。

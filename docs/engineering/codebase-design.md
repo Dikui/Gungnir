@@ -8,7 +8,7 @@
 
 已经选定要设计的模块，但还不清楚接口该有多小、依赖放在哪里或怎样测试时，使用 `/codebase-design`。
 
-它可直接调用，也会被 `/improve-codebase-architecture`、`/tdd` 加载。代理不会根据普通对话的内容自行加载，见[调用规则](../invocation.md)。
+它可直接调用，也会被 `/improve-codebase-architecture`、`/tdd` 加载。见[调用规则](../invocation.md)。
 
 ## 设计时需要决定什么
 

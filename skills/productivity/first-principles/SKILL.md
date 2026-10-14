@@ -1,7 +1,6 @@
 ---
 name: first-principles
 description: 从目标和已验证事实重新推导方案，判断当前方向是否成立。
-disable-model-invocation: true
 ---
 
 # 第一性原理

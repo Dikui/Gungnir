@@ -2,4 +2,4 @@ interface:
   display_name: "Occam's Razor"
   short_description: "把方案的每个组成追溯到需求或证据，找出可以删除的部分。"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

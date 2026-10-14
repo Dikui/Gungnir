@@ -1,7 +1,6 @@
 ---
 name: ablation
 description: 逐个去掉机制并测量，确定收益来自哪个机制。
-disable-model-invocation: true
 ---
 
 # 消融实验

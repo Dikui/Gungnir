@@ -47,25 +47,25 @@ test('list resolves to every well-formed zh- candidates owned by the provider', 
   }
 })
 
-test('zh-grill-me disables model invocation but stays user-invocable', async () => {
+test('zh-grill-me allows both model and user invocation', async () => {
   const candidates = await m.createProvider().list({})
   const grillMe = candidates.find((candidate) => candidate.name === 'zh-grill-me')
-  assert.deepEqual(grillMe.invocation, { modelInvocable: false, userInvocable: true })
+  assert.deepEqual(grillMe.invocation, { modelInvocable: true, userInvocable: true })
 })
 
-test('bundled skills keep the source invocation tiers', async () => {
+test('all bundled skills allow model invocation and keep source user visibility', async () => {
   const sources = new Map(listSkills(DSH_BUCKETS).map((skill) => [`zh-${skill.name}`, skill.meta]))
   const candidates = await m.createProvider().list({})
   for (const candidate of candidates) {
     const meta = sources.get(candidate.name)
     assert.deepEqual(candidate.invocation, {
-      modelInvocable: meta['disable-model-invocation'] !== 'true',
+      modelInvocable: true,
       userInvocable: meta['user-invocable'] !== 'false',
     }, candidate.name)
   }
 })
 
-test('zh-grilling is skill-invoked only', async () => {
+test('zh-grilling allows model invocation and stays hidden from user invocation', async () => {
   const candidates = await m.createProvider().list({})
   const grilling = candidates.find((candidate) => candidate.name === 'zh-grilling')
   assert.deepEqual(grilling.invocation, { modelInvocable: true, userInvocable: false })

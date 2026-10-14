@@ -2,4 +2,4 @@ interface:
   display_name: "Implement Spec"
   short_description: "用代码实现 /to-spec 和 /to-tickets 的结果。"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

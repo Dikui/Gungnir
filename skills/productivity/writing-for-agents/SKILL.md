@@ -1,9 +1,7 @@
 ---
 name: writing-for-agents
-description: 编写或精简供代理阅读的技能、AGENTS.md、CLAUDE.md 和参考文档。仅在用户直接调用，或 retro 等技能的步骤要求加载时使用；不要根据对话内容自行加载。
+description: 编写或精简供代理阅读的技能、AGENTS.md、CLAUDE.md 和参考文档。
 ---
-
-加载条件：仅在用户直接调用本技能，或其他技能的步骤要求加载本技能时继续；否则停止，并提示用户可直接调用 `/writing-for-agents`。
 
 让代理清楚地知道何时读取文档、该做什么、何时完成。目标是让执行过程稳定，输出可以随任务变化。
 

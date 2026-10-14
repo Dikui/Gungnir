@@ -1,7 +1,6 @@
 ---
 name: setup-dikui-skills
 description: "首次使用工程技能前，配置项目的 issue tracker、分流标签和领域文档入口。"
-disable-model-invocation: true
 ---
 
 # 配置工程技能
