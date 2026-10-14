@@ -56,6 +56,18 @@ claude plugin uninstall dikui-skills@dikui
 
 基础技能（**Skill-invoked**）通常由入口技能在执行中加载。分组只说明谁通常调用谁，不代表调用限制；`grilling` 保留 `user-invocable: false`，不能由用户直接调用。完整层级和配置见 [调用规则](./docs/invocation.md)。
 
+### 硬约束参数
+
+需要禁止模型隐式调用某个技能时，各平台使用以下参数。设置后用户仍可显式调用；本仓库目前所有技能都允许隐式调用，不设置这些参数（`scripts/check-repo.mjs` 会拒绝）。
+
+| 平台 | 参数 | 效果 |
+| --- | --- | --- |
+| Claude Code | `SKILL.md` frontmatter 中 `disable-model-invocation: true` | 技能描述不进入模型上下文，模型和其他技能都不能通过 Skill 工具调用；用户仍可用 `/技能名` 调用 |
+| Codex | `agents/openai.yaml` 中 `policy.allow_implicit_invocation: false` | 模型不会根据描述自动选用；用户仍可用 `$技能名` 调用 |
+| DeepSeek Harness（dsh） | 无独立参数，复用 `disable-model-invocation: true` | dsh 插件（`dsh-plugin/index.js`）把它转换为 `invocation.modelInvocable: false` 交给 dsh；用户仍可用 `/zh-技能名` 调用 |
+
+这些参数只限制平台的调用机制；模型按路径直接读取 `SKILL.md` 时不受限制。
+
 ## 技能索引
 
 ### Engineering
