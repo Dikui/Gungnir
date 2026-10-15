@@ -8,7 +8,7 @@
 
 维护现有代码、准备较大变更，或发现代码难以测试时，使用 `/improve-codebase-architecture`，附上希望检查的模块、子系统或问题。
 
-由你输入 `/improve-codebase-architecture` 调用，代理不会自行调用。
+由你输入 `/improve-codebase-architecture` 调用，代理判断适用时也会自行调用。
 
 有指定范围时按范围探索；没有时先看足够长的 `git log --oneline`，找反复修改的区域，没有明显热点再扩大范围。代理先读领域文档，再派一个子代理浏览代码。
 
