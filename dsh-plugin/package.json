@@ -1,6 +1,6 @@
 {
   "name": "@dikui/gungnir",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Gungnir 简体中文技能的 DeepSeek Harness 插件包：以 zh- 前缀暴露全部可用技能。",
   "private": false,
   "publishConfig": { "access": "public" },
