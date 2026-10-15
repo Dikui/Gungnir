@@ -35,4 +35,4 @@ single-context：根目录 `GLOSSARY.md` 加 `docs/adr/`。涉及业务或架构
 
 ### Commit rules
 
-禁止 `--no-verify`、`git add -A` / `git add .` 和强推。hooks 由 `.githooks/` 提供。
+禁止 `--no-verify`、`git add -A` / `git add .` 和强推。

@@ -99,7 +99,7 @@ claude plugin uninstall dikui-skills@dikui
 - **[safe-push](./skills/engineering/safe-push/SKILL.md)**
   检查不应入库的内容，确认版本号，经确认后提交并推送代码。
 - **[setup-dikui-skills](./skills/engineering/setup-dikui-skills/SKILL.md)**
-  初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局和提交保护。
+  初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局。
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**
   将当前讨论整理为需求文档，发布到项目 issue tracker。
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**

@@ -62,7 +62,7 @@ sk-[A-Za-z0-9_-]{20,}
 
 ## 项目规则的解释
 
-语法以 [push-rules-template.md](push-rules-template.md) 为准。其中 `safe-push-protected` 块只供 pre-push hook 使用，scan.sh 忽略它。
+语法以 [push-rules-template.md](push-rules-template.md) 为准。
 
 deny 对匹配内容追加命中，且调整同类别内置命中的级别，按顺序最后匹配者优先；第 1 类降级无效。
 

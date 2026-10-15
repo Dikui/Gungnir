@@ -45,8 +45,6 @@ git ls-remote --symref <remote> HEAD
 
 Git 不能推断服务器全部保护规则；缺失时向用户确认。
 
-检测到项目未启用 hooks（`core.hooksPath` 不是 `.githooks` 且无其他 hook 方案）时，提示可运行 `/setup-dikui-skills` 安装；不阻断流程。
-
 按 [push-rules-template.md](push-rules-template.md) 生成符合发现的草稿，列出事实与待确认项，展示完整草稿。询问“确认写入”或“暂不创建”；只有确认后才写入。暂不创建时只用内置规则继续，下次运行仍询问。新配置文件是否入本次提交另行确定。
 
 完成条件：已读规则，或已确认创建/暂不创建；不要为了配置自动放行测试假密钥。

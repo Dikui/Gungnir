@@ -358,6 +358,19 @@ assert_code 'invalid ERE exits 2' 2
 scan --base missing-revision --unpushed
 assert_code 'invalid revision exits 2' 2
 
+newrepo
+mkdir -p .scratch/tasks/x
+printf 'report\n' > .scratch/tasks/x/report.md
+git add -- .scratch/tasks/x/report.md
+scan --staged
+assert_has '.scratch/tasks blocks category 3' block 3
+git reset -q; rm -rf .scratch
+mkdir -p .scratch/feat/issues
+printf 'issue\n' > .scratch/feat/issues/01-a.md
+git add -- .scratch/feat/issues/01-a.md
+scan --staged
+if awk -F '\t' '$2==3 { f=1 } END { exit f }' "$tmp/out"; then pass '.scratch/<feature>/issues has no category 3'; else fail '.scratch/<feature>/issues has no category 3'; fi
+
 mkdir -p "$tmp/not-git"
 cd "$tmp/not-git" || exit 2
 scan --staged

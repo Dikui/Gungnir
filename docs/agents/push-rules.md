@@ -25,8 +25,3 @@
 
 ```safe-push-allow
 ```
-
-## 受保护分支
-
-```safe-push-protected
-```
