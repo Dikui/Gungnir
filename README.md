@@ -85,9 +85,9 @@ claude plugin uninstall dikui-skills@dikui
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**
   通过持续访谈打磨计划或设计，并记录 ADR 和词汇表。
 - **[implement](./skills/engineering/implement/SKILL.md)**
-  按需求文档或任务单实现功能。
+  由当前会话自己编码，实现一张任务单或一份小需求，完成后提交到当前分支。
 - **[implement-spec](./skills/engineering/implement-spec/SKILL.md)**
-  用代码实现 /to-spec 和 /to-tickets 的结果。
+  实施一份含多张任务单的完整需求：按依赖图派子代理在独立 worktree 中并行实现，再汇入集成分支。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**
   查找可用小接口封装复杂行为的模块，生成可视化架构报告，再与用户讨论选中的方案。
 - **[mockup](./skills/engineering/mockup/SKILL.md)**

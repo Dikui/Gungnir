@@ -1,6 +1,6 @@
 ---
 name: implement-spec
-description: "用代码实现 /to-spec 和 /to-tickets 的结果。"
+description: "实施一份含多张任务单的完整需求：按依赖图派子代理在独立 worktree 中并行实现，再汇入集成分支。"
 ---
 
 用户已提供一份需求文档。这份需求文档应有关联的任务单，说明如何实现它。

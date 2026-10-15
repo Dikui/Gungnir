@@ -8,7 +8,7 @@
 
 需求已由 `/to-spec` 和 `/to-tickets` 整理为带依赖关系的任务单，希望在一次协调会话中实施整份需求时，使用 `/implement-spec`。小规模工作或希望逐张实施时，使用 `/implement`。
 
-由你输入 `/implement-spec` 调用，代理不会自行调用。
+由你输入 `/implement-spec` 调用；需求含多张任务单时，代理也会自行调用。
 
 开始前提供需求文档、关联任务单和任务跟踪器。缺少跟踪器时，代理会提示你运行 `/setup-dikui-skills`。
 
