@@ -43,3 +43,23 @@
 | `/occams-razor` | 正常开始，并出现在 `/` 菜单中 |
 | `/safe-push` | 出现在 `/` 菜单中；先检查仓库状态，无项目规则时展示草稿并等待确认；询问版本号并等待确认；提交和推送分别等待确认 |
 | `/grilling` | 不出现在 `/` 菜单中 |
+
+## D. Codex 与 Grok
+
+技能正文里"通过 Skill 工具加载 `/xxx`"的写法按 Claude Code 写成，需确认 Codex 和 Grok 也能据此加载基础技能。两者都从已安装的 plugin 读取技能，先按发布流程升级插件，再在新会话中测。
+
+| Agent | 调用写法 | 无交互运行（只读） |
+| --- | --- | --- |
+| Codex | `$技能名` | `codex exec -s read-only --skip-git-repo-check -C <空目录> - < prompt.md` |
+| Grok | `/技能名` | `grok --always-approve --no-subagents --agent explore --cwd <空目录> --prompt-file prompt.md` |
+
+| 输入 | 期望 |
+| --- | --- |
+| `grill-me 我计划周末把数据库从 MySQL 迁到 Postgres`（按上表加前缀） | 加载 `grilling`：编号提问、每题附 ➡️ 推荐答案、末行有进度 |
+
+记录：
+
+| 日期 | Agent 与模型 | 插件版本 | 结果 |
+| --- | --- | --- | --- |
+| 2026-10-17 | Codex，gpt-5.6-sol | 3.3.4 | 通过：日志显示先读 grill-me，再按"通过 Skill 工具加载"读取 grilling 的 SKILL.md |
+| 2026-10-17 | Grok，grok-4.7 | 已安装版本 | 通过：输出符合 grilling 格式；Grok 不输出工具日志，只能按输出判断 |

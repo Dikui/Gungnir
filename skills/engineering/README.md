@@ -16,7 +16,6 @@
 - **[to-spec](./to-spec/SKILL.md)** - 把当前对话整理成 spec 并发布到 issue tracker。
 - **[to-tickets](./to-tickets/SKILL.md)** - 把 plan、spec 或 conversation 拆成 tracer-bullet tickets，每个 ticket 声明 blocking edges——本地文件中用文本表示，真实 tracker 上用 native blocking links。
 - **[implement](./implement/SKILL.md)** - 基于 spec 或 ticket 集合实现一段工作，在预先认可的 seams 上驱动 `/tdd`，并在提交前以 `/diff-review` 收尾。
-- **[implement-spec](./implement-spec/SKILL.md)** - 按任务依赖图并行实现整份需求，各任务在独立 worktree 中实施，汇入同一集成分支；各任务用 `/tdd` 实现，最后用 `/diff-review` 审查集成分支。
 - **[wayfinder](./wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 issue tracker 上的 decision tickets 共享 map，逐一解决直到通往 destination 的路清晰。
 - **[diagnosing-bugs](./diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：reproduce -> minimise -> hypothesise -> instrument -> fix -> regression-test。
 - **[pr-body](./pr-body/SKILL.md)** - 用最小图示、前后验证证据、可回退性和影响范围撰写 PR 正文。

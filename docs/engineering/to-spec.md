@@ -47,4 +47,4 @@
 
 常见顺序是 `/grill-with-docs` → `/to-spec` → `/to-tickets`。
 
-之后逐项用 `/implement` 实施，或用 `/implement-spec` 按依赖图实施整份需求。其他技能由你决定是否调用。
+之后逐项用 `/implement` 实施。其他技能由你决定是否调用。

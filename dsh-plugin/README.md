@@ -20,7 +20,7 @@
 
    ```sh
    (cd dsh-plugin && npm pack)
-   dsh plugin --profile web add "$PWD/dsh-plugin/dikui-gungnir-3.3.4.tgz"
+   dsh plugin --profile web add "$PWD/dsh-plugin/dikui-gungnir-4.0.0.tgz"
    ```
 
 2. 启动 dsh：

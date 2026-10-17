@@ -10,7 +10,7 @@
 
 当你要确认一批已提交变更是否符合仓库规范、是否实现了约定需求时，调用 `/diff-review` 并提供比较基准，例如 `main`、提交 SHA 或 `HEAD~5`。
 
-可直接调用，也会被 `/implement`、`/implement-spec`、`/tdd` 加载。
+可直接调用，也会被 `/implement`、`/tdd` 加载。
 
 ## 这是对话，需要你做决定
 
@@ -48,6 +48,6 @@
 
 ## 它在工作流中的位置
 
-它可独立审查已提交分支，也供 `/implement`、`/implement-spec` 等流程按步骤加载。需求由 `/to-spec` 或 `/to-tickets` 提供；后续可用 `/retro` 复盘遗漏，用 `/pr-body` 撰写变更说明。
+它可独立审查已提交分支，也供 `/implement` 等流程按步骤加载。需求由 `/to-spec` 或 `/to-tickets` 提供；后续可用 `/retro` 复盘遗漏，用 `/pr-body` 撰写变更说明。
 
 若要针对计划、需求或代码寻找并验证反例，可选 `/adversarial-review`；若要定位已出现的故障，可选 `/diagnosing-bugs`。

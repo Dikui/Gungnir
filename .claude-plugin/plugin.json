@@ -1,6 +1,6 @@
 {
   "name": "gungnir",
-  "version": "3.3.4",
+  "version": "4.0.0",
   "description": "面向项目开发的简体中文工程技能：访谈、需求与任务、TDD、代码审查、领域建模和方法诊断。",
   "author": {
     "name": "dikui",
@@ -28,7 +28,6 @@
     "./skills/engineering/domain-modeling",
     "./skills/engineering/grill-with-docs",
     "./skills/engineering/implement",
-    "./skills/engineering/implement-spec",
     "./skills/engineering/improve-codebase-architecture",
     "./skills/engineering/mockup",
     "./skills/engineering/pr-body",

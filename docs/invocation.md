@@ -17,8 +17,8 @@
 | `domain-modeling` | grill-with-docs、triage、wayfinder、improve-codebase-architecture | 能 |
 | `codebase-design` | improve-codebase-architecture、tdd | 能 |
 | `writing-for-agents` | retro | 能 |
-| `tdd` | implement、implement-spec | 能 |
-| `diff-review` | implement、implement-spec、tdd | 能 |
+| `tdd` | implement | 能 |
+| `diff-review` | implement、tdd | 能 |
 | `research` | wayfinder | 能 |
 | `prototype` | wayfinder | 能 |
 

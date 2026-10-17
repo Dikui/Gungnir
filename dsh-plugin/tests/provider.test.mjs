@@ -30,7 +30,7 @@ test('list resolves to every well-formed zh- candidates owned by the provider', 
   const candidates = await m.createProvider().list({})
   assert.equal(candidates.length, SKILL_NAMES.length)
   assert.equal(new Set(candidates.map((candidate) => candidate.name)).size, SKILL_NAMES.length)
-  assert.equal(candidates.length, 31)
+  assert.equal(candidates.length, 30)
   const names = new Set(candidates.map((candidate) => candidate.name))
   for (const name of ['zh-mockup', 'zh-diff-review', 'zh-pr-body', 'zh-safe-push']) assert.ok(names.has(name), name)
   for (const name of ['zh-code-review', 'zh-pr']) assert.ok(!names.has(name), name)
