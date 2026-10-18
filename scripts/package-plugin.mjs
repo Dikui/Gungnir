@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const output = resolve(process.argv[2] ?? join(root, 'dist'))
-const original = JSON.parse(await readFile(join(root, '.claude-plugin/plugin.json'), 'utf8'))
+const original = JSON.parse(await readFile(join(root, 'skills/.claude-plugin/plugin.json'), 'utf8'))
 const plugin = join(output, 'plugins', original.name)
 await mkdir(plugin, { recursive: false }).catch(async e => {
   if (e.code === 'ENOENT') { await mkdir(dirname(plugin), { recursive: true }); await mkdir(plugin) }
@@ -12,8 +12,8 @@ await mkdir(plugin, { recursive: false }).catch(async e => {
 })
 // Publish every skill registered in the Claude manifest.
 for (const path of original.skills) {
-  if (!/^\.\/skills\/(engineering|productivity)\/[^/]+$/.test(path)) throw new Error('非法公开 skill 路径：' + path)
-  await cp(join(root, path), join(plugin, 'skills', path.split('/').at(-1)), { recursive: true })
+  if (!/^\.\/(engineering|productivity)\/[^/]+$/.test(path)) throw new Error('非法公开 skill 路径：' + path)
+  await cp(join(root, 'skills', path), join(plugin, 'skills', path.split('/').at(-1)), { recursive: true })
 }
 await cp(join(root, 'LICENSE'), join(plugin, 'LICENSE'))
 const json = async (path, data) => { await mkdir(dirname(path), { recursive: true }); await writeFile(path, JSON.stringify(data, null, 2) + '\n') }

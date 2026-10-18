@@ -17,6 +17,14 @@ claude plugin marketplace add Dikui/Gungnir
 claude plugin install gungnir@gungnir
 ```
 
+Codex 和 Grok 同样从本仓库安装。Grok 需要用 `#skills` 指定插件目录：
+
+```bash
+codex plugin marketplace add Dikui/Gungnir
+codex plugin add gungnir@gungnir
+grok plugin install Dikui/Gungnir#skills --trust
+```
+
 在仓库根目录打包并安装本地 Claude Code 插件：
 
 ```bash

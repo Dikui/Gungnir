@@ -1,0 +1,53 @@
+{
+  "name": "gungnir",
+  "version": "4.1.0",
+  "description": "面向项目开发的简体中文工程技能：访谈、需求与任务、TDD、代码审查、领域建模和方法诊断。",
+  "author": {
+    "name": "dikui",
+    "url": "https://github.com/Dikui"
+  },
+  "homepage": "https://github.com/Dikui/Gungnir",
+  "repository": "https://github.com/Dikui/Gungnir",
+  "license": "MIT",
+  "keywords": [
+    "engineering",
+    "skills",
+    "tdd",
+    "code-review",
+    "grilling",
+    "domain-modeling",
+    "productivity"
+  ],
+  "skills": [
+    "./engineering/ablation",
+    "./engineering/ask-dikui",
+    "./engineering/diff-review",
+    "./engineering/codebase-design",
+    "./engineering/cohesion-coupling",
+    "./engineering/diagnosing-bugs",
+    "./engineering/domain-modeling",
+    "./engineering/grill-with-docs",
+    "./engineering/implement",
+    "./engineering/improve-codebase-architecture",
+    "./engineering/mockup",
+    "./engineering/pr-body",
+    "./engineering/prototype",
+    "./engineering/research",
+    "./engineering/retro",
+    "./engineering/safe-push",
+    "./engineering/setup-dikui-skills",
+    "./engineering/tdd",
+    "./engineering/to-spec",
+    "./engineering/to-tickets",
+    "./engineering/triage",
+    "./engineering/wayfinder",
+    "./productivity/adversarial-review",
+    "./productivity/first-principles",
+    "./productivity/grill-me",
+    "./productivity/grilling",
+    "./productivity/handoff",
+    "./productivity/occams-razor",
+    "./productivity/wait-what",
+    "./productivity/writing-for-agents"
+  ]
+}

@@ -16,7 +16,7 @@ const read = (rel) => readFileSync(join(ROOT, rel), 'utf8')
 
 // Reject unregistered buckets instead of silently omitting their skills.
 for (const entry of readdirSync(join(ROOT, 'skills'), { withFileTypes: true })) {
-  if (entry.isDirectory() && !BUCKETS.includes(entry.name)) {
+  if (entry.isDirectory() && entry.name !== '.claude-plugin' && !BUCKETS.includes(entry.name)) {
     fail(`skills/${entry.name}`, `unexpected bucket; allowed: ${BUCKETS.join(', ')}`)
   }
 }
@@ -81,11 +81,11 @@ for (const s of skills) {
 }
 
 // Plugin manifest lists every repository skill.
-const plugin = JSON.parse(read('.claude-plugin/plugin.json'))
-const expected = skills.map((s) => `./${s.path}`).sort()
+const plugin = JSON.parse(read('skills/.claude-plugin/plugin.json'))
+const expected = skills.map((s) => `./${s.path.replace(/^skills\//, '')}`).sort()
 const actual = [...plugin.skills].sort()
-for (const path of expected) if (!actual.includes(path)) fail('.claude-plugin/plugin.json', `missing ${path}`)
-for (const path of actual) if (!expected.includes(path)) fail('.claude-plugin/plugin.json', `unexpected ${path}`)
+for (const path of expected) if (!actual.includes(path)) fail('skills/.claude-plugin/plugin.json', `missing ${path}`)
+for (const path of actual) if (!expected.includes(path)) fail('skills/.claude-plugin/plugin.json', `unexpected ${path}`)
 
 // Top README indexes every skill under its invocation group, and nothing else.
 const readme = read('README.md')

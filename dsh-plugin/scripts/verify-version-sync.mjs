@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 
 const packageUrl = new URL('../package.json', import.meta.url)
-const pluginUrl = new URL('../../.claude-plugin/plugin.json', import.meta.url)
+const pluginUrl = new URL('../../skills/.claude-plugin/plugin.json', import.meta.url)
 
 /**
  * Read and parse a JSON file, reporting failures as a bare message.
