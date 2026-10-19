@@ -12,6 +12,7 @@
 - **[handoff](./handoff/SKILL.md)** - 把当前对话压缩成 handoff document，让另一个 agent 可以继续。
 - **[occams-razor](./occams-razor/SKILL.md)** - 把方案的每个组成追溯到需求或证据，找出可以删除的部分。
 - **[wait-what](./wait-what/SKILL.md)** - 当一条消息没被理解时立即触发。agent 用你缺失的上下文、以直白的语言、借助你的 `GLOSSARY.md` 词汇重新解释。
+- **[whiteboard](./whiteboard/SKILL.md)** - 让本地或服务器上的 Codex 与人工共同编辑 Excalidraw 白板，并导出、恢复画板文件。
 
 ## Skill-invoked
 

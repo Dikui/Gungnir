@@ -1,12 +1,11 @@
 ---
 name: whiteboard
-description: 由用户显式调用，让本地或服务器上的 Codex 与人工共同编辑 Excalidraw 白板，并保存、恢复画板文件。界面在浏览器中使用。
-disable-model-invocation: true
+description: 让本地或服务器上的 Codex 与人工共同编辑 Excalidraw 白板，并保存、恢复画板文件。界面在浏览器中使用。
 ---
 
 # 白板
 
-通过本技能的 `scripts/cli.mjs` 启动 `mcp-excalidraw-server@2.1.2`，操作画板。启动器修复服务端对浏览器原生箭头绑定的识别，使 CLI 移动节点时自动重算并广播关联连线。用户拖动、改字后，读取最新状态，再按元素 ID 局部修改。只在本技能被显式调用时使用；不要求安装 ZCode、配置 MCP 或安装上游的另一份技能。
+通过本技能的 `scripts/cli.mjs` 启动 `mcp-excalidraw-server@2.1.2`，操作画板。启动器修复服务端对浏览器原生箭头绑定的识别，使 CLI 移动节点时自动重算并广播关联连线。用户拖动、改字后，读取最新状态，再按元素 ID 局部修改。不要求安装 ZCode、配置 MCP 或安装上游的另一份技能。
 
 ## 确定运行位置和连接方式
 

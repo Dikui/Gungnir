@@ -2,7 +2,7 @@
 
 ## 这是什么
 
-本插件包把 Gungnir 仓库中 `skills/engineering/` 和 `skills/productivity/` 的技能，打包为 DeepSeek Harness（dsh）插件。顶层 `optional/` 中的独立选装技能不随包发布。
+本插件包把 Gungnir 仓库中 `skills/engineering/` 和 `skills/productivity/` 的技能（包括白板），打包为 DeepSeek Harness（dsh）插件。白板运行组件在首次使用时下载。
 
 技能以 `zh-<name>` 命名，并以 `/zh-<name>` 调用，例如 `/zh-grilling`。
 
@@ -20,7 +20,7 @@
 
    ```sh
    (cd dsh-plugin && npm pack)
-   dsh plugin --profile web add "$PWD/dsh-plugin/dikui-gungnir-4.2.0.tgz"
+   dsh plugin --profile web add "$PWD/dsh-plugin/dikui-gungnir-4.2.1.tgz"
    ```
 
 2. 启动 dsh：
