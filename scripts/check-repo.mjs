@@ -44,9 +44,10 @@ function indexEntries(text) {
 }
 
 const skills = listSkills()
-const all = skills
+const optional = listSkills(['optional'], ROOT)
+const all = [...skills, ...optional]
 
-// All skills allow implicit invocation; the documentation table defines their tiers.
+// Main-plugin skills allow implicit invocation; optional skills require explicit use.
 const invocationDoc = read('docs/invocation.md')
 const skillInvoked = new Set([...invocationDoc.matchAll(/^\| `([^`]+)` \|/gm)].map((match) => match[1]))
 for (const name of skillInvoked) {
@@ -60,11 +61,14 @@ for (const s of all) {
   }
   if (s.meta.name !== s.name) fail(file, `name must match directory ${s.name}`)
   s.group = skillInvoked.has(s.name) ? 'Skill-invoked' : 'User-invoked'
-  if (Object.hasOwn(s.meta, 'disable-model-invocation')) fail(file, 'disable-model-invocation must not be set')
+  const explicitOnly = s.bucket === 'optional'
+  if (explicitOnly) {
+    if (s.meta['disable-model-invocation'] !== 'true') fail(file, 'optional skills must disable model invocation')
+  } else if (Object.hasOwn(s.meta, 'disable-model-invocation')) fail(file, 'disable-model-invocation must not be set')
   const policy = s.openaiYaml?.match(/^policy:[ \t]*\n((?:[ \t]+[^\n]*\n?)*)/m)?.[1]
   const implicit = policy?.match(/^[ \t]+allow_implicit_invocation:[ \t]*(true|false)[ \t]*(?:#.*)?$/m)?.[1]
   if (!implicit) fail(`${s.path}/agents/openai.yaml`, 'missing policy.allow_implicit_invocation')
-  else if (implicit !== 'true') fail(`${s.path}/agents/openai.yaml`, 'policy.allow_implicit_invocation must be true')
+  else if (implicit !== String(!explicitOnly)) fail(`${s.path}/agents/openai.yaml`, `policy.allow_implicit_invocation must be ${!explicitOnly}`)
   if (s.meta.description?.includes(DESCRIPTION_GATE)) fail(file, 'description must not prohibit implicit invocation')
   if (s.body.trimStart().startsWith('加载条件：')) fail(file, 'body must not start with "加载条件："')
 }
@@ -90,28 +94,28 @@ for (const path of actual) if (!expected.includes(path)) fail('skills/.claude-pl
 // Top README indexes every skill under its invocation group, and nothing else.
 const readme = read('README.md')
 const top = indexEntries(readme)
-for (const s of skills) {
+for (const s of all) {
   const entry = top.get(s.name)
   if (!entry) fail('README.md', `missing index entry for ${s.name}`)
   else if (entry.link !== `./${s.path}/SKILL.md`) fail('README.md', `${s.name} should link to ./${s.path}/SKILL.md`)
   else if (s.group && entry.group !== s.group) fail('README.md', `${s.name} should be listed under ${s.group}`)
 }
 for (const name of top.keys()) {
-  if (!skills.some((s) => s.name === name)) fail('README.md', `lists unknown skill ${name}`)
+  if (!all.some((s) => s.name === name)) fail('README.md', `lists unknown skill ${name}`)
 }
 
 // Each bucket README indexes its own skills under their invocation groups.
-for (const bucket of BUCKETS) {
-  const file = `skills/${bucket}/README.md`
+for (const bucket of [...BUCKETS, 'optional']) {
+  const file = bucket === 'optional' ? 'optional/README.md' : `skills/${bucket}/README.md`
   const entries = indexEntries(read(file))
-  for (const s of skills.filter((s) => s.bucket === bucket)) {
+  for (const s of all.filter((s) => s.bucket === bucket)) {
     const entry = entries.get(s.name)
     if (!entry) fail(file, `missing index entry for ${s.name}`)
     else if (entry.link !== `./${s.name}/SKILL.md`) fail(file, `${s.name} should link to ./${s.name}/SKILL.md`)
     else if (s.group && entry.group !== s.group) fail(file, `${s.name} should be listed under ${s.group}`)
   }
   for (const name of entries.keys()) {
-    if (!skills.some((s) => s.bucket === bucket && s.name === name)) fail(file, `lists unknown skill ${name}`)
+    if (!all.some((s) => s.bucket === bucket && s.name === name)) fail(file, `lists unknown skill ${name}`)
   }
 }
 

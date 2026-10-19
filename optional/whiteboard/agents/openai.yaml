@@ -1,0 +1,5 @@
+interface:
+  display_name: "Whiteboard"
+  short_description: "与人工共同编辑 Excalidraw 白板，支持本地和服务器上的 Codex"
+policy:
+  allow_implicit_invocation: false

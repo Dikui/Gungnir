@@ -45,6 +45,27 @@ npx skills@latest add Dikui/Gungnir
 
 DeepSeek Harness 安装步骤见 [dsh 插件说明](./dsh-plugin/README.md)，技能命令使用 `zh-` 前缀，例如 `/zh-ask-dikui`。
 
+### 白板可选安装
+
+白板技能放在插件根目录之外的 `optional/`，不随主插件或 dsh 包安装。普通 skills 安装也不会自动发现它；需要时在 **Codex 执行命令的机器上** 单独选装：
+
+```bash
+npx skills@latest add Dikui/Gungnir --full-depth --skill whiteboard --agent codex --global
+```
+
+已检出本仓库时，也可运行 `npx skills@latest add . --full-depth --skill whiteboard --agent codex --global`。去掉 `--global` 则安装到当前项目。`--full-depth` 用于发现插件目录之外的白板；`--all --full-depth` 表示主动安装包括白板在内的全部技能。维护者的链接脚本不是选装入口。
+
+安装技能只复制技能文件；首次显式使用时才通过 `npx` 下载锁定的 `mcp-excalidraw-server@2.1.2`。运行机器需要 Node.js 20 或更高版本，不会自动注册 MCP 服务或额外安装上游技能。
+
+| Codex 运行位置 | 白板服务位置 | 用户如何编辑 |
+| --- | --- | --- |
+| 本地电脑 | 同一台电脑 | 浏览器访问本地画板 |
+| 服务器 | 同一台服务器 | 本地浏览器通过 SSH 端口转发访问 |
+
+例如：`$whiteboard 在当前机器启动白板，画出 API、缓存和数据库的关系。` 人工调整后，再让 Codex 读取最新画板并局部修改。启动、转发和保存流程见[白板技能](./optional/whiteboard/SKILL.md)。
+
+`2.1.2` 发布包的画板和快照只保存在服务内存中。人工编辑不会自动写入项目文件；用完需导出 `.excalidraw`，重启服务后可从该文件恢复。当前不承诺多 Agent 并发修改无冲突。
+
 ### 3.0.0 不兼容变更
 
 插件与 marketplace 统一改名为 `gungnir`。已安装旧插件 `dikui-skills@dikui` 时，先卸载，再按上面的新命令安装：
@@ -59,14 +80,14 @@ claude plugin uninstall dikui-skills@dikui
 
 ## 调用方式
 
-所有技能都允许模型在对话中隐式调用。入口技能（**User-invoked**）通常由用户调用：Claude Code 使用 `/技能名`，Codex 使用 `$技能名`。
+主插件技能都允许模型在对话中隐式调用；独立选装的白板仅由用户显式调用。入口技能（**User-invoked**）通常由用户调用：Claude Code 使用 `/技能名`，Codex 使用 `$技能名`。
 首次使用时运行 `/setup-dikui-skills` 配置项目；选择方法时运行 `/ask-dikui`。
 
 基础技能（**Skill-invoked**）通常由入口技能在执行中加载。分组只说明谁通常调用谁，不代表调用限制；`grilling` 保留 `user-invocable: false`，不能由用户直接调用。完整层级和配置见 [调用规则](./docs/invocation.md)。
 
 ### 硬约束参数
 
-需要禁止模型隐式调用某个技能时，各平台使用以下参数。设置后用户仍可显式调用；本仓库目前所有技能都允许隐式调用，不设置这些参数（`scripts/check-repo.mjs` 会拒绝）。
+需要禁止模型隐式调用某个技能时，各平台使用以下参数。设置后用户仍可显式调用；主插件技能不设置这些限制，`optional/` 技能则必须显式调用（由 `scripts/check-repo.mjs` 检查）。
 
 | 平台 | 参数 | 效果 |
 | --- | --- | --- |
@@ -159,6 +180,17 @@ claude plugin uninstall dikui-skills@dikui
 **User-invoked**
 
 暂无技能。
+
+**Skill-invoked**
+
+暂无技能。
+
+### Optional
+
+**User-invoked**
+
+- **[whiteboard](./optional/whiteboard/SKILL.md)**
+  在本地或服务器上的 Codex 中操作 Excalidraw 白板，与浏览器中的人工编辑协作，支持文件保存与恢复。
 
 **Skill-invoked**
 

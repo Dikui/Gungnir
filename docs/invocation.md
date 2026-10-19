@@ -1,10 +1,12 @@
 # 调用规则
 
-所有技能都允许模型在对话中隐式调用。Gungnir 的技能分两层：**入口技能**通常由用户调用，**基础技能**通常由入口技能调用。两层及 README 中的 **User-invoked** / **Skill-invoked** 分组只说明谁通常调用谁，不代表调用限制。
+主插件技能都允许模型在对话中隐式调用。Gungnir 的技能分两层：**入口技能**通常由用户调用，**基础技能**通常由入口技能调用。两层及 README 中的 **User-invoked** / **Skill-invoked** 分组只说明谁通常调用谁，不代表调用限制。
+
+顶层 `optional/` 中的技能独立选装，仅由用户显式调用；其配置为 `disable-model-invocation: true` 和 `policy.allow_implicit_invocation: false`，不随主插件或 dsh 包安装。
 
 ## 入口技能（User-invoked）
 
-除下表外的所有技能。用户可以显式调用，模型也可以在对话中隐式调用：
+除下表外的主插件技能。用户可以显式调用，模型也可以在对话中隐式调用：
 
 - Claude Code：用 `/技能名` 调用。
 - Codex：用 `$技能名` 调用。
@@ -26,7 +28,7 @@
 
 ## 配置
 
-所有技能统一使用以下配置：
+主插件技能统一使用以下配置：
 
 - Claude Code：不设 `disable-model-invocation`；`user-invocable: false` 仅用于用户不能直接调用的技能，目前为 `grilling`。
 - Codex：相邻 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: true`。

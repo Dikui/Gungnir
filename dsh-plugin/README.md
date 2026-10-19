@@ -2,7 +2,7 @@
 
 ## 这是什么
 
-本插件包把 Gungnir 仓库中的全部技能，打包为 DeepSeek Harness（dsh）插件。
+本插件包把 Gungnir 仓库中 `skills/engineering/` 和 `skills/productivity/` 的技能，打包为 DeepSeek Harness（dsh）插件。顶层 `optional/` 中的独立选装技能不随包发布。
 
 技能以 `zh-<name>` 命名，并以 `/zh-<name>` 调用，例如 `/zh-grilling`。
 
