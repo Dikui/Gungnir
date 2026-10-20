@@ -23,7 +23,7 @@ const cli = async (...args) => {
 }
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms))
 const waitForExit = async () => {
-  const deadline = Date.now() + 14000
+  const deadline = Date.now() + 5000
   while (Date.now() < deadline) {
     try { await cli('status') }
     catch (error) {
@@ -33,7 +33,7 @@ const waitForExit = async () => {
     }
     await pause(300)
   }
-  assert.fail('current whiteboard must exit after the last page closes')
+  assert.fail('current whiteboard must exit after clicking Close')
 }
 const browser = await chromium.launch({ channel: 'chromium', headless: true })
 const context = await browser.newContext({ viewport: { width: 1200, height: 800 } })
@@ -47,20 +47,15 @@ const open = async () => {
 
 try {
   assert.equal((await cli('start')).spawned, true)
-  await pause(10500)
-  assert.equal((await cli('status')).running, true, 'a service with no page opened must stay running')
   const first = await open()
   const second = await open()
   await first.close()
-  await pause(10500)
-  assert.equal((await cli('status')).running, true, 'another open page must keep the service running')
   await second.reload()
   await second.waitForFunction(() => !document.querySelector('.sync-controls button').disabled)
   await second.close()
-  await pause(1000)
-  const page = await open()
   await pause(10500)
-  assert.equal((await cli('status')).running, true, 'reconnecting must cancel the pending exit')
+  assert.equal((await cli('status')).running, true, 'closing every browser page must leave the service running')
+  const page = await open()
   const another = await open()
   for (const [canvas, tool, x] of [[page, 'Rectangle', 500], [another, 'Ellipse', 800]]) {
     await canvas.locator('label').filter({ has: canvas.getByRole('radio', { name: tool, exact: true }) }).click()
@@ -68,12 +63,13 @@ try {
     await canvas.mouse.down()
     await canvas.mouse.move(x + 100, 450)
     await canvas.mouse.up()
-    // Close immediately, before the upstream 1.2s sync debounce can run.
-    await canvas.close()
+    if (canvas === page) await canvas.close()
   }
-  const closedAt = Date.now()
+  const observer = await open()
+  await another.getByRole('button', { name: 'Close', exact: true }).click()
   await waitForExit()
-  assert.ok(Date.now() - closedAt >= 9500, 'exit must allow the 10s reconnect window')
+  await observer.getByRole('status').filter({ hasText: 'Service closed' }).waitFor()
+  assert.equal(await observer.getByRole('button', { name: 'Closed', exact: true }).isDisabled(), true)
   const archive = join(temp, 'whiteboard.excalidraw')
   const saved = JSON.parse(await readFile(archive, 'utf8'))
   assert.equal(saved.type, 'excalidraw')
@@ -87,12 +83,18 @@ try {
   const restored = await cli('get', id)
   assert.equal(restored.type, 'rectangle')
   await cli('update', id, '--set', '{"x":999}')
-  await (await open()).close()
+  const continuedPage = await open()
+  await continuedPage.setViewportSize({ width: 375, height: 700 })
+  const close = continuedPage.getByRole('button', { name: 'Close', exact: true })
+  const bounds = await close.boundingBox()
+  assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= 375, 'Close must remain visible on a narrow viewport')
+  await close.focus()
+  await continuedPage.keyboard.press('Enter')
   await waitForExit()
   await cli('start', '--file', continued)
   assert.equal((await cli('get', id)).x, 999, 'the next iteration must update and restore the same file')
   await cli('stop')
-  console.log('PASS: no-page, multiple pages, refresh, reconnect, immediate close and repeated diagram recovery')
+  console.log('PASS: closing tabs keeps the service running; Close saves, exits and restores; keyboard and narrow viewport work')
 
   // One critical failure path: an unwritable directory must not destroy the old archive.
   const locked = join(temp, 'locked')
@@ -105,8 +107,9 @@ try {
     await cli('update', id, '--set', '{"x":444}')
     const page = await open()
     await chmod(locked, 0o500)
-    await page.close()
+    await page.getByRole('button', { name: 'Close', exact: true }).click()
     await waitForExit()
+    await page.getByRole('alert').filter({ hasText: 'previous archive was kept' }).waitFor()
     assert.equal(await readFile(previous, 'utf8'), before, 'failed saving must preserve the previous archive byte for byte')
     assert.match(await readFile(join(temp, 'runtime.log'), 'utf8'), /Whiteboard save failed; keeping previous archive/)
   } finally {

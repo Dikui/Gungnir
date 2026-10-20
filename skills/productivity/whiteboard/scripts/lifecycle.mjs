@@ -16,14 +16,46 @@ export function installWhiteboard({ wss, elements, files, expandElementsForExpor
   }
 
   const pages = new Set()
-  let timer
-  wss.on('connection', ws => {
-    clearTimeout(timer)
+  let closing = false
+  const close = () => {
+    closing = true
+    const pending = `${file}.gungnir-${process.pid}.tmp`
+    let saved = false
+    try {
+      const scene = {
+        type: 'excalidraw', version: 2, source: 'gungnir-whiteboard',
+        elements: expandElementsForExport([...elements.values()], { deterministic: true }),
+        appState: { viewBackgroundColor: '#ffffff', gridSize: null },
+        files: Object.fromEntries(files)
+      }
+      writeFileSync(pending, JSON.stringify(scene, null, 2), { mode: 0o600 })
+      renameSync(pending, file)
+      saved = true
+      logger.info(`Whiteboard saved: ${file}`)
+    } catch (error) {
+      logger.error(`Whiteboard save failed; keeping previous archive: ${error.message}`)
+    } finally {
+      try { unlinkSync(pending) } catch { /* renamed or never created */ }
+    }
+    try {
+      for (const page of pages) {
+        if (page.readyState !== 1) continue
+        page.send(JSON.stringify({ type: 'gungnir_closed', saved, file }))
+        page.close(1000, 'Whiteboard closed')
+      }
+    } finally {
+      process.kill(process.pid, 'SIGTERM')
+    }
+  }
+  wss.on('connection', (ws, request) => {
     pages.add(ws)
     ws.on('message', raw => {
       try {
         const scene = JSON.parse(raw.toString())
-        if (scene.type !== 'gungnir_scene') return
+        if (closing || !['gungnir_scene', 'gungnir_close'].includes(scene.type)) return
+        if (scene.type === 'gungnir_close' && (!request.headers.origin || new URL(request.headers.origin).host !== request.headers.host)) {
+          throw new Error('Close must be requested from the whiteboard page')
+        }
         if (!Array.isArray(scene.elements) || !Array.isArray(scene.files) ||
             !scene.elements.every(element => element && typeof element.id === 'string') ||
             !scene.files.every(image => image && typeof image.id === 'string' && typeof image.dataURL === 'string')) {
@@ -38,33 +70,12 @@ export function installWhiteboard({ wss, elements, files, expandElementsForExpor
         }
         ws.send(JSON.stringify({ type: 'files_added', files: scene.files }))
         ws.send(JSON.stringify({ type: 'elements_synced', count: elements.size }))
+        if (scene.type === 'gungnir_close') close()
       } catch (error) {
         logger.error(`Whiteboard sync failed: ${error.message}`)
       }
     })
-    ws.once('close', () => {
-      pages.delete(ws)
-      if (pages.size) return
-      timer = setTimeout(() => {
-        const pending = `${file}.gungnir-${process.pid}.tmp`
-        try {
-          const scene = {
-            type: 'excalidraw', version: 2, source: 'gungnir-whiteboard',
-            elements: expandElementsForExport([...elements.values()], { deterministic: true }),
-            appState: { viewBackgroundColor: '#ffffff', gridSize: null },
-            files: Object.fromEntries(files)
-          }
-          writeFileSync(pending, JSON.stringify(scene, null, 2), { mode: 0o600 })
-          renameSync(pending, file)
-          logger.info(`Whiteboard saved: ${file}`)
-        } catch (error) {
-          logger.error(`Whiteboard save failed; keeping previous archive: ${error.message}`)
-        } finally {
-          try { unlinkSync(pending) } catch { /* renamed or never created */ }
-          process.kill(process.pid, 'SIGTERM')
-        }
-      }, 10000)
-    })
+    ws.once('close', () => pages.delete(ws))
   })
-  return { file, closeDelayMs: 10000 }
+  return { file, closeMode: 'manual' }
 }

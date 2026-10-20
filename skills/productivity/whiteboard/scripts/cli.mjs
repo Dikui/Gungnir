@@ -84,9 +84,13 @@ function patchFrontend(source) {
     const api=n.current,scene=api.getSceneElements().filter(el=>!el.isDeleted);
     const ids=new Set(scene.filter(el=>el.type==="image").map(el=>el.fileId));
     const images=Object.values(api.getFiles()).filter(image=>ids.has(image.id)&&!w.current.has(image.id));
-    const payload=JSON.stringify({type:"gungnir_scene",elements:scene,files:images});
+    const payload=JSON.stringify({type:B.close?"gungnir_close":"gungnir_scene",elements:scene,files:images});
     if(B.baseline){U.current=payload;return}
     if(U.current===payload)return;U.current=payload;
+    if(B.close){
+      v.current=false;setCloseStatus({pending:true});
+      closeTimer.current=setTimeout(()=>setCloseStatus({error:true}),5000)
+    }
     a.current.send(payload);
     l("syncing")
   },G=()=>{if(P()&&e&&v.current&&y.current===0)void H()}`
@@ -105,6 +109,35 @@ function patchFrontend(source) {
       window.addEventListener("pagehide",flush);
       return()=>window.removeEventListener("pagehide",flush)
     },[]);return m.jsxs("div",{className:"app"`)
+  }
+  if (!source.includes('/* Gungnir Close button */')) {
+    const anchor = ';return m.jsxs("div",{className:"app"'
+    const button = 'm.jsx("button",{className:"btn-secondary",onClick:X,disabled:!r||C!=="ready",children:"Clear Canvas"})'
+    const status = 'C!=="ready"&&m.jsxs("div",{className:"scene-load-status"'
+    const messages = 'switch(B.type){case"initial_elements":'
+    if (![anchor, button, status, messages].every(text => source.includes(text))) throw new Error('Unsupported canvas frontend: Close button anchors changed')
+    source = source.replace(anchor, `;/* Gungnir Close button */
+      const [closeStatus,setCloseStatus]=A.useState(null),closeTimer=A.useRef(null);
+      A.useEffect(()=>()=>clearTimeout(closeTimer.current),[]);
+      return m.jsxs("div",{className:"app"`)
+    source = source.replace(messages, `switch(B.type){case"gungnir_closed":
+      clearTimeout(closeTimer.current);v.current=false;
+      setCloseStatus({closed:true,saved:B.saved,file:B.file});
+      a.current?.close(1000);break;case"initial_elements":`)
+    source = source.replace(button, `${button},m.jsx("button",{
+      className:"btn-secondary",type:"button",style:{minWidth:100},
+      title:"Save and stop this whiteboard service for all open pages",
+      disabled:!P()||!!closeStatus?.pending||!!closeStatus?.closed,
+      "aria-busy":!!closeStatus?.pending,onClick:()=>void H({close:true}),
+      children:closeStatus?.closed?"Closed":closeStatus?.pending?"Closing…":"Close"
+    })`)
+    source = source.replace(status, `closeStatus&&m.jsx("div",{
+      className:"scene-load-status",role:closeStatus.error||closeStatus.saved===false?"alert":"status",
+      children:closeStatus.pending?"Saving and closing…":closeStatus.closed?
+        (closeStatus.saved?"Service closed. Saved to "+closeStatus.file:
+          "Service closed. Save failed; the previous archive was kept. This edit was not saved."):
+        "Close was not confirmed. Check the connection before trying again."
+    }),!closeStatus?.closed&&${status}`)
   }
   return source
 }
@@ -169,7 +202,7 @@ if (entrypoint && pathToFileURL(entrypoint).href === import.meta.url) {
       const { getHealth } = await import(pathToFileURL(join(runtime, 'dist/core/canvas-client.js')).href)
       const result = await ensureCanvasRunning({ force: true })
       const health = await getHealth()
-      if (!health.whiteboard) throw new Error('Existing canvas needs a one-time upgrade: export its scene, stop it, then start through this launcher and reload browser pages.')
+      if (health.whiteboard?.closeMode !== 'manual') throw new Error('Existing canvas needs a one-time upgrade: export its scene, stop it, then start through this launcher and reload browser pages.')
       if (flags.file && health.whiteboard.file !== process.env.GUNGNIR_WHITEBOARD_FILE) throw new Error(`Current canvas uses ${health.whiteboard.file}; requested archive was not loaded`)
       console.log(JSON.stringify({ running: true, ...result, pid: health.pid, file: health.whiteboard.file }))
     } else {
