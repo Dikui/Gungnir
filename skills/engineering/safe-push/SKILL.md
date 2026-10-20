@@ -29,19 +29,19 @@ rebase-apply
 
 有 upstream 时列出 `git log @{upstream}..HEAD`；没有时用 `git log HEAD --not --remotes`，不要把“没有 upstream”当成“没有未推送提交”。空仓库可先提交。远端引用可能过时，检查上次获取时间；需要刷新时仅对已确定且无凭据输出的 remote 获取引用。获取失败时说明检查边界，不能声称检查了最新远端。
 
+默认分支每次从 remote 引用核实，不写入或沿用项目规则中的默认分支记录。默认分支引用无缓存时，在条件允许时执行：
+
+```sh
+git ls-remote --symref <remote> HEAD
+```
+
 完成条件：仓库无中途操作，分支、目标和未推送提交已明确。
 
 ## 2. 项目规则
 
 读取 `docs/agents/push-rules.md`。存在时，同时遵循自然语言说明和机器规则。
 
-不存在时先探索 `.gitignore`、测试夹具或假数据目录、remote 列表、默认分支引用、仓库说明中的受保护分支和最近提交约定。
-
-默认分支引用无缓存时，在条件允许时执行：
-
-```sh
-git ls-remote --symref <remote> HEAD
-```
+不存在时先探索 `.gitignore`、测试夹具或假数据目录、remote 列表、仓库说明中的受保护分支和最近提交约定。
 
 Git 不能推断服务器全部保护规则；缺失时向用户确认。
 
