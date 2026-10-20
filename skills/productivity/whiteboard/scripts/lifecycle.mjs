@@ -32,6 +32,10 @@ export function installWhiteboard({ wss, elements, files, expandElementsForExpor
         elements.clear()
         for (const element of scene.elements) elements.set(element.id, element)
         for (const image of scene.files) files.set(image.id, image)
+        const update = JSON.stringify({ type: 'initial_elements', elements: scene.elements, files: Object.fromEntries(files) })
+        for (const page of pages) {
+          if (page !== ws && page.readyState === 1) page.send(update)
+        }
         ws.send(JSON.stringify({ type: 'files_added', files: scene.files }))
         ws.send(JSON.stringify({ type: 'elements_synced', count: elements.size }))
       } catch (error) {

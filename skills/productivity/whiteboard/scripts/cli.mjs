@@ -75,22 +75,28 @@ export function patchServerSource(source) {
 function patchFrontend(source) {
   const installed = source.includes('/* Gungnir immediate sync */')
   if (!installed && createHash('sha256').update(source).digest('hex') !== 'c86362e68fc33bcfe8d197ea28e0c11ae5134b08575c9a89d93679571186f16d') throw new Error('Unsupported canvas frontend: bundle changed')
-  const start = source.indexOf(installed ? 'H=async()=>{/* Gungnir immediate sync */' : 'H=async(B={})=>')
+  const start = installed ? source.search(/H=async\([^)]*\)=>\{\/\* Gungnir immediate sync \*\//) : source.indexOf('H=async(B={})=>')
   const end = source.indexOf(',X=async()=>', start)
   if (start < 0 || end < 0) throw new Error('Unsupported canvas frontend: sync anchors changed')
   // WebSocket frames stay ordered and drain before a normal page close.
-  const sync = `H=async()=>{/* Gungnir immediate sync */
+  const sync = `H=async(B={})=>{/* Gungnir immediate sync */
     if(!P()||!n.current)return;
     const api=n.current,scene=api.getSceneElements().filter(el=>!el.isDeleted);
     const ids=new Set(scene.filter(el=>el.type==="image").map(el=>el.fileId));
     const images=Object.values(api.getFiles()).filter(image=>ids.has(image.id)&&!w.current.has(image.id));
     const payload=JSON.stringify({type:"gungnir_scene",elements:scene,files:images});
+    if(B.baseline){U.current=payload;return}
     if(U.current===payload)return;U.current=payload;
     a.current.send(payload);
     l("syncing")
   },G=()=>{if(P()&&e&&v.current&&y.current===0)void H()}`
   source = (source.slice(0, start) + sync + source.slice(end))
     .replace('case"elements_synced":console.log(', 'case"elements_synced":f(new Date),l("idle"),console.log(')
+  if (!source.includes('/* Gungnir remote baseline */')) {
+    const anchor = 'k.current="ready",S("ready")};'
+    if (!source.includes(anchor)) throw new Error('Unsupported canvas frontend: scene load anchor changed')
+    source = source.replace(anchor, 'k.current="ready",S("ready"),H({baseline:!0})/* Gungnir remote baseline */};')
+  }
   if (!source.includes('/* Gungnir close sync */')) {
     const anchor = ';return m.jsxs("div",{className:"app"'
     if (!source.includes(anchor)) throw new Error('Unsupported canvas frontend: close hook anchor changed')

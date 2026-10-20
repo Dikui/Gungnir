@@ -61,13 +61,16 @@ try {
   const page = await open()
   await pause(10500)
   assert.equal((await cli('status')).running, true, 'reconnecting must cancel the pending exit')
-  await page.locator('label').filter({ has: page.getByRole('radio', { name: 'Rectangle', exact: true }) }).click()
-  await page.mouse.move(500, 300)
-  await page.mouse.down()
-  await page.mouse.move(700, 450)
-  await page.mouse.up()
-  // Close immediately, before the upstream 1.2s sync debounce can run.
-  await page.close()
+  const another = await open()
+  for (const [canvas, tool, x] of [[page, 'Rectangle', 500], [another, 'Ellipse', 800]]) {
+    await canvas.locator('label').filter({ has: canvas.getByRole('radio', { name: tool, exact: true }) }).click()
+    await canvas.mouse.move(x, 300)
+    await canvas.mouse.down()
+    await canvas.mouse.move(x + 100, 450)
+    await canvas.mouse.up()
+    // Close immediately, before the upstream 1.2s sync debounce can run.
+    await canvas.close()
+  }
   const closedAt = Date.now()
   await waitForExit()
   assert.ok(Date.now() - closedAt >= 9500, 'exit must allow the 10s reconnect window')
@@ -75,6 +78,7 @@ try {
   const saved = JSON.parse(await readFile(archive, 'utf8'))
   assert.equal(saved.type, 'excalidraw')
   assert.equal(saved.elements.filter(element => element.type === 'rectangle').length, 1)
+  assert.equal(saved.elements.filter(element => element.type === 'ellipse').length, 1, 'both pages must edit the same diagram')
   const continued = join(temp, 'continued.excalidraw')
   await copyFile(archive, continued)
   await cli('start', '--file', continued)
