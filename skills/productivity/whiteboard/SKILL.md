@@ -5,7 +5,7 @@ description: 让本地或服务器上的 Codex 与人工共同编辑 Excalidraw 
 
 # 白板
 
-通过本技能的 `scripts/cli.mjs` 启动 `mcp-excalidraw-server@2.1.2`，操作画板。启动器修复服务端对浏览器原生箭头绑定的识别，使 CLI 移动节点时自动重算并广播关联连线。用户拖动、改字后，读取最新状态，再按元素 ID 局部修改。不要求安装 ZCode、配置 MCP 或安装上游的另一份技能。
+通过本技能的 `scripts/cli.mjs` 启动 `mcp-excalidraw-server@2.1.2`，操作画板。启动器修复箭头绑定，并在最后一个页面关闭后自动保存、退出，下次从同一文件恢复。用户拖动、改字后，读取最新状态，再按元素 ID 局部修改。不要求安装 ZCode、配置 MCP 或安装上游的另一份技能。
 
 ## 确定运行位置和连接方式
 
@@ -22,7 +22,7 @@ CLI 和文件操作发生在 **Codex 执行 shell 的机器上**。本地 Codex 
 
 检查 Node.js 版本，要求 20 或更高。缺少 Node 时说明需要用户准备的环境，不自动修改系统或全局 Node 安装。以下示例适用于 macOS、Linux 和 WSL 的 shell。
 
-下面的 `/absolute/path/to/whiteboard` 必须替换成本技能的实际安装目录。每次调用使用绝对路径，不依赖跨 shell 保留的变量。`npx` 只下载锁定的 `2.1.2`；启动器在 npm 缓存中为该版本修复连线重算函数，再调用原有 CLI，不安装额外依赖。遇到未知版本或代码结构时直接报错，不盲目打补丁。
+下面的 `/absolute/path/to/whiteboard` 必须替换成本技能的实际安装目录。每次调用使用绝对路径，不依赖跨 shell 保留的变量。`npx` 只下载锁定的 `2.1.2`；启动器在 npm 缓存中修复连线、增加服务生命周期和浏览器同步逻辑，不安装额外依赖。遇到未知版本或代码结构时直接报错，不盲目打补丁。
 
 先检查服务；`status` 不启动服务。所有命令都经由启动器，不直接调用原版包：
 
@@ -33,12 +33,14 @@ npx -y --package=mcp-excalidraw-server@2.1.2 -- node /absolute/path/to/whiteboar
 只有用户要求在当前机器启动画板，且该地址没有已运行的服务时，才执行：
 
 ```bash
-npx -y --package=mcp-excalidraw-server@2.1.2 -- node /absolute/path/to/whiteboard/scripts/cli.mjs --url http://127.0.0.1:3000 start
+npx -y --package=mcp-excalidraw-server@2.1.2 -- node /absolute/path/to/whiteboard/scripts/cli.mjs --url http://127.0.0.1:3000 start --file /absolute/project/architecture.excalidraw
 ```
 
 `start` 会覆盖禁用自动启动的设置，因此连接模式中不能调用它。返回 `spawned: false` 表示复用了已运行服务，不能称为新建画板。端口被其他服务占用时，不停止该服务，改用用户认可的空闲端口并同步更新后续地址。
 
-修复在服务启动时加载。已有原版服务需先导出最新画板，再停止、通过本启动器重启并导入文件；遵守服务所有者的重启授权。连接服务器画板时，必须在服务器使用本启动器启动服务，只修复本地客户端不能改变远程服务。不要把复用旧进程称为修复已生效。
+`--file` 指定这张图的存档。文件存在时，新服务自动恢复其中的元素和图片；文件损坏时启动失败，保留原文件。未指定时，使用服务运行机器上当前工作目录的 `whiteboard.excalidraw`。`start` 返回存档绝对路径；复用服务时沿用其原存档，不重复导入，也不切换到另一份文件。继续同一张图时显式使用同一路径。
+
+增强在服务启动时加载。旧服务需先导出最新画板，再停止、通过本启动器用 `--file` 指定该存档重启，并刷新已有浏览器页面；遵守服务所有者的重启授权。连接服务器画板时，必须在服务器使用本启动器启动服务，只修复本地客户端不能改变远程服务。不要把复用旧进程称为增强已生效。
 
 本地 Codex：给出浏览器链接 `http://127.0.0.1:3000`。服务器 Codex：给出下面的转发命令，让用户在 **本地电脑** 执行，并把 `user@server` 换成实际 SSH 目标：
 
@@ -91,9 +93,13 @@ npx -y --package=mcp-excalidraw-server@2.1.2 -- node /absolute/path/to/whiteboar
 
 ## 保存与恢复
 
-**已发布的 `2.1.2` 把画板与命名快照放在服务内存中，重启会丢失。** 不使用主分支才出现的 `EXCALIDRAW_DATA_DIR`，不把浏览器同步或 `snapshot save` 称为持久保存。
+原版 `2.1.2` 的画板和命名快照仅存在内存中。本启动器增加 `.excalidraw` 存档；不使用主分支才出现的 `EXCALIDRAW_DATA_DIR`，不把 `snapshot save` 称为持久保存。
 
-完成一轮修改后，将画板导出到用户指定的项目 `.excalidraw` 文件；未给出路径时，在当前项目中选择清晰的文件名并告知用户。人工随后又修改时，需要再次导出或在浏览器中保存。
+最后一个页面关闭后，服务等待 10 秒，保存到当前图的存档并退出；期间有页面重连就取消退出。关闭部分标签页时保持运行。从未打开过页面时也保持运行。浏览器编辑即时同步，关页时补发最新状态。
+
+自动保存发生在服务所在机器。新内容先写同目录临时文件，成功后替换原文件；失败也退出并记录错误，保留上一次成功存档。本轮未保存的修改会丢失；若首次保存就失败，则没有可恢复存档。当前服务不因它由前一轮启动就免于自动退出。
+
+需要立即保存、或尚未打开页面时，仍可手动导出：
 
 ```bash
 npx -y --package=mcp-excalidraw-server@2.1.2 -- node /absolute/path/to/whiteboard/scripts/cli.mjs --url http://127.0.0.1:3000 export --out /absolute/project/architecture.excalidraw
@@ -101,16 +107,16 @@ npx -y --package=mcp-excalidraw-server@2.1.2 -- node /absolute/path/to/whiteboar
 
 导出成功时报告文件绝对路径。文件写在 CLI 所在机器上：服务器 Codex 导出到服务器；本地 Codex 即使连接服务器画板，也导出到本地。覆盖已有文件须符合用户的覆盖授权。
 
-恢复时先读取目标画板。确认是空画板后，导入已经保存的文件，再用 `describe` 与截图核对：
+再次使用同一路径执行 `start --file` 即可恢复，无须重复 `import`。需要导入其他文件时，先读取目标画板。确认是空画板后，导入已保存文件，再用 `describe` 与截图核对：
 
 ```bash
 npx -y --package=mcp-excalidraw-server@2.1.2 -- node /absolute/path/to/whiteboard/scripts/cli.mjs --url http://127.0.0.1:3000 import /absolute/project/architecture.excalidraw
 ```
 
-默认导入为合并，重复导入可能叠加元素；目标不空时不能把合并称为恢复。清空、删除、`import --replace` 和其他覆盖操作遵守用户及项目的确认规则。停止自己启动的服务前，先导出最新内容；连接已有服务时不替用户停止它。
+默认导入为合并，重复导入可能叠加元素；目标不空时不能把合并称为恢复。清空、删除、`import --replace` 和其他覆盖操作遵守用户及项目的确认规则。手动停止服务前先导出最新内容。额外的 `export --out` 不改变服务的自动保存位置。
 
 ## 交付
 
-给出当前画板地址、CLI 所在机器和导出文件路径。区分已实测结果与待验证环境；端口转发模拟不等于真实服务器验收。按用户要求继续编辑同一画板，不自动上传或创建分享链接。
+给出当前画板地址、CLI 所在机器及存档绝对路径，说明最后一个页面关闭 10 秒后自动保存并退出，以及下次恢复用的 `start --file` 命令。区分已实测结果与待验证环境；端口转发模拟不等于真实服务器验收。按用户要求继续编辑同一画板，不自动上传或创建分享链接。
 
 工具来源：[yctimlin/mcp_excalidraw](https://github.com/yctimlin/mcp_excalidraw)。参数以锁定的 npm 发布包为准，主分支文档可能包含尚未发布的能力。
