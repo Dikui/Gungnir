@@ -16,6 +16,14 @@
 
 只修改这里列出的本项目自身版本字段；未列出的文件（如 CHANGELOG、历史说明）不改。
 
+## 推送后
+
+推送了升版本的提交后，依次更新本机三处安装，并报告各自的版本或提交：
+
+1. Claude：`claude plugin marketplace update gungnir`，再 `claude plugin update gungnir@gungnir`。
+2. Codex：`codex plugin marketplace upgrade`，再用 `codex plugin list` 确认 `gungnir@gungnir` 的版本。
+3. Grok：`grok plugin update`。
+
 ## 追加与调整
 
 ```safe-push-deny
