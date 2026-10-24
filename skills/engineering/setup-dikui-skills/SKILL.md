@@ -57,7 +57,9 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 
 ### D. 文档布局与 `.gitignore`
 
-按 [layout.md](./layout.md) 生成 `docs/agents/layout.md`。项目已有不同的目录名时，把表中路径替换为实际路径。向 `.gitignore` 只追加缺失的不提交路径（`.scratch/tasks/`、`.scratch/prototype/`），不改动已有行。
+按 [layout.md](./layout.md) 生成 `docs/agents/layout.md`。项目已有不同的目录名时，把表中路径替换为实际路径。向 `.gitignore` 只追加表中缺失的不提交路径（`design/`、`docs/research/`、`docs/experiments/`、`.out-of-scope/`、`.scratch/`、`*.excalidraw`，按实际路径替换），不改动已有行。
+
+用 `git ls-files` 检查这些路径下已跟踪的文件。有则列出，说明 `.gitignore` 不会停止跟踪，询问是否执行 `git rm --cached -- <路径>`；本地文件保留，远端历史中仍有原内容。用户同意后才执行。
 
 ## 3. 展示草稿
 
@@ -65,7 +67,7 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 
 - 规则文件改动：`AGENTS.md` 的创建或更新、`CLAUDE.md` 的创建或开头加 `@AGENTS.md`，以及将加入 `AGENTS.md` 的 `## Agent skills`。
 - `docs/agents/issue-tracker.md`、`docs/agents/domain.md` 和 `docs/agents/layout.md`。
-- 将追加到 `.gitignore` 的行。
+- 将追加到 `.gitignore` 的行，以及需要停止跟踪的已跟踪文件。
 - 仅在安装了 `triage` 时，展示 `docs/agents/triage-labels.md`。
 
 ## 4. 写入配置

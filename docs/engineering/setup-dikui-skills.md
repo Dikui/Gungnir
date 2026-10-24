@@ -19,7 +19,7 @@
 | 任务跟踪工具 | GitHub 使用 `gh`，GitLab 使用 `glab`；也可选择 `.scratch/<feature>/` 下的本地 Markdown，或描述其他平台的工作流 |
 | 分流标签 | 仅在安装 `/triage` 时讨论；默认保留五个标准名称，不同意时再收集名称映射 |
 | 领域文档 | 默认根目录 `GLOSSARY.md` 加 `docs/adr/`；仅发现大型多包仓库信号时，才询问是否用 `GLOSSARY-MAP.md` 链接各上下文词汇表 |
-| 文档布局与 `.gitignore` | 按布局模板生成 `docs/agents/layout.md`；已有不同目录名时替换为实际路径；`.gitignore` 只追加缺失的 `.scratch/tasks/`、`.scratch/prototype/` |
+| 文档布局与 `.gitignore` | 按布局模板生成 `docs/agents/layout.md`；已有不同目录名时替换为实际路径；`.gitignore` 只追加表中缺失的不提交路径；已跟踪的这类文件，经你同意后停止跟踪 |
 
 已有产品框架图时，登记实际路径和适用场景，沿用自定义位置；没有图时不创建占位。架构决策记录（ADR）和词汇表按领域文档规则读取。
 

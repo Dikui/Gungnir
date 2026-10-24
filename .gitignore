@@ -4,3 +4,9 @@
 dist/
 .scratch/tasks/
 .scratch/prototype/
+design/
+docs/research/
+docs/experiments/
+.out-of-scope/
+.scratch/
+*.excalidraw

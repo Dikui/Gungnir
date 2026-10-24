@@ -1,6 +1,6 @@
 {
   "name": "gungnir",
-  "version": "4.2.6",
+  "version": "4.3.0",
   "description": "面向项目开发的简体中文工程技能：访谈、需求与任务、TDD、代码审查、领域建模和方法诊断。",
   "author": {
     "name": "dikui",

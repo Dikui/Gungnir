@@ -83,7 +83,7 @@ description: 根据当前任务推荐合适的技能及使用顺序。
 ## 可单独使用的技能
 
 - `/grill-me`：无状态访谈，不写本地文档或 `GLOSSARY.md`。需要纯访谈、不附加其他流程时使用。有项目目录时，优先用会保留记录的 `/grill-with-docs`。
-- `/prototype`：验证逻辑、状态或外观问题。临时代码不等于必须删除；原型作为原始依据保留在 main 之外的 `prototype/<name>` 分支，并由实现 issue 引用。
+- `/prototype`：验证逻辑、状态或外观问题。原型不提交：逻辑原型放在 `.scratch/prototype/`，界面原型选定后从代码中移除；结论写入实现 issue。
 - `/mockup`：生成并维护长期保留、随需求更新的 HTML 界面设计稿，作为前端开发参照。只想验证一个设计问题、用完即弃的原型选 `/prototype`。
 - `/whiteboard`：与人工共同编辑 Excalidraw 白板，支持本地或服务器上的 Codex，并导出、恢复画板文件。
 - `/research`：后台代理调研一手来源，将结论和引用写入仓库 Markdown。用户可同时继续工作，再把结果带回 `/grill-with-docs` 讨论。

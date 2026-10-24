@@ -9,8 +9,11 @@
 - Implementation issues 每个 ticket 一个文件，路径为 `.scratch/<feature-slug>/issues/<NN>-<slug>.md`，从 `01` 开始编号；绝不要写成一个 combined tickets file
 - Triage state 记录为每个 issue file 顶部附近的 `Status:` 行（role 字符串见 `triage-labels.md`）
 - Comments 和 conversation history 追加到文件底部的 `## Comments` heading 下
-- `.scratch/<feature-slug>/` 需要提交到仓库；`.scratch/tasks/` 和 `.scratch/prototype/` 不提交（见 `layout.md`）
-- 一个功能的任务单全部关闭后，提示用户删除该功能目录（git 历史保留）
+- `.scratch/` 整个目录不提交，只在本机保留（见 `layout.md`）；功能目录不删除
+
+## When a skill closes a ticket
+
+设置 `Status: resolved`（或 triage 的关闭状态）并保存后，检查同一 `.scratch/<feature-slug>/issues/` 下是否还有未关闭的任务单。全部关闭且 `spec.md`、`map.md` 顶部没有 `ADR review: done` 行时，按 `layout.md` 的“收尾检查”执行。
 
 ## When a skill says "publish to the issue tracker"
 
@@ -29,4 +32,4 @@
 - **Blocking**: 顶部附近的 `Blocked by: NN, NN` 行。当它列出的每个文件都是 `resolved` 时，ticket 即为 unblocked。
 - **Frontier**: 扫描 `.scratch/<effort>/issues/` 中 open、unblocked 且 unclaimed 的文件；按编号第一个胜出。
 - **Claim**: 在任何工作开始前设置 `Status: claimed` 并保存。
-- **Resolve**: 把答案追加到 `## Answer` heading 下，设置 `Status: resolved`，然后向 `map.md` 中 map 的 Decisions-so-far 追加 context pointer（gist + link）。
+- **Resolve**: 把答案追加到 `## Answer` heading 下，设置 `Status: resolved`，然后向 `map.md` 中 map 的 Decisions-so-far 追加 context pointer（gist + link），再按 “When a skill closes a ticket” 检查。
