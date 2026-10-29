@@ -1,6 +1,6 @@
 # Gungnir
 
-面向项目开发的简体中文工程技能集，覆盖访谈、需求与任务、TDD、代码审查、领域建模和方法诊断。技能按入口技能与基础技能分层调用，可用于 Claude Code、Codex 和 DeepSeek Harness。
+简体中文的工程技能集，覆盖项目开发的完整链路：访谈打磨想法、整理需求与任务、TDD 实现、代码审查、领域建模、缺陷诊断和方法复查。支持 Claude Code、Codex、Grok 和 DeepSeek Harness。
 
 基于 [mattpocock/skills](https://github.com/mattpocock/skills)，MIT 许可，见 [LICENSE](./LICENSE)。
 
@@ -8,22 +8,32 @@
   <img src="./assets/support_img.png" alt="支持的 AI 工具" width="300">
 </p>
 
-## 安装
-
-首选通过 Claude Code 插件市场安装：技能带 `gungnir:` 前缀，例如 `/gungnir:ask-dikui`，不会与其他技能同名冲突。
+## 快速开始
 
 ```bash
 claude plugin marketplace add Dikui/Gungnir
 claude plugin install gungnir@gungnir
 ```
 
-Codex 和 Grok 同样从本仓库安装。Grok 需要用 `#skills` 指定插件目录：
+然后在项目中：
 
-```bash
-codex plugin marketplace add Dikui/Gungnir
-codex plugin add gungnir@gungnir
-grok plugin install Dikui/Gungnir#skills --trust
-```
+1. 运行 `/gungnir:setup-dikui-skills`，为仓库配置规则文件、issue tracker、分流标签、领域文档和文档布局。每个仓库运行一次。
+2. 不确定该用哪个技能时，运行 `/gungnir:ask-dikui`，它会根据当前任务推荐技能和使用顺序。
+
+## 安装
+
+| 平台 | 安装方式 | 调用示例 |
+| --- | --- | --- |
+| Claude Code（推荐） | 插件市场，见上方快速开始 | `/gungnir:ask-dikui` |
+| Codex | `codex plugin marketplace add Dikui/Gungnir`<br>`codex plugin add gungnir@gungnir` | `$ask-dikui` |
+| Grok | `grok plugin install Dikui/Gungnir#skills --trust` | — |
+| DeepSeek Harness | 见 [dsh 插件说明](./dsh-plugin/README.md) | `/zh-ask-dikui` |
+| 其他代理（平铺安装） | `npx skills@latest add Dikui/Gungnir` | 技能原名 |
+
+- 插件安装只复制 `skills/` 目录。Claude Code 插件技能带 `gungnir:` 前缀，不会与其他来源的技能重名；平铺安装使用技能原名，可能重名。
+- Grok 必须用 `#skills` 指定插件目录。
+
+### 本地打包
 
 在仓库根目录打包并安装本地 Claude Code 插件：
 
@@ -33,65 +43,38 @@ claude plugin marketplace add ./dist
 claude plugin install gungnir@gungnir
 ```
 
-打包产物位于 `dist/plugins/gungnir/`，同时包含 Claude Code 和 Codex 插件清单；`dist` 中也包含对应的本地 marketplace 清单。重复打包时可向脚本传入新的输出目录。
+产物位于 `dist/plugins/gungnir/`，同时包含 Claude Code 和 Codex 插件清单，`dist` 中另有对应的本地 marketplace 清单。重复打包时可向脚本传入新的输出目录。
 
-线上 marketplace 和本地打包 marketplace 都叫 `gungnir`，二者选一种安装，不要同时添加。
+线上和本地 marketplace 都叫 `gungnir`，二者只能选一种，不要同时添加。
 
-通过 skills 安装到所选代理或项目是平铺安装，技能使用自身名称，可能与其他来源的技能同名：
+## 常用流程
 
-```bash
-npx skills@latest add Dikui/Gungnir
-```
+完整的选择指南在 [ask-dikui](./skills/engineering/ask-dikui/SKILL.md) 中，这里只列主干。
 
-DeepSeek Harness 安装步骤见 [dsh 插件说明](./dsh-plugin/README.md)，技能命令使用 `zh-` 前缀，例如 `/zh-ask-dikui`。
+**从想法到实现**
 
-### 白板
+1. `/grill-with-docs` 访谈打磨想法，把术语和决策写入 `GLOSSARY.md` 与 ADR（没有项目目录时用 `/grill-me`）。
+2. 一次会话能完成的，直接 `/implement`。
+3. 需要多次会话的，`/to-spec` 整理需求，`/to-tickets` 拆成可独立验证的任务，每张任务单开一次新会话 `/implement`。
+4. `/implement` 内部用 `/tdd` 驱动实现，用 `/diff-review` 审查后提交。
+5. 推送前 `/safe-push` 检查不应入库的内容；需要 PR 正文时用 `/pr-body`；结束后可用 `/retro` 复盘。
 
-白板技能位于 `skills/productivity/whiteboard/`，随 Gungnir 主插件和 dsh 包一起安装，无需单独选装或确认。普通 skills 安装也能发现它，与其他技能一样参与选择。
+**其他起点**
 
-安装 Gungnir 时只复制技能文件；首次使用白板时才通过 `npx` 下载锁定的 `mcp-excalidraw-server@2.1.2`。白板运行机器需要 Node.js 20 或更高版本，不会自动注册 MCP 服务或额外安装上游技能。
-
-| Codex 运行位置 | 白板服务位置 | 用户如何编辑 |
-| --- | --- | --- |
-| 本地电脑 | 同一台电脑 | 浏览器访问本地画板 |
-| 服务器 | 同一台服务器 | 本地浏览器通过 SSH 端口转发访问 |
-
-例如：`$whiteboard 在当前机器启动白板，画出 API、缓存和数据库的关系。` 人工调整后，再让 Codex 读取最新画板并局部修改。启动、转发和保存流程见[白板技能](./skills/productivity/whiteboard/SKILL.md)。
-
-`2.1.2` 发布包的画板和快照只保存在服务内存中。人工编辑不会自动写入项目文件；用完需导出 `.excalidraw`，重启服务后可从该文件恢复。当前不承诺多 Agent 并发修改无冲突。
-
-### 3.0.0 不兼容变更
-
-插件与 marketplace 统一改名为 `gungnir`。已安装旧插件 `dikui-skills@dikui` 时，先卸载，再按上面的新命令安装：
-
-```bash
-claude plugin uninstall dikui-skills@dikui
-```
-
-旧本地插件同样需先卸载，再添加新的本地 marketplace。
-
-技能 `code-review` 改名为 `diff-review`，`pr` 改名为 `pr-body`；调用命令和引用同步使用新名称。
-
-## 调用方式
-
-主插件技能都允许模型在对话中隐式调用。入口技能（**User-invoked**）通常由用户调用：Claude Code 使用 `/技能名`，Codex 使用 `$技能名`。
-首次使用时运行 `/setup-dikui-skills` 配置项目；选择方法时运行 `/ask-dikui`。
-
-基础技能（**Skill-invoked**）通常由入口技能在执行中加载。分组只说明谁通常调用谁，不代表调用限制；`grilling` 保留 `user-invocable: false`，不能由用户直接调用。完整层级和配置见 [调用规则](./docs/invocation.md)。
-
-### 硬约束参数
-
-需要禁止模型隐式调用某个技能时，各平台使用以下参数。设置后用户仍可显式调用；主插件技能不设置这些限制（由 `scripts/check-repo.mjs` 检查）。
-
-| 平台 | 参数 | 效果 |
-| --- | --- | --- |
-| Claude Code | `SKILL.md` frontmatter 中 `disable-model-invocation: true` | 技能描述不进入模型上下文，模型和其他技能都不能通过 Skill 工具调用；用户仍可用 `/技能名` 调用 |
-| Codex | `agents/openai.yaml` 中 `policy.allow_implicit_invocation: false` | 模型不会根据描述自动选用；用户仍可用 `$技能名` 调用 |
-| DeepSeek Harness（dsh） | 无独立参数，复用 `disable-model-invocation: true` | dsh 插件（`dsh-plugin/index.js`）把它转换为 `invocation.modelInvocable: false` 交给 dsh；用户仍可用 `/zh-技能名` 调用 |
-
-这些参数只限制平台的调用机制；模型按路径直接读取 `SKILL.md` 时不受限制。
+| 情况 | 技能 |
+| --- | --- |
+| 外部缺陷报告或功能请求积压 | `/triage` |
+| 难以定位、偶发或回归的缺陷 | `/diagnosing-bugs` |
+| 一次会话规划不清的大任务 | `/wayfinder` |
+| 怀疑方向本身选错 | `/first-principles` |
+| 想找计划、需求或代码的反例 | `/adversarial-review` |
+| 方案膨胀，说不清每部分为何存在 | `/occams-razor` |
+| 加了多项优化，不清楚收益来自哪个 | `/ablation` |
+| 模块职责和依赖混乱 | `/cohesion-coupling`、`/improve-codebase-architecture` |
 
 ## 技能索引
+
+技能分两层：**User-invoked** 入口技能通常由用户调用，**Skill-invoked** 基础技能通常由入口技能在执行中加载。分组只说明谁通常调用谁，不限制调用：所有技能都允许模型隐式调用，除 `grilling` 外用户也都能直接调用。详见[调用规则](./docs/invocation.md)。
 
 ### Engineering
 
@@ -132,10 +115,10 @@ claude plugin uninstall dikui-skills@dikui
 
 **Skill-invoked**
 
-- **[diff-review](./skills/engineering/diff-review/SKILL.md)**
-  审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)**
   用深模块原则设计接口、选择可替换位置，并提高代码的可测试性和可维护性。
+- **[diff-review](./skills/engineering/diff-review/SKILL.md)**
+  审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)**
   维护项目的领域术语和模型，并记录重要架构决策。
 - **[prototype](./skills/engineering/prototype/SKILL.md)**
@@ -162,7 +145,7 @@ claude plugin uninstall dikui-skills@dikui
 - **[wait-what](./skills/productivity/wait-what/SKILL.md)**
   用户没听懂时，补足背景，并按理解情况逐步升级解释方式。
 - **[whiteboard](./skills/productivity/whiteboard/SKILL.md)**
-  在本地或服务器上的 Codex 中操作 Excalidraw 白板，与浏览器中的人工编辑协作，支持文件保存与恢复。
+  让本地或服务器上的 Codex 与人工共同编辑 Excalidraw 白板，并保存、恢复画板文件。
 
 **Skill-invoked**
 
@@ -171,12 +154,39 @@ claude plugin uninstall dikui-skills@dikui
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)**
   编写或精简供代理阅读的技能、AGENTS.md、CLAUDE.md 和参考文档。
 
-### Misc
+## 禁止隐式调用
 
-**User-invoked**
+主插件技能都允许模型隐式调用（由 `scripts/check-repo.mjs` 检查）。若在自己的副本中要禁止某个技能被模型自动选用，各平台使用以下参数，设置后用户仍可显式调用：
 
-暂无技能。
+| 平台 | 参数 | 效果 |
+| --- | --- | --- |
+| Claude Code | `SKILL.md` frontmatter 中 `disable-model-invocation: true` | 描述不进入模型上下文，模型和其他技能都不能通过 Skill 工具调用；用户仍可用 `/技能名` 调用 |
+| Codex | `agents/openai.yaml` 中 `policy.allow_implicit_invocation: false` | 模型不会根据描述自动选用；用户仍可用 `$技能名` 调用 |
+| DeepSeek Harness | 复用 `disable-model-invocation: true` | dsh 插件（`dsh-plugin/index.js`）将其转换为 `invocation.modelInvocable: false`；用户仍可用 `/zh-技能名` 调用 |
 
-**Skill-invoked**
+这些参数只限制平台的调用机制，模型按路径直接读取 `SKILL.md` 时不受限制。
 
-暂无技能。
+## 白板
+
+[whiteboard](./skills/productivity/whiteboard/SKILL.md) 随主插件和 dsh 包一起安装，无需单独选装。安装时只复制技能文件，首次使用时才通过 `npx` 下载锁定版本的 `mcp-excalidraw-server@2.1.2`；运行机器需要 Node.js 20 或更高版本。它不会自动注册 MCP 服务，也不会安装上游技能。
+
+| Codex 运行位置 | 白板服务位置 | 用户如何编辑 |
+| --- | --- | --- |
+| 本地电脑 | 同一台电脑 | 浏览器访问本地画板 |
+| 服务器 | 同一台服务器 | 本地浏览器通过 SSH 端口转发访问 |
+
+例如：`$whiteboard 在当前机器启动白板，画出 API、缓存和数据库的关系。` 人工调整后，再让 Codex 读取最新画板并局部修改。
+
+注意：画板和快照只保存在服务内存中，人工编辑不会自动写入项目文件。用完需导出 `.excalidraw`，重启服务后可从该文件恢复。目前不保证多个代理并发修改不冲突。
+
+## 升级说明
+
+### 3.0.0
+
+插件与 marketplace 统一改名为 `gungnir`。已安装旧插件 `dikui-skills@dikui` 时，先卸载再按上面的命令安装；旧本地插件同样先卸载，再添加新的本地 marketplace。
+
+```bash
+claude plugin uninstall dikui-skills@dikui
+```
+
+技能 `code-review` 改名为 `diff-review`，`pr` 改名为 `pr-body`。
