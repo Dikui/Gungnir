@@ -4,7 +4,7 @@
 
 本插件包把 Gungnir 仓库中 `skills/engineering/` 和 `skills/productivity/` 的技能（包括白板），打包为 DeepSeek Harness（dsh）插件。白板运行组件在首次使用时下载。
 
-技能以 `zh-<name>` 命名，并以 `/zh-<name>` 调用，例如 `/zh-grilling`。
+技能以 `dk-<name>` 命名，并以 `/dk-<name>` 调用，例如 `/dk-grilling`。
 
 ## 30 秒安装
 
@@ -29,7 +29,7 @@
    dsh web
    ```
 
-3. 在会话中输入 `/zh-grilling`（或任意 `/zh-<name>`）即可调用。
+3. 在会话中输入 `/dk-grilling`（或任意 `/dk-<name>`）即可调用。
 
 确认插件已挂载：
 
@@ -39,7 +39,7 @@ dsh --profile web --dump-config | grep 'id: gungnir'
 
 ## 构建期改写
 
-构建期会重写 skill 正文里的内部引用：`/grilling` 会变成 `/zh-grilling`。
+构建期会重写 skill 正文里的内部引用：`/grilling` 会变成 `/dk-grilling`。
 
 非 `.md` 资源文件与 `argument-hint` frontmatter 原样复制，dsh 不消费它们。
 

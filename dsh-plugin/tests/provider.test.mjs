@@ -26,14 +26,14 @@ test('createProvider returns a named provider whose list and get are thenable', 
   assert.equal(typeof provider.get({}).then, 'function')
 })
 
-test('list resolves to every well-formed zh- candidates owned by the provider', async () => {
+test('list resolves to every well-formed dk- candidates owned by the provider', async () => {
   const candidates = await m.createProvider().list({})
   assert.equal(candidates.length, SKILL_NAMES.length)
   assert.equal(new Set(candidates.map((candidate) => candidate.name)).size, SKILL_NAMES.length)
   assert.equal(candidates.length, 33)
   const names = new Set(candidates.map((candidate) => candidate.name))
-  for (const name of ['zh-mockup', 'zh-diff-review', 'zh-pr-body', 'zh-safe-push', 'zh-whiteboard']) assert.ok(names.has(name), name)
-  for (const name of ['zh-code-review', 'zh-pr']) assert.ok(!names.has(name), name)
+  for (const name of ['dk-mockup', 'dk-diff-review', 'dk-pr-body', 'dk-safe-push', 'dk-whiteboard']) assert.ok(names.has(name), name)
+  for (const name of ['dk-code-review', 'dk-pr']) assert.ok(!names.has(name), name)
   for (const candidate of candidates) {
     assert.equal(candidate.provider, PROVIDER_NAME)
     assert.equal(candidate.source, 'bundled')
@@ -41,20 +41,20 @@ test('list resolves to every well-formed zh- candidates owned by the provider', 
     assert.equal(typeof candidate.description, 'string')
     assert.ok(candidate.description.length > 0, `${candidate.name} has a description`)
     assert.match(candidate.name, KEBAB_CASE)
-    assert.ok(candidate.name.startsWith('zh-'), `${candidate.name} is zh- prefixed`)
+    assert.ok(candidate.name.startsWith('dk-'), `${candidate.name} is dk- prefixed`)
     assert.equal(candidate.path, join(candidate.locator, 'SKILL.md'))
     assert.ok(candidate.path.startsWith(SKILLS_ROOT), `${candidate.path} lives under the bundled skills root`)
   }
 })
 
-test('zh-grill-me allows both model and user invocation', async () => {
+test('dk-grill-me allows both model and user invocation', async () => {
   const candidates = await m.createProvider().list({})
-  const grillMe = candidates.find((candidate) => candidate.name === 'zh-grill-me')
+  const grillMe = candidates.find((candidate) => candidate.name === 'dk-grill-me')
   assert.deepEqual(grillMe.invocation, { modelInvocable: true, userInvocable: true })
 })
 
 test('all bundled skills allow model invocation and keep source user visibility', async () => {
-  const sources = new Map(listSkills(DSH_BUCKETS).map((skill) => [`zh-${skill.name}`, skill.meta]))
+  const sources = new Map(listSkills(DSH_BUCKETS).map((skill) => [`dk-${skill.name}`, skill.meta]))
   const candidates = await m.createProvider().list({})
   for (const candidate of candidates) {
     const meta = sources.get(candidate.name)
@@ -65,19 +65,19 @@ test('all bundled skills allow model invocation and keep source user visibility'
   }
 })
 
-test('zh-grilling allows model invocation and stays hidden from user invocation', async () => {
+test('dk-grilling allows model invocation and stays hidden from user invocation', async () => {
   const candidates = await m.createProvider().list({})
-  const grilling = candidates.find((candidate) => candidate.name === 'zh-grilling')
+  const grilling = candidates.find((candidate) => candidate.name === 'dk-grilling')
   assert.deepEqual(grilling.invocation, { modelInvocable: true, userInvocable: false })
 })
 
-test('get loads the zh-grill-me body and a directory resource base', async () => {
+test('get loads the dk-grill-me body and a directory resource base', async () => {
   const provider = m.createProvider()
   const candidates = await provider.list({})
-  const candidate = candidates.find((entry) => entry.name === 'zh-grill-me')
+  const candidate = candidates.find((entry) => entry.name === 'dk-grill-me')
   const skill = await provider.get(candidate, {})
-  assert.equal(skill.name, 'zh-grill-me')
-  assert.match(skill.content, /zh-grilling/)
+  assert.equal(skill.name, 'dk-grill-me')
+  assert.match(skill.content, /dk-grilling/)
   assert.deepEqual(skill.resourceBase, { kind: 'directory', path: candidate.locator })
   assert.equal(skill.rank, undefined)
   assert.equal(skill.locator, undefined)
@@ -85,7 +85,7 @@ test('get loads the zh-grill-me body and a directory resource base', async () =>
 
 test('get resolves undefined for an unreadable path', async () => {
   const provider = m.createProvider()
-  const skill = await provider.get({ name: 'zh-missing', path: BOGUS_SKILL_PATH }, {})
+  const skill = await provider.get({ name: 'dk-missing', path: BOGUS_SKILL_PATH }, {})
   assert.equal(skill, undefined)
 })
 

@@ -1,7 +1,7 @@
 /**
  * Build the dsh-plugin skill tree: copy every skill from the source buckets
  * into a flat `dsh-plugin/skills/` directory, prefix each frontmatter `name:`,
- * and rewrite cross-skill references to their `zh-` prefixed form.
+ * and rewrite cross-skill references to their `dk-` prefixed form.
  */
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
@@ -9,7 +9,7 @@ import { cpSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { DSH_BUCKETS, SKILL_NAMES, rewriteReferences } from './rewrite-references.mjs'
+import { DEFAULT_PREFIX, DSH_BUCKETS, SKILL_NAMES, rewriteReferences } from './rewrite-references.mjs'
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const PLUGIN_DIR = dirname(SCRIPT_DIR)
@@ -19,7 +19,7 @@ const BUCKETS = DSH_BUCKETS
 
 const sourceRoot = resolve(process.env.SKILLS_SRC ?? join(REPO_ROOT, 'skills'))
 const outputRoot = resolve(process.env.SKILLS_OUT ?? join(PLUGIN_DIR, 'skills'))
-const prefix = process.env.SKILL_PREFIX ?? 'zh-'
+const prefix = process.env.SKILL_PREFIX ?? DEFAULT_PREFIX
 
 console.log(`sourceRoot: ${sourceRoot}`)
 console.log(`outputRoot: ${outputRoot}`)

@@ -27,7 +27,7 @@ claude plugin install gungnir@gungnir
 | Claude Code（推荐） | 插件市场，见上方快速开始 | `/gungnir:ask-dikui` |
 | Codex | `codex plugin marketplace add Dikui/Gungnir`<br>`codex plugin add gungnir@gungnir` | `$ask-dikui` |
 | Grok | `grok plugin install Dikui/Gungnir#skills --trust` | — |
-| DeepSeek Harness | 见 [dsh 插件说明](./dsh-plugin/README.md) | `/zh-ask-dikui` |
+| DeepSeek Harness | 见 [dsh 插件说明](./dsh-plugin/README.md) | `/dk-ask-dikui` |
 | 其他代理（平铺安装） | `npx skills@latest add Dikui/Gungnir` | 技能原名 |
 
 - 插件安装只复制 `skills/` 目录。Claude Code 插件技能带 `gungnir:` 前缀，不会与其他来源的技能重名；平铺安装使用技能原名，可能重名。
@@ -167,7 +167,7 @@ claude plugin install gungnir@gungnir
 | --- | --- | --- |
 | Claude Code | `SKILL.md` frontmatter 中 `disable-model-invocation: true` | 描述不进入模型上下文，模型和其他技能都不能通过 Skill 工具调用；用户仍可用 `/技能名` 调用 |
 | Codex | `agents/openai.yaml` 中 `policy.allow_implicit_invocation: false` | 模型不会根据描述自动选用；用户仍可用 `$技能名` 调用 |
-| DeepSeek Harness | 复用 `disable-model-invocation: true` | dsh 插件（`dsh-plugin/index.js`）将其转换为 `invocation.modelInvocable: false`；用户仍可用 `/zh-技能名` 调用 |
+| DeepSeek Harness | 复用 `disable-model-invocation: true` | dsh 插件（`dsh-plugin/index.js`）将其转换为 `invocation.modelInvocable: false`；用户仍可用 `/dk-技能名` 调用 |
 
 这些参数只限制平台的调用机制，模型按路径直接读取 `SKILL.md` 时不受限制。
 

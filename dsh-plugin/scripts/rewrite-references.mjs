@@ -2,12 +2,12 @@
  * Path-safe rewriter for skill invocations such as `/tdd`.
  *
  * Only references whose surrounding characters show they are skill invocations
- * (not filesystem paths or URLs) are rewritten to the `zh-` prefixed form.
+ * (not filesystem paths or URLs) are rewritten to the `dk-` prefixed form.
  */
 
 import { listSkills } from '../../scripts/skills.mjs'
 
-const DEFAULT_PREFIX = 'zh-'
+export const DEFAULT_PREFIX = 'dk-'
 
 /** Buckets copied into the dsh plugin. */
 export const DSH_BUCKETS = ['engineering', 'productivity']
@@ -56,7 +56,7 @@ function buildPattern(names) {
  *
  * @param {string} text - Text to rewrite.
  * @param {readonly string[]} [names] - Skill names; defaults to all known names.
- * @param {string} [prefix] - Prefix to insert; defaults to `zh-`.
+ * @param {string} [prefix] - Prefix to insert; defaults to `dk-`.
  * @returns {string} Rewritten text.
  */
 export function rewriteReferences(text, names = SKILL_NAMES, prefix = DEFAULT_PREFIX) {

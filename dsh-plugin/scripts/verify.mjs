@@ -8,7 +8,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { SKILL_NAMES, findUnrewrittenReferences } from './rewrite-references.mjs'
+import { DEFAULT_PREFIX, SKILL_NAMES, findUnrewrittenReferences } from './rewrite-references.mjs'
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const PLUGIN_DIR = dirname(SCRIPT_DIR)
@@ -60,8 +60,8 @@ for (const file of skillFiles) {
     fail(`missing leading frontmatter: ${file}`)
   }
   const nameMatch = frontmatter.match(/^name:[ \t]*(.*)$/m)
-  if (!nameMatch || !nameMatch[1].startsWith('zh-')) {
-    fail(`frontmatter name is missing the 'zh-' prefix: ${file}`)
+  if (!nameMatch || !nameMatch[1].startsWith(DEFAULT_PREFIX)) {
+    fail(`frontmatter name is missing the '${DEFAULT_PREFIX}' prefix: ${file}`)
   }
   const descriptionMatch = frontmatter.match(/^description:[ \t]*(.*)$/m)
   if (!descriptionMatch || descriptionMatch[1].trim() === '') {
