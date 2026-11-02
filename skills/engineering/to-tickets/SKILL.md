@@ -60,7 +60,7 @@ description: 将计划、需求文档或当前讨论拆成可独立验证的任�
 
 本地 tracker 下，一个功能的任务单全部关闭时，按 `docs/agents/layout.md` 的“收尾检查”执行；`.scratch/<feature-slug>/` 不删除。
 
-后续处理前置任务均已完成的任务；线性依赖链按顺序推进。不要关闭或修改任何父 issue。
+发布后，用 `/implement` 处理整个任务单目录：它按 `Blocked by` 分批，同批任务并行开发。不要关闭或修改任何父 issue。
 
 ### 本地任务模板
 

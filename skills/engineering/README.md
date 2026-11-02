@@ -15,18 +15,20 @@
 - **[setup-dikui-skills](./setup-dikui-skills/SKILL.md)** - 初始化仓库：配置规则文件、issue tracker、triage labels、domain docs 与文档布局。每个 repo 运行一次。
 - **[to-spec](./to-spec/SKILL.md)** - 把当前对话整理成 spec 并发布到 issue tracker。
 - **[to-tickets](./to-tickets/SKILL.md)** - 把 plan、spec 或 conversation 拆成 tracer-bullet tickets，每个 ticket 声明 blocking edges——本地文件中用文本表示，真实 tracker 上用 native blocking links。
-- **[implement](./implement/SKILL.md)** - 基于 spec 或 ticket 集合实现一段工作，在预先认可的 seams 上驱动 `/tdd`，并在提交前以 `/diff-review` 收尾。
+- **[implement](./implement/SKILL.md)** - 按任务单实现一份需求或一组任务：按依赖分批，同批任务并行开发，每张任务单经 `/tdd`、`/local-test` 和 `/diff-review` 后提交。
 - **[wayfinder](./wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 issue tracker 上的 decision tickets 共享 map，逐一解决直到通往 destination 的路清晰。
 - **[diagnosing-bugs](./diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：reproduce -> minimise -> hypothesise -> instrument -> fix -> regression-test。
 - **[pr-body](./pr-body/SKILL.md)** - 用最小图示、前后验证证据、可回退性和影响范围撰写 PR 正文。
 - **[mockup](./mockup/SKILL.md)** - 生成并维护长期保留的 HTML 界面设计稿，作为前端开发的参照。
 - **[retro](./retro/SKILL.md)** - 复盘开发会话，按严重程度提出导航、自动检查、编码规范、工具和信息访问改进。
+- **[trial](./trial/SKILL.md)** - 在真实后端代码中并行实现两到三个方案，用同一组测试和测量比较，选定一版并删除其余。
 - **[safe-push](./safe-push/SKILL.md)** - 检查不应入库的内容，确认版本号，经确认后提交并推送代码。
 
 ## Skill-invoked
 
 通常由入口技能在执行中加载，也允许模型在对话中隐式调用；除 `grilling` 外，你也可以直接调用。见[调用规则](../../docs/invocation.md)。
 
+- **[local-test](./local-test/SKILL.md)** - 只测试改动影响的范围，必要时构造场景测试，再筛选值得长期保留的测试写入项目。
 - **[prototype](./prototype/SKILL.md)** - 构建 throwaway prototype 来回答一个 design 问题：可以是回答 state/logic 问题的可运行终端 app，也可以是多个可切换的 UI 变体。
 - **[research](./research/SKILL.md)** - 对照高可信 primary sources 调研问题，并把带引用的 findings 保存为 repo 中的 Markdown 文件，作为 background agent 运行。
 - **[tdd](./tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。

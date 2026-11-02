@@ -9,9 +9,11 @@
 | `AGENTS.md`、`CLAUDE.md` | 规则文件 | setup-dikui-skills | 是 | 不清理 |
 | `docs/agents/` | 技能配置 | setup-dikui-skills、safe-push | 是 | 不清理 |
 | `GLOSSARY.md`、`GLOSSARY-MAP.md`、`docs/adr/` | 术语、架构决策 | domain-modeling | 是 | 不清理 |
+| `tests/<模块>/` | 单元测试和性质测试，按模块一个测试文件 | local-test | 是 | 契约改变或代码删除时更新或删除 |
+| `tests/cases/<功能>/` | 场景和回归用例，一个用例一个文件 | local-test | 是 | 同上 |
 | `design/` | 界面设计稿 | mockup | 否 | 不清理 |
 | `docs/research/` | 调研结论 | research | 否 | 不清理 |
-| `docs/experiments/` | 实验记录 | ablation | 否 | 不清理 |
+| `docs/experiments/` | 实验记录 | ablation、trial | 否 | 不清理 |
 | `.out-of-scope/` | 拒绝记录 | triage | 否 | 重新考虑时删除或更新 |
 | `.scratch/<feature>/` | 需求和任务单（本地 tracker） | to-spec、to-tickets、wayfinder | 否 | 不清理；任务单全部关闭时做收尾检查 |
 | `.scratch/tasks/<任务号>/` | 执行说明、报告、证据 | 执行者 | 否 | 随意 |
@@ -22,6 +24,7 @@
 - 项目已有同类目录（如 `docs/decisions/`）时，把表中路径改成实际路径，技能按表执行。
 - 已提交的文件不链接不提交的路径；需要引用时写明“仅本地”。
 - 界面原型和诊断用的临时代码写在代码旁，提交前移除；回归测试照常提交。
+- 测试数据默认在测试代码中构造；需要存成文件的数据放在用到它的测试旁边。
 - 交接文档（handoff）和架构评审报告写到系统临时目录，不在表中。
 
 ## 收尾检查

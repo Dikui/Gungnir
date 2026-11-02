@@ -19,6 +19,7 @@
 | `writing-for-agents` | retro | 能 |
 | `tdd` | implement | 能 |
 | `diff-review` | implement、tdd | 能 |
+| `local-test` | implement、trial | 能 |
 | `research` | wayfinder | 能 |
 | `prototype` | wayfinder | 能 |
 

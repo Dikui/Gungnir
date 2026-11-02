@@ -1,0 +1,5 @@
+interface:
+  display_name: "Local Test"
+  short_description: "只测试改动影响的范围，必要时构造场景测试，再筛选值得长期保留的测试写入项目。"
+policy:
+  allow_implicit_invocation: true

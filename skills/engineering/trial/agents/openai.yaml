@@ -1,0 +1,5 @@
+interface:
+  display_name: "Trial"
+  short_description: "在真实后端代码中并行实现两到三个方案，用同一组测试和测量比较，选定一版并删除其余。"
+policy:
+  allow_implicit_invocation: true

@@ -55,8 +55,8 @@ claude plugin install gungnir@gungnir
 
 1. `/grill-with-docs` 访谈打磨想法，把术语和决策写入 `GLOSSARY.md` 与 ADR（没有项目目录时用 `/grill-me`）。
 2. 一次会话能完成的，直接 `/implement`。
-3. 需要多次会话的，`/to-spec` 整理需求，`/to-tickets` 拆成可独立验证的任务，每张任务单开一次新会话 `/implement`。
-4. `/implement` 内部用 `/tdd` 驱动实现，用 `/diff-review` 审查后提交。
+3. 需要多次会话的，`/to-spec` 整理需求，`/to-tickets` 拆成可独立验证的任务，再用 `/implement` 处理整个任务单目录：按依赖分批，同批任务并行开发。
+4. `/implement` 内部用 `/tdd` 驱动实现，用 `/local-test` 做局部测试并沉淀测试，用 `/diff-review` 审查后提交。
 5. 推送前 `/safe-push` 检查不应入库的内容；需要 PR 正文时用 `/pr-body`；结束后可用 `/retro` 复盘。
 
 **其他起点**
@@ -69,6 +69,7 @@ claude plugin install gungnir@gungnir
 | 怀疑方向本身选错 | `/first-principles` |
 | 想找计划、需求或代码的反例 | `/adversarial-review` |
 | 方案膨胀，说不清每部分为何存在 | `/occams-razor` |
+| 需要在真实后端代码中比较几种实现 | `/trial` |
 | 加了多项优化，不清楚收益来自哪个 | `/ablation` |
 | 模块职责和依赖混乱 | `/cohesion-coupling`、`/improve-codebase-architecture` |
 
@@ -91,7 +92,7 @@ claude plugin install gungnir@gungnir
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**
   通过持续访谈打磨计划或设计，并记录 ADR 和词汇表。
 - **[implement](./skills/engineering/implement/SKILL.md)**
-  由当前会话自己编码，实现一张任务单或一份小需求，完成后提交到当前分支。
+  按任务单实现一份需求或一组任务：无依赖的任务并行开发，局部测试后提交到当前分支。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**
   查找可用小接口封装复杂行为的模块，生成可视化架构报告，再与用户讨论选中的方案。
 - **[mockup](./skills/engineering/mockup/SKILL.md)**
@@ -108,6 +109,8 @@ claude plugin install gungnir@gungnir
   将当前讨论整理为需求文档，发布到项目 issue tracker。
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**
   将计划、需求文档或当前讨论拆成可独立验证的任务，注明依赖后发布到项目 tracker。
+- **[trial](./skills/engineering/trial/SKILL.md)**
+  在真实后端代码中并行实现两到三个方案，用同一组测试和测量比较，选定一版并删除其余。
 - **[triage](./skills/engineering/triage/SKILL.md)**
   对 issue 和范围内的外部 PR 分类、验证并更新处理状态，整理出可交给代理的任务说明。
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)**
@@ -121,6 +124,8 @@ claude plugin install gungnir@gungnir
   审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)**
   维护项目的领域术语和模型，并记录重要架构决策。
+- **[local-test](./skills/engineering/local-test/SKILL.md)**
+  只测试改动影响的范围，必要时构造场景测试，再筛选值得长期保留的测试写入项目。
 - **[prototype](./skills/engineering/prototype/SKILL.md)**
   用临时原型验证一个设计问题：逻辑和状态是否合理，或界面应该是什么样。
 - **[research](./skills/engineering/research/SKILL.md)**
