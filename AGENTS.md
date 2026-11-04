@@ -35,6 +35,10 @@ single-context：根目录 `GLOSSARY.md` 加 `docs/adr/`。涉及业务或架构
 
 文档放置约定见 `docs/agents/layout.md`。
 
+### Testing
+
+开发中只运行受影响的检查，按 `/local-test` 做：改技能、README 或清单后运行 `node scripts/check-repo.mjs`；改 safe-push 扫描运行 `bash scripts/test-safe-push-scan.sh`；改 pre-push 模板运行 `sh scripts/test-pre-push.sh`；改 `dsh-plugin/` 运行 `cd dsh-plugin && npm test`。全量检查写在 `.githooks/pre-push`，由它在版本号（`skills/.claude-plugin/plugin.json`）前两位变化时运行。
+
 ### Commit rules
 
 禁止 `--no-verify`、`git add -A` / `git add .` 和强推。

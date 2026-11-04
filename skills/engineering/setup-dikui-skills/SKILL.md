@@ -1,6 +1,6 @@
 ---
 name: setup-dikui-skills
-description: "初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局。"
+description: "初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局、测试命令和 pre-push 钩子。"
 ---
 
 # 配置工程技能
@@ -22,11 +22,12 @@ description: "初始化仓库：配置规则文件、issue tracker、分流标�
 - `.gitignore`：查看已忽略的路径。
 - 已有文档目录及其名称，对照 [layout.md](./layout.md) 的表（如已有 `docs/decisions/` 代替 `docs/adr/`）。
 - 相邻目录或可用技能中是否存在 `triage`：决定是否配置分流标签。
+- 测试入口和版本号：项目脚本、`Makefile` 或测试框架中运行全量测试和运行指定测试的命令；版本号所在文件（`package.json`、`VERSION`、`pyproject.toml`、插件清单等）；`git config core.hooksPath` 和已有的 git 钩子。
 - `pnpm-workspace.yaml`、`package.json` 的 `workspaces`，或已有内容且各自包含 `src/` 的 `packages/*`：判断是否为大型多包仓库。无这些信号时，按单上下文处理。
 
 ## 2. 展示发现并确认选项
 
-总结已有和缺失的配置。按 A 到 D 的顺序逐项讨论，每次只处理一个选项，先给推荐答案。仅在选择确有差异时补充一行解释。探索已能确定答案时跳过提问。
+总结已有和缺失的配置。按 A 到 E 的顺序逐项讨论，每次只处理一个选项，先给推荐答案。仅在选择确有差异时补充一行解释。探索已能确定答案时跳过提问。
 
 ### A. Issue tracker
 
@@ -61,6 +62,12 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 
 用 `git ls-files` 检查这些路径下已跟踪的文件。有则列出，说明 `.gitignore` 不会停止跟踪，询问是否执行 `git rm --cached -- <路径>`；本地文件保留，远端历史中仍有原内容。用户同意后才执行。
 
+### E. 测试与 pre-push
+
+确定三项：运行受影响测试的命令（按文件、包或测试名过滤）、全量测试命令、版本号文件。项目没有过滤方式时，说明缺口，建议补一个能接收测试文件或包的入口，不用全量命令代替。没有版本号时，建议在根目录新增 `VERSION`（内容如 `0.1.0`）。
+
+按 [pre-push.sh](./pre-push.sh) 生成钩子：推送到默认分支且版本号前两位变化时运行全量测试，否则直接放行。已有 `core.hooksPath` 时写到该目录；没有时写到 `.githooks/pre-push`，并执行 `git config core.hooksPath .githooks`。改用 `.githooks` 前检查 `.git/hooks/` 中是否有非 `.sample` 钩子，有则先迁移到 `.githooks/`，不丢弃。
+
 ## 3. 展示草稿
 
 写入前展示以下内容，并让用户有机会修改：
@@ -68,6 +75,7 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 - 规则文件改动：`AGENTS.md` 的创建或更新、`CLAUDE.md` 的创建或开头加 `@AGENTS.md`，以及将加入 `AGENTS.md` 的 `## Agent skills`。
 - `docs/agents/issue-tracker.md`、`docs/agents/domain.md` 和 `docs/agents/layout.md`。
 - 将追加到 `.gitignore` 的行，以及需要停止跟踪的已跟踪文件。
+- pre-push 钩子的版本号文件、全量命令和写入位置。
 - 仅在安装了 `triage` 时，展示 `docs/agents/triage-labels.md`。
 
 ## 4. 写入配置
@@ -99,12 +107,16 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 
 文档放置约定见 `docs/agents/layout.md`。
 
+### Testing
+
+开发中只运行受影响的测试，按 `/local-test` 做：[受影响测试的命令及用法]。全量测试 `[全量命令]` 由 pre-push 钩子在版本号（`[版本号文件]`）前两位变化时运行。
+
 ### Commit rules
 
 禁止 `--no-verify`、`git add -A` / `git add .` 和强推。
 ```
 
-仅在安装了 `triage` 且实际完成选项 B 时，保留 `### Triage labels` 并写入 `docs/agents/triage-labels.md`；否则两者都省略。`### Commit rules` 始终写入。
+仅在安装了 `triage` 且实际完成选项 B 时，保留 `### Triage labels` 并写入 `docs/agents/triage-labels.md`；否则两者都省略。`### Testing` 和 `### Commit rules` 始终写入。
 
 以下模板作为起点：
 
@@ -114,6 +126,7 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 - [triage-labels.md](./triage-labels.md)：标签映射，仅在安装 `triage` 时使用。
 - [domain.md](./domain.md)：领域文档布局和读取规则。
 - [layout.md](./layout.md)：文档布局约定，写入 `docs/agents/layout.md`。
+- [pre-push.sh](./pre-push.sh)：按版本号决定是否运行全量测试的 pre-push 钩子。
 
 其他 tracker 按用户描述编写 `docs/agents/issue-tracker.md`。
 

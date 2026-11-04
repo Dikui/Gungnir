@@ -16,7 +16,7 @@ const read = (rel) => readFileSync(join(ROOT, rel), 'utf8')
 
 // Reject unregistered buckets instead of silently omitting their skills.
 for (const entry of readdirSync(join(ROOT, 'skills'), { withFileTypes: true })) {
-  if (entry.isDirectory() && entry.name !== '.claude-plugin' && !BUCKETS.includes(entry.name)) {
+  if (entry.isDirectory() && entry.name !== '.claude-plugin' && entry.name !== 'hooks' && !BUCKETS.includes(entry.name)) {
     fail(`skills/${entry.name}`, `unexpected bucket; allowed: ${BUCKETS.join(', ')}`)
   }
 }

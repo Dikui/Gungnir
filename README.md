@@ -59,6 +59,8 @@ claude plugin install gungnir@gungnir
 4. `/implement` 内部用 `/tdd` 驱动实现，用 `/local-test` 做局部测试并沉淀测试，用 `/diff-review` 审查后提交。
 5. 推送前 `/safe-push` 检查不应入库的内容；需要 PR 正文时用 `/pr-body`；结束后可用 `/retro` 复盘。
 
+插件自带 `SessionStart` 和 `SubagentStart` 钩子（Claude Code 与 Codex），在每个会话开始时注入 [skills/hooks/workflow.md](./skills/hooks/workflow.md)：改代码走 `/implement`，测试只跑受影响范围，被派单的执行者不再派单。调整默认流程时只改这个文件。Codex 首次运行需要信任该钩子。
+
 **其他起点**
 
 | 情况 | 技能 |
@@ -104,7 +106,7 @@ claude plugin install gungnir@gungnir
 - **[safe-push](./skills/engineering/safe-push/SKILL.md)**
   检查不应入库的内容，确认版本号，经确认后提交并推送代码。
 - **[setup-dikui-skills](./skills/engineering/setup-dikui-skills/SKILL.md)**
-  初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局。
+  初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局、测试命令和 pre-push 钩子。
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**
   将当前讨论整理为需求文档，发布到项目 issue tracker。
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**
@@ -185,6 +187,10 @@ claude plugin install gungnir@gungnir
 注意：画板和快照只保存在服务内存中，人工编辑不会自动写入项目文件。用完需导出 `.excalidraw`，重启服务后可从该文件恢复。目前不保证多个代理并发修改不冲突。
 
 ## 升级说明
+
+### 4.5.0
+
+新增会话启动钩子，注入默认工作流；`/implement` 只有一张任务单时也派子代理；`/setup-dikui-skills` 增加 Testing 一节和按版本号运行全量测试的 pre-push 钩子。
 
 ### 3.0.0
 
