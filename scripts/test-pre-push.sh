@@ -29,4 +29,9 @@ sed -i '' -e "s|^VERSION_FILE=.*|VERSION_FILE='VERSION'|" .githooks/pre-push 2>/
 printf '1.0.0\n' > VERSION; git add VERSION; git commit -qm vf; git push -q origin main 2>/dev/null; expect 5 '远端还没有版本文件，按变化处理'
 printf '1.0.1\n' > VERSION; git add VERSION; git commit -qm vf1; git push -q origin main 2>/dev/null; expect 5 'VERSION 文件，只升修订号'
 printf '1.1.0\n' > VERSION; git add VERSION; git commit -qm vf2; git push -q origin main 2>/dev/null; expect 6 'VERSION 文件，升次版本'
+# 远端有本地没有的提交：直接拒绝，不跑全量
+git clone -q "$T/remote.git" "$T/other"; (cd "$T/other" && git config user.email t@example.com && git config user.name t && echo o > o && git add o && git commit -qm o && git push -q origin main)
+printf '1.2.0\n' > VERSION; git add VERSION; git commit -qm vf3
+if git push -q origin main 2>/dev/null; then echo 'FAIL：远端领先时推送应被拒绝' >&2; exit 1; fi
+expect 6 '远端领先时不跑全量'
 echo 'pre-push 自检全部通过'

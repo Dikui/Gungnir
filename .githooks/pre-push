@@ -18,6 +18,11 @@ version_at() {
 while read -r _ local_sha remote_ref remote_sha; do
   [ "$remote_ref" = "refs/heads/$DEFAULT_BRANCH" ] || continue
   [ "$local_sha" = "$zero" ] && continue
+  # 远端有本地没有的提交时推送反正会被拒；先停下，免得白跑全量。
+  if [ "$remote_sha" != "$zero" ] && ! git cat-file -e "$remote_sha^{commit}" 2>/dev/null; then
+    echo "pre-push：远端 $DEFAULT_BRANCH 有本地没有的提交，先拉取合并再推送" >&2
+    exit 1
+  fi
   new=$(version_at "$local_sha")
   old=''
   [ "$remote_sha" = "$zero" ] || old=$(version_at "$remote_sha")
