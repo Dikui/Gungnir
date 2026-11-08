@@ -6,32 +6,32 @@
 
 通常由你调用，也允许模型在对话中隐式调用；分组只说明谁通常调用谁。
 
-- **[ablation](./ablation/SKILL.md)** - 逐个去掉机制并测量，确定收益来自哪个机制。
-- **[ask-dikui](./ask-dikui/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
-- **[cohesion-coupling](./cohesion-coupling/SKILL.md)** - 用职责表、依赖图和共同修改记录，诊断模块的内聚与耦合问题。
-- **[grill-with-docs](./grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `GLOSSARY.md` 与 ADRs。
-- **[triage](./triage/SKILL.md)** - 通过 triage roles state machine 推进 issues。
-- **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)** - 扫描 codebase 中的 deepening opportunities，生成可视化 HTML report，然后围绕你选中的候选项继续 grilling。
-- **[setup-dikui-skills](./setup-dikui-skills/SKILL.md)** - 初始化仓库：配置规则文件、issue tracker、triage labels、domain docs、文档布局、测试命令与 pre-push 钩子。每个 repo 运行一次。
-- **[to-spec](./to-spec/SKILL.md)** - 把当前对话整理成 spec 并发布到 issue tracker。
-- **[to-tickets](./to-tickets/SKILL.md)** - 把 plan、spec 或 conversation 拆成 tracer-bullet tickets，每个 ticket 声明 blocking edges——本地文件中用文本表示，真实 tracker 上用 native blocking links。
-- **[implement](./implement/SKILL.md)** - 按任务单实现一份需求或一组任务：按依赖分批，同批任务并行开发，每张任务单经 `/tdd`、`/local-test` 和 `/diff-review` 后提交，请用户验收，通过后合入、推送并部署。
-- **[wayfinder](./wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 issue tracker 上的 decision tickets 共享 map，逐一解决直到通往 destination 的路清晰。
-- **[diagnosing-bugs](./diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：reproduce -> minimise -> hypothesise -> instrument -> fix -> regression-test。
-- **[pr-body](./pr-body/SKILL.md)** - 用最小图示、前后验证证据、可回退性和影响范围撰写 PR 正文。
-- **[mockup](./mockup/SKILL.md)** - 生成并维护长期保留的 HTML 界面设计稿，作为前端开发的参照。
-- **[retro](./retro/SKILL.md)** - 复盘开发会话，按严重程度提出导航、自动检查、编码规范、工具和信息访问改进。
-- **[trial](./trial/SKILL.md)** - 在真实后端代码中并行实现两到三个方案，用同一组测试和测量比较，选定一版并删除其余。
-- **[safe-push](./safe-push/SKILL.md)** - 检查不应入库的内容，默认升修订号，提交并推送代码。
+- **[ablation](./ablation/SKILL.md)**
+- **[ask-dikui](./ask-dikui/SKILL.md)**
+- **[cohesion-coupling](./cohesion-coupling/SKILL.md)**
+- **[grill-with-docs](./grill-with-docs/SKILL.md)**
+- **[triage](./triage/SKILL.md)**
+- **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)**
+- **[setup-dikui-skills](./setup-dikui-skills/SKILL.md)**
+- **[to-spec](./to-spec/SKILL.md)**
+- **[to-tickets](./to-tickets/SKILL.md)**
+- **[implement](./implement/SKILL.md)**
+- **[wayfinder](./wayfinder/SKILL.md)**
+- **[diagnosing-bugs](./diagnosing-bugs/SKILL.md)**
+- **[pr-body](./pr-body/SKILL.md)**
+- **[mockup](./mockup/SKILL.md)**
+- **[retro](./retro/SKILL.md)**
+- **[trial](./trial/SKILL.md)**
+- **[safe-push](./safe-push/SKILL.md)**
 
 ## Skill-invoked
 
 通常由入口技能在执行中加载，也允许模型在对话中隐式调用；除 `grilling` 外，你也可以直接调用。见[调用规则](../../docs/invocation.md)。
 
-- **[local-test](./local-test/SKILL.md)** - 只测试改动影响的范围，必要时构造场景测试，再筛选值得长期保留的测试写入项目。
-- **[prototype](./prototype/SKILL.md)** - 构建 throwaway prototype 来回答一个 design 问题：可以是回答 state/logic 问题的可运行终端 app，也可以是多个可切换的 UI 变体。
-- **[research](./research/SKILL.md)** - 对照高可信 primary sources 调研问题，并把带引用的 findings 保存为 repo 中的 Markdown 文件，作为 background agent 运行。
-- **[tdd](./tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
-- **[domain-modeling](./domain-modeling/SKILL.md)** - 主动构建和打磨项目的 domain model：挑战术语、用场景做压力测试，并内联更新 `GLOSSARY.md` 与 ADRs。
-- **[codebase-design](./codebase-design/SKILL.md)** - 用于设计 deep modules 的共享纪律和词汇：小 interface、清晰 seam、通过 interface 测试。
-- **[diff-review](./diff-review/SKILL.md)** - 对固定点之后的 diff 做双轴 review：**Standards**（是否遵循 repo 的编码规范，外加 Fowler smell baseline？）和 **Spec**（是否忠实实现了源头的 issue/PRD？），作为并行 sub-agents 运行。
+- **[local-test](./local-test/SKILL.md)**
+- **[prototype](./prototype/SKILL.md)**
+- **[research](./research/SKILL.md)**
+- **[tdd](./tdd/SKILL.md)**
+- **[domain-modeling](./domain-modeling/SKILL.md)**
+- **[codebase-design](./codebase-design/SKILL.md)**
+- **[diff-review](./diff-review/SKILL.md)**

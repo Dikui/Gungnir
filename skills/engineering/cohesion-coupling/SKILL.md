@@ -13,7 +13,7 @@ description: 用职责表、依赖图和共同修改记录，诊断模块的内�
 - 把 ADR 中记录的决策和理由作为证据。
 - 职责分析前读取 [codebase-design](../codebase-design/SKILL.md)，术语沿用其中的 module、interface、seam 等。
 - 只给诊断结论和建议。
-- 不修改任何文件。临时改动与还原规则（共同规则 6）不适用。
+- 不修改任何文件。
 - 不向项目安装依赖，不修改 `package.json` 等清单文件。
 - 展示或记录命令、输出或环境信息前，将秘密值替换为 `<REDACTED>`。
 

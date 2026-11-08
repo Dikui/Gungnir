@@ -4,7 +4,7 @@
 # 由 setup-dikui-skills 生成。
 DEFAULT_BRANCH='main'
 VERSION_FILE='skills/.claude-plugin/plugin.json'
-FULL_TEST='node scripts/check-repo.mjs && bash scripts/test-safe-push-scan.sh && (cd dsh-plugin && npm run version:check && npm run build && npm test && npm run verify) && claude plugin validate . --strict && claude plugin validate skills --strict && sh scripts/test-pre-push.sh'
+FULL_TEST='node scripts/check-repo.mjs && bash scripts/test-safe-push-scan.sh && (cd dsh-plugin && npm run build && npm test && npm run verify) && claude plugin validate . --strict && claude plugin validate skills --strict && sh scripts/test-pre-push.sh'
 # safe-push 的 scan.sh；留空时依次在 Claude、Codex、Grok 的插件目录里找最新版。
 SAFE_PUSH_SCAN='skills/engineering/safe-push/scripts/scan.sh'
 

@@ -61,19 +61,7 @@ claude plugin install gungnir@gungnir
 
 插件自带 `SessionStart` 和 `SubagentStart` 钩子（Claude Code 与 Codex），在每个会话开始时注入 [skills/hooks/workflow.md](./skills/hooks/workflow.md)：改代码走 `/implement`，测试只跑受影响范围，被派单的执行者不再派单，提交方案待审时写给没看过代码的人。调整默认流程时只改这个文件。Codex 首次运行需要信任该钩子。
 
-**其他起点**
-
-| 情况 | 技能 |
-| --- | --- |
-| 外部缺陷报告或功能请求积压 | `/triage` |
-| 难以定位、偶发或回归的缺陷 | `/diagnosing-bugs` |
-| 一次会话规划不清的大任务 | `/wayfinder` |
-| 怀疑方向本身选错 | `/first-principles` |
-| 想找计划、需求或代码的反例 | `/adversarial-review` |
-| 方案膨胀，说不清每部分为何存在 | `/occams-razor` |
-| 需要在真实后端代码中比较几种实现 | `/trial` |
-| 加了多项优化，不清楚收益来自哪个 | `/ablation` |
-| 模块职责和依赖混乱 | `/cohesion-coupling`、`/improve-codebase-architecture` |
+其他起点（缺陷积压、棘手缺陷、大任务规划、方案复查、实现比较、架构诊断）见 [ask-dikui](./skills/engineering/ask-dikui/SKILL.md)。
 
 ## 技能索引
 
