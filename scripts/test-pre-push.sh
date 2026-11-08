@@ -1,14 +1,16 @@
 #!/bin/sh
-# 自检 setup-dikui-skills/pre-push.sh：只有默认分支上版本号前两位变化时才运行全量测试。
+# 自检 setup-dikui-skills/pre-push.sh：safe-push 扫描有阻断项时拒绝推送；只有默认分支上版本号前两位变化时才运行全量测试。
 set -eu
-HOOK="$(cd "$(dirname "$0")/.." && pwd)/skills/engineering/setup-dikui-skills/pre-push.sh"
+REPO="$(cd "$(dirname "$0")/.." && pwd)"
+HOOK="$REPO/skills/engineering/setup-dikui-skills/pre-push.sh"
 T=$(mktemp -d); trap 'rm -rf "$T"' EXIT
 git init -q --bare "$T/remote.git"
 git init -q -b main "$T/work"; cd "$T/work"
 git config user.email t@example.com; git config user.name t
 git remote add origin "$T/remote.git"
 mkdir -p .githooks; git config core.hooksPath .githooks
-sed -e "s|^FULL_TEST=.*|FULL_TEST='echo run >> \"$T/ran\"; [ ! -f \"$T/fail\" ]'|" "$HOOK" > .githooks/pre-push
+sed -e "s|^FULL_TEST=.*|FULL_TEST='echo run >> \"$T/ran\"; [ ! -f \"$T/fail\" ]'|" \
+  -e "s|^SAFE_PUSH_SCAN=.*|SAFE_PUSH_SCAN='$REPO/skills/engineering/safe-push/scripts/scan.sh'|" "$HOOK" > .githooks/pre-push
 chmod +x .githooks/pre-push
 
 ver() { printf '{\n  "name": "x",\n  "version": "%s"\n}\n' "$1" > package.json; git add package.json; git commit -qm "v$1"; }
@@ -29,6 +31,12 @@ sed -i '' -e "s|^VERSION_FILE=.*|VERSION_FILE='VERSION'|" .githooks/pre-push 2>/
 printf '1.0.0\n' > VERSION; git add VERSION; git commit -qm vf; git push -q origin main 2>/dev/null; expect 5 '远端还没有版本文件，按变化处理'
 printf '1.0.1\n' > VERSION; git add VERSION; git commit -qm vf1; git push -q origin main 2>/dev/null; expect 5 'VERSION 文件，只升修订号'
 printf '1.1.0\n' > VERSION; git add VERSION; git commit -qm vf2; git push -q origin main 2>/dev/null; expect 6 'VERSION 文件，升次版本'
+# safe-push 扫描：未推送提交含任务单时拒绝，移除后放行
+mkdir -p .scratch/tasks; echo t > .scratch/tasks/x.md; git add .scratch/tasks/x.md; git commit -qm task
+if git push -q origin main 2>/dev/null; then echo 'FAIL：未推送提交含 .scratch/tasks 时推送应被拒绝' >&2; exit 1; fi
+git reset -q --hard HEAD~1; echo b > b; git add b; git commit -qm b
+git push -q origin main 2>/dev/null || { echo 'FAIL：正常提交应放行' >&2; exit 1; }
+expect 6 '扫描用例不跑全量'
 # 远端有本地没有的提交：直接拒绝，不跑全量
 git clone -q "$T/remote.git" "$T/other"; (cd "$T/other" && git config user.email t@example.com && git config user.name t && echo o > o && git add o && git commit -qm o && git push -q origin main)
 printf '1.2.0\n' > VERSION; git add VERSION; git commit -qm vf3

@@ -66,7 +66,7 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 
 确定三项：运行受影响测试的命令（按文件、包或测试名过滤）、全量测试命令、版本号文件。项目没有过滤方式时，说明缺口，建议补一个能接收测试文件或包的入口，不用全量命令代替。没有版本号时，建议在根目录新增 `VERSION`（内容如 `0.1.0`）。
 
-按 [pre-push.sh](./pre-push.sh) 生成钩子：推送到默认分支且版本号前两位变化时运行全量测试，否则直接放行。已有 `core.hooksPath` 时写到该目录；没有时写到 `.githooks/pre-push`，并执行 `git config core.hooksPath .githooks`。改用 `.githooks` 前检查 `.git/hooks/` 中是否有非 `.sample` 钩子，有则先迁移到 `.githooks/`，不丢弃。
+按 [pre-push.sh](./pre-push.sh) 生成钩子：先用 safe-push 的扫描脚本检查未推送的提交，有阻断项（任务单、代理工作目录、密钥等）或扫描出错时拒绝推送，Codex、Grok 等执行者自己推送时也会被拦下；再在推送到默认分支且版本号前两位变化时运行全量测试，否则直接放行。`SAFE_PUSH_SCAN` 留空，钩子运行时在 Claude、Codex、Grok 的插件目录里找最新的扫描脚本；找不到时跳过扫描并提示。已有 `core.hooksPath` 时写到该目录；没有时写到 `.githooks/pre-push`，并执行 `git config core.hooksPath .githooks`。改用 `.githooks` 前检查 `.git/hooks/` 中是否有非 `.sample` 钩子，有则先迁移到 `.githooks/`，不丢弃。
 
 ## 3. 展示草稿
 
@@ -126,7 +126,7 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 - [triage-labels.md](./triage-labels.md)：标签映射，仅在安装 `triage` 时使用。
 - [domain.md](./domain.md)：领域文档布局和读取规则。
 - [layout.md](./layout.md)：文档布局约定，写入 `docs/agents/layout.md`。
-- [pre-push.sh](./pre-push.sh)：按版本号决定是否运行全量测试的 pre-push 钩子。
+- [pre-push.sh](./pre-push.sh)：先做 safe-push 扫描、再按版本号决定是否运行全量测试的 pre-push 钩子。
 
 其他 tracker 按用户描述编写 `docs/agents/issue-tracker.md`。
 
