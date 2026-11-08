@@ -18,7 +18,6 @@
     "domain-modeling",
     "productivity"
   ],
-  "hooks": "./hooks/workflow-hooks.json",
   "skills": [
     "./engineering/ablation",
     "./engineering/ask-dikui",

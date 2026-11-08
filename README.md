@@ -59,8 +59,6 @@ claude plugin install gungnir@gungnir
 4. `/implement` 内部用 `/tdd` 驱动实现，用 `/local-test` 做局部测试并沉淀测试，用 `/diff-review` 审查后提交。
 5. 推送前 `/safe-push` 检查不应入库的内容；需要 PR 正文时用 `/pr-body`；结束后可用 `/retro` 复盘。
 
-插件自带 `SessionStart` 和 `SubagentStart` 钩子（Claude Code 与 Codex），在每个会话开始时注入 [skills/hooks/workflow.md](./skills/hooks/workflow.md)：改代码走 `/implement`，测试只跑受影响范围，被派单的执行者不再派单，提交方案待审时写给没看过代码的人。调整默认流程时只改这个文件。Codex 首次运行需要信任该钩子。
-
 其他起点（缺陷积压、棘手缺陷、大任务规划、方案复查、实现比较、架构诊断）见 [ask-dikui](./skills/engineering/ask-dikui/SKILL.md)。
 
 ## 技能索引
