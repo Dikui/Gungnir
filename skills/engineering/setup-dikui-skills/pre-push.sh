@@ -1,12 +1,35 @@
 #!/bin/sh
-# 推送到默认分支时，版本号前两位（主版本、次版本）变化才运行全量测试；只升修订号或不改版本时直接放行。
-# 由 setup-dikui-skills 生成：按项目修改下面三行。
+# 先用 safe-push 扫描未推送的提交，有阻断项（任务单、代理工作目录、密钥等）就拒绝推送。
+# 再看版本号：推送到默认分支时，前两位（主版本、次版本）变化才运行全量测试；只升修订号或不改版本时直接放行。
+# 由 setup-dikui-skills 生成：按项目修改下面几行。
 DEFAULT_BRANCH='main'
 VERSION_FILE='package.json'
 FULL_TEST='npm test'
+# safe-push 的 scan.sh；留空时依次在 Claude、Codex、Grok 的插件目录里找最新版。
+SAFE_PUSH_SCAN=''
 
 set -eu
 zero=0000000000000000000000000000000000000000
+
+newest() { ls -d "$@" 2>/dev/null | sort -V | tail -n 1; }
+scan=$SAFE_PUSH_SCAN
+[ -n "$scan" ] || scan=$(newest "$HOME"/.claude/plugins/cache/*/gungnir/*/engineering/safe-push/scripts/scan.sh)
+[ -n "$scan" ] || scan=$(newest "$HOME"/.codex/plugins/cache/*/gungnir/*/engineering/safe-push/scripts/scan.sh)
+[ -n "$scan" ] || scan=$(newest "$HOME"/.grok/installed-plugins/*/skills/engineering/safe-push/scripts/scan.sh)
+if [ -z "$scan" ] || [ ! -f "$scan" ]; then
+  echo "pre-push：找不到 safe-push 扫描脚本，跳过扫描；安装 Gungnir 插件或在钩子里设置 SAFE_PUSH_SCAN" >&2
+else
+  # stdin 是待推送的 ref 列表，留给下面的循环。
+  report=$(bash "$scan" --unpushed < /dev/null) && code=0 || code=$?
+  case "$code" in
+    0) ;;
+    1) printf '%s\n' "$report" >&2
+       echo "pre-push：safe-push 扫描发现阻断项，已拒绝推送；移出这些内容后再推送" >&2
+       exit 1 ;;
+    *) echo "pre-push：safe-push 扫描出错（退出码 $code），已拒绝推送；请手动核对未推送的提交" >&2
+       exit 1 ;;
+  esac
+fi
 
 # <提交> → x.y.z；VERSION 文件取全文，其他文件取第一处 version 键。读不到时为空。
 version_at() {
