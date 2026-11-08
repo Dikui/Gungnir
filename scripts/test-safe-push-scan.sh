@@ -64,20 +64,24 @@ scan --staged
 assert_has 'category 1 cloud prefix' block 1
 if grep -F "$key" "$tmp/out" "$tmp/err" >/dev/null || grep -F "$cloud" "$tmp/out" "$tmp/err" >/dev/null; then fail 'redaction stdout and stderr'; else pass 'redaction stdout and stderr'; fi
 
+# small/spec，来源：safe-push-trim 任务单。旧规则块连同非法内容一起忽略。
 newrepo
 rules <<'RULES'
 ```safe-push-deny
 block 2 REAL_CUSTOMER_EXPORT
 warn 5 INTERNAL_CODENAME
 warn 9 unrelated-file
+obsolete invalid row
+block 5 [
+```
+```safe-push-protected
+obsolete invalid row [
 ```
 RULES
 printf 'REAL_CUSTOMER_EXPORT\nINTERNAL_CODENAME\n' > unrelated-file.txt
 git add -- unrelated-file.txt
 scan --staged
-assert_has 'category 2 project rule blocks real data marker' block 2
-assert_has 'category 5 internal marker warns' warn 5
-assert_has 'category 9 unrelated path warns' warn 9
+if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ] && [ ! -s "$tmp/err" ]; then pass 'legacy rule blocks are ignored without error or findings'; else fail 'legacy rule blocks'; fi
 
 newrepo
 mkdir -p docs/tasks/run
@@ -138,6 +142,28 @@ git add -- paths.txt
 scan --staged
 assert_has 'category 4 personal path warns' warn 4
 
+# small/regression，来源：safe-push-trim 任务单。邮箱豁免只作用于地址本身。
+for content in 'noreply@anthropic.com' 'build-noreply@example.invalid' '123+name@users.noreply.github.com' 'NOREPLY@EXAMPLE.INVALID'; do
+    newrepo
+    printf '%s\n' "$content" > contact.txt
+    git add -- contact.txt
+    scan --staged
+    if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass "noreply content has no category 4: $content"; else fail "noreply content: $content"; fi
+    git commit -qm "Co-Authored-By: Fixture <$content>"
+    scan --unpushed
+    if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass "noreply commit has no category 12: $content"; else fail "noreply commit: $content"; fi
+done
+for content in 'private@example.invalid' 'noreply@anthropic.com private@example.invalid' 'private@example.invalid noreply@anthropic.com' 'noreply@anthropic.com /Users/fixture/work/file' 'noreply@anthropic.com /home/fixture/work/file' 'noreply@anthropic.com C:\Users\fixture\work' 'noreply@anthropic.com 192.168.1.2' 'noreply-user@example.invalid' '123+name@users.noreply.github.com.example.invalid'; do
+    newrepo
+    printf '%s\n' "$content" > contact.txt
+    git add -- contact.txt
+    scan --staged
+    assert_has "other personal content still warns category 4: $content" warn 4
+    git commit -qm "$content"
+    scan --unpushed
+    assert_has "other personal commit still warns category 12: $content" warn 12
+done
+
 newrepo
 mkdir -p dist
 printf 'generated\n' > dist/output.txt
@@ -163,10 +189,17 @@ scan --staged
 assert_has 'category 8 mode 644 to 755 warns' warn 8
 
 newrepo
-printf 'debug=true\n' > config.txt
+# small/regression，来源：safe-push-trim 任务单。回环地址不再视为本地开关。
+printf 'http://localhost:3000\nhttp://127.0.0.1:3000\n' > config.txt
 git add -- config.txt
 scan --staged
-assert_has 'category 10 local switch warns' warn 10
+if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass 'loopback content has no category 10'; else fail 'loopback content'; fi
+for content in 'debug=true' 'mock=true'; do
+    printf '%s\n' "$content" > config.txt
+    git add -- config.txt
+    scan --staged
+    assert_has "category 10 local switch still warns: $content" warn 10
+done
 
 newrepo
 printf 'ignored.txt\n' > .gitignore
@@ -201,9 +234,16 @@ newrepo
 result=$?
 cat "$tmp/out" "$tmp/err" >> "$tmp/all-output"
 assert_has 'category 13 upstream remote mismatch warns' warn 13
+# small/spec，来源：safe-push-trim 任务单。默认分支不再要求单独确认。
+for target in main master release; do
+    git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/release
+    scan --staged --target "$target"
+    if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass "push target has no category 13 warning: $target"; else fail "push target: $target"; fi
+done
 "$BASH" "$scanner" --staged --remote origin --target main --force > "$tmp/out" 2> "$tmp/err"
+result=$?
 cat "$tmp/out" "$tmp/err" >> "$tmp/all-output"
-if has warn 13 && grep 'force requested' "$tmp/out" >/dev/null && grep 'branch candidate' "$tmp/out" >/dev/null; then pass 'category 13 default branch and force warn'; else fail 'default branch and force'; fi
+if [ "$result" -eq 0 ] && has warn 13 && grep 'force requested' "$tmp/out" >/dev/null; then pass 'category 13 force still warns'; else fail 'force warning'; fi
 
 newrepo
 printf 'value=%s\n' "$key" > history.txt
@@ -238,14 +278,21 @@ RULES
 printf 'INTERNAL_CODENAME\nconsole.log("debug");\nvalue=%s\n' "$key" > code.js
 git add -- code.js
 scan --staged
-assert_has 'deny added internal marker blocks' block 5
-assert_has 'deny raises built-in severity' block 7
-if has warn 7; then fail 'raised severity replaces built-in warning'; else pass 'raised severity replaces built-in warning'; fi
-assert_has 'deny cannot downgrade category 1' block 1
-if grep 'downgrade ignored' "$tmp/err" >/dev/null; then pass 'category 1 downgrade diagnostic'; else fail 'downgrade diagnostic'; fi
+assert_has 'legacy deny leaves built-in debug warning' warn 7
+if has block 5 || has block 7; then fail 'legacy deny changes findings'; else pass 'legacy deny cannot add or raise findings'; fi
+assert_has 'legacy deny leaves credential block' block 1
+assert_code 'legacy deny leaves credential exit code 1' 1
+if [ ! -s "$tmp/err" ]; then pass 'legacy deny has no downgrade diagnostic'; else fail 'legacy deny diagnostic'; fi
 
+# small/spec，来源：safe-push-trim 任务单。旧规则不影响后续 allow。
 newrepo
 rules <<'RULES'
+```safe-push-deny
+block 1 [
+```
+```safe-push-protected
+[
+```
 ```safe-push-allow
 tests/fixtures/* gh[p]_
 ```
@@ -298,13 +345,6 @@ git add -- readme.txt
 git commit -qm "fix: $key"
 scan --unpushed
 assert_has 'credential in commit message blocks category 12' block 12
-rules <<'RULES'
-```safe-push-deny
-warn 12 .*
-```
-RULES
-scan --unpushed
-assert_has 'category 12 cannot downgrade credential via category 12 rule' block 12
 
 newrepo
 git checkout -qb "topic-$key"
@@ -349,12 +389,12 @@ if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass 'deleting existing cred
 
 newrepo
 rules <<'RULES'
-```safe-push-deny
-block 5 [
+```safe-push-allow
+tests/fixtures/* [
 ```
 RULES
 scan --staged
-assert_code 'invalid ERE exits 2' 2
+assert_code 'invalid allow ERE exits 2' 2
 scan --base missing-revision --unpushed
 assert_code 'invalid revision exits 2' 2
 

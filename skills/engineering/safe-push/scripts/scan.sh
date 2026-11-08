@@ -65,13 +65,6 @@ if [ "$force" -eq 1 ]; then attribute '(push)' 13 warn 'force requested; separat
 if [ -n "$upremote" ] && [ -n "$remote" ] && [ "$remote" != "$upremote" ]; then
     attribute '(push)' 13 warn 'remote differs from upstream; separate confirmation required'
 fi
-if [ -n "$remote" ]; then
-    default=$(git symbolic-ref --quiet --short "refs/remotes/$remote/HEAD" 2>/dev/null) || default=
-    default=${default#"$remote/"}
-    case "$target" in main|master) attribute '(push)' 13 warn 'default/protected branch candidate; separate confirmation required' ;;
-        *) if [ -n "$default" ] && [ "$default" = "$target" ]; then attribute '(push)' 13 warn 'default branch; separate confirmation required'; fi ;;
-    esac
-fi
 inspect_files() {
     revision=$1 previous=$2 kind=$3
     while IFS= read -r -d '' path; do
@@ -137,7 +130,7 @@ fi
 rules=docs/agents/push-rules.md
 [ -f "$rules" ] || { rules="$tmp/no-rules"; : > "$rules"; }
 # All user content remains in private temporary files. Findings contain fixed
-# descriptions, never a source-line excerpt, including custom deny matches.
+# descriptions, never a source-line excerpt.
 awk -F '\t' '
 function glob(s,    i,c,r) {
     r="^"
@@ -168,19 +161,22 @@ function allowed(file,s,    i) {
     for(i=1;i<=na;i++) if(file ~ ag[i] && s ~ ar[i]) return 1
     return 0
 }
-function finding(cat,lev,reason,    i,f) {
+function finding(cat,lev,reason,    f) {
     if(allowed(file,content)) return
-    for(i=1;i<=nd;i++) if(dc[i]==cat && content ~ dr[i]) lev=dl[i]
-    if(cat==12 && credential(content)) lev="block"
     f=file
-    for(i=1;i<=nd;i++) if(dc[i]==1 && f ~ dr[i]) f=substr(f,1,4) "[REDACTED]"
     if(credential(f)) f=substr(f,1,4) "[REDACTED]"
     gsub(/[[:cntrl:]]/,"?",f)
     print lev "\t" cat "\t" f "\t" lineno "\t" reason (source!="" ? " [source=" source "]" : "")
     if(lev=="block") blocked=1
 }
-function personal(s) {
-    return s ~ /\/Users\/[^ \/]+\/|\/home\/[^ \/]+\/|[A-Za-z]:\\Users\\[^\\ ]+\\|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|(^|[^0-9])(10\.[0-9]+\.[0-9]+\.[0-9]+|192\.168\.[0-9]+\.[0-9]+|172\.(1[6-9]|2[0-9]|3[01])\.[0-9]+\.[0-9]+)/
+function personal(s,    email) {
+    if(s ~ /\/Users\/[^ \/]+\/|\/home\/[^ \/]+\/|[A-Za-z]:\\Users\\[^\\ ]+\\|(^|[^0-9])(10\.[0-9]+\.[0-9]+\.[0-9]+|192\.168\.[0-9]+\.[0-9]+|172\.(1[6-9]|2[0-9]|3[01])\.[0-9]+\.[0-9]+)/) return 1
+    while(match(s,/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/)) {
+        email=tolower(substr(s,RSTART,RLENGTH))
+        if(email !~ /noreply@|@users[.]noreply[.]github[.]com$/) return 1
+        s=substr(s,RSTART+RLENGTH)
+    }
+    return 0
 }
 function local_agents_path(s,    parts,n,i) {
     n=split(s,parts,"/")
@@ -188,24 +184,14 @@ function local_agents_path(s,    parts,n,i) {
     return 0
 }
 FILENAME==ARGV[1] {
-    if($0=="```safe-push-deny") { mode="deny"; next }
     if($0=="```safe-push-allow") { mode="allow"; next }
-    if($0=="```safe-push-protected") { mode=""; next }
     if($0=="```") { mode=""; next }
     if(mode=="" || $0 ~ /^[[:space:]]*(#|$)/) next
     s=$0; sub(/^[[:space:]]+/,"",s)
     first=s; sub(/[[:space:]].*$/, "",first)
     sub(/^[^[:space:]]+[[:space:]]*/,"",s)
-    if(mode=="deny") {
-        cat=s; sub(/[[:space:]].*$/, "",cat)
-        sub(/^[^[:space:]]+[[:space:]]*/,"",s)
-        if((first!="block" && first!="warn") || cat !~ /^([1-9]|1[0-3])$/ || s=="") { print "safe-push: invalid deny row (details withheld)" > "/dev/stderr"; invalid=1; next }
-        if(cat==1 && first!="block") { print "safe-push: category 1 downgrade ignored" > "/dev/stderr"; next }
-        dummy=("" ~ s); nd++; dc[nd]=cat+0; dl[nd]=first; dr[nd]=s
-    } else {
-        if(s=="" || first=="*" || first=="**" || first !~ /\//) { print "safe-push: allow requires a scoped path and content regex" > "/dev/stderr"; invalid=1; next }
-        dummy=("" ~ s); na++; ag[na]=glob(first); ar[na]=s
-    }
+    if(s=="" || first=="*" || first=="**" || first !~ /\//) { print "safe-push: allow requires a scoped path and content regex" > "/dev/stderr"; invalid=1; next }
+    dummy=("" ~ s); na++; ag[na]=glob(first); ar[na]=s
     next
 }
 {
@@ -216,7 +202,6 @@ FILENAME==ARGV[1] {
     if(type=="M") {
         if(credential(content)) finding(12,"block","credential pattern in branch/commit (source category 1)")
         if(personal(content)) finding(12,"warn","personal environment in branch/commit (source category 4)")
-        for(j=1;j<=nd;j++) if((dc[j]==1 || dc[j]==4 || dc[j]==5 || dc[j]==12) && content ~ dr[j]) finding(12,dl[j],"project rule in branch/commit (source category " dc[j] ")")
         next
     }
     if(type=="F") {
@@ -232,10 +217,9 @@ FILENAME==ARGV[1] {
         if(content ~ /^(<<<<<<<|=======|>>>>>>>)( |$)/) finding(8,"block","merge conflict marker")
         if(content ~ /^Subproject commit [0-9a-f]+$/) finding(9,"warn","submodule pointer changed; review task relevance")
         if(content ~ /console\.(log|debug)|(^|[^A-Za-z])debugger([^A-Za-z]|$)|\.(only)[[:space:]]*\(|(^|[^A-Za-z])(fit|fdescribe)[[:space:]]*\(|(TODO|FIXME).*([Hh][Aa][Cc][Kk]|temporary)/) finding(7,"warn","debug/test focus/temporary hack candidate")
-        if(tolower(content) ~ /debug[[:space:]]*[:=][[:space:]]*true|mock[[:space:]]*[:=][[:space:]]*true|localhost|127\.0\.0\.1/) finding(10,"warn","local debug/mock/localhost setting")
+        if(tolower(content) ~ /debug[[:space:]]*[:=][[:space:]]*true|mock[[:space:]]*[:=][[:space:]]*true/) finding(10,"warn","local debug/mock setting")
         if(index(content,"\r")) finding(8,"warn","CRLF added; review line-ending changes")
     }
-    for(j=1;j<=nd;j++) if(content ~ dr[j]) finding(dc[j],dl[j],"project deny rule matched (content withheld)")
 }
 END { if(invalid) exit 2; if(blocked) exit 1 }
 ' "$rules" "$tmp/events" > "$tmp/output" 2> "$tmp/diagnostics"

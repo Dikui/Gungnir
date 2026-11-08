@@ -24,7 +24,7 @@ description: 检查不应入库的内容，默认升修订号，提交并推送�
 
 在仓库根目录确认没有中途操作，读取当前分支、upstream、`git remote -v`，确定目标 remote 和远端分支。默认分支每次用 remote 引用核实（无缓存时 `git ls-remote --symref <remote> HEAD`）。有 upstream 时列出 `git log @{upstream}..HEAD`，没有时用 `git log HEAD --not --remotes`。展示 URL 时隐藏凭据和查询参数。
 
-读取 `docs/agents/push-rules.md` 和 `docs/agents/layout.md`（“提交=否”的路径记为非核心）。没有规则文件时，按 [push-rules-template.md](push-rules-template.md) 起草，放进汇总里询问“写入”或“暂不创建”；暂不创建时只用内置规则继续。
+读取 `docs/agents/push-rules.md` 和 `docs/agents/layout.md`（“提交=否”的路径记为非核心）。没有规则文件时，只用内置规则继续。
 
 ## 2. 确定范围
 
@@ -48,11 +48,7 @@ bash <skill-dir>/scripts/scan.sh --staged --unpushed --remote <remote> --target 
 
 ## 4. 版本号
 
-只在当前分支和目标都是默认分支时处理版本号；其他分支记为“未升版本：非默认分支”。
-
-版本文件按 `push-rules.md` 的“版本文件”一节；没有时探索 `package.json`、`.claude-plugin/plugin.json`、`pyproject.toml`、`Cargo.toml` 等，把候选放进汇总请用户确认。比较远端、HEAD 和未推送提交中的版本值；已经升过时说明“未推送提交中已从 A 升到 B”，不重复升级。
-
-默认只升修订号（patch，如 1.2.3 → 1.2.4），不用询问。用户原话里给了具体版本号、说了“不升”，或明确要求升次版本（minor）或主版本（major）时，按用户说的做。代理不自行升 minor 或 major。只改本项目自身的版本字段（lock 文件只改本包条目），不改依赖、CHANGELOG 和历史说明，不打 tag，不发布。
+只在当前分支和目标都是默认分支时，按 `push-rules.md` 的版本文件升修订号；用户指定具体版本、不升版本或要求升 minor/major 时照办，已升过不重复升。找不到版本文件或候选不止一个时列入汇总。
 
 ## 5. 汇总
 
