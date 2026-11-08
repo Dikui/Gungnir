@@ -42,3 +42,19 @@ single-context：根目录 `GLOSSARY.md` 加 `docs/adr/`。涉及业务或架构
 ### Commit rules
 
 禁止 `--no-verify`、`git add -A` / `git add .` 和强推。
+
+### 试用与部署
+
+验收单附试用命令，在 Claude 里临时加载改动后的插件，并只在这个会话里停用已安装的版本：
+
+```sh
+claude --plugin-dir <worktree>/skills --settings '{"enabledPlugins":{"gungnir@gungnir":false}}'
+```
+
+部署 Gungnir 就是把本机 Claude、Codex、Grok 里的 Gungnir 插件更新到新版本。验收通过、推送到 `main` 后，运行 `sh scripts/sync-local-installs.sh`，并报告各处版本。
+
+## 偏好
+
+- 技能、README 和清单只写经过筛选、确实有用的内容；设计稿、调研结论、实验记录和 `.scratch/` 不提交（2026-11-08，来源：Gungnir 历史讨论）。
+- Gungnir 是给各种代理安装的通用技能来源，不绑定本机配置；私人技能、工具和提示词不放进本仓库（2026-11-08，来源：仓库定位讨论）。
+- 只在 `main` 上升版本号，默认只升修订号（2026-11-08，来源：Gungnir 使用分析）。

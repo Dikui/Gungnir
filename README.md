@@ -94,7 +94,7 @@ claude plugin install gungnir@gungnir
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**
   通过持续访谈打磨计划或设计，并记录 ADR 和词汇表。
 - **[implement](./skills/engineering/implement/SKILL.md)**
-  按任务单实现一份需求或一组任务：无依赖的任务并行开发，局部测试后提交到当前分支。
+  按任务单实现一份需求或一组任务：无依赖的任务并行开发，局部测试后请用户验收，通过后合入、推送并部署。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**
   查找可用小接口封装复杂行为的模块，生成可视化架构报告，再与用户讨论选中的方案。
 - **[mockup](./skills/engineering/mockup/SKILL.md)**
@@ -104,7 +104,7 @@ claude plugin install gungnir@gungnir
 - **[retro](./skills/engineering/retro/SKILL.md)**
   复盘一次编码会话。
 - **[safe-push](./skills/engineering/safe-push/SKILL.md)**
-  检查不应入库的内容，确认版本号，经确认后提交并推送代码。
+  检查不应入库的内容，默认升修订号，提交并推送代码。
 - **[setup-dikui-skills](./skills/engineering/setup-dikui-skills/SKILL.md)**
   初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局、测试命令和 pre-push 钩子。
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**

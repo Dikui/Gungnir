@@ -1,5 +1,5 @@
 interface:
   display_name: "Implement"
-  short_description: "按任务单实现一份需求或一组任务：无依赖的任务并行开发，局部测试后提交到当前分支。"
+  short_description: "按任务单实现一份需求或一组任务：无依赖的任务并行开发，局部测试后请用户验收，通过后合入、推送并部署。"
 policy:
   allow_implicit_invocation: true
