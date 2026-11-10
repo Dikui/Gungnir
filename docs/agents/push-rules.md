@@ -12,7 +12,7 @@
 - `skills/.claude-plugin/plugin.json` 的 `version`。
 - `dsh-plugin/package.json` 的 `version`。
 - `dsh-plugin/package-lock.json` 的顶层 `version` 和 `packages[""]` 中的 `version`，仅本包自身的两处，不含依赖条目。
-- `dsh-plugin/README.md` 中安装命令里的 `dikui-gungnir-<版本>.tgz` 文件名。
+- `dsh-plugin/README.md` 中安装命令里的 `dk-gungnir-<版本>.tgz` 文件名。
 
 只修改这里列出的本项目自身版本字段；未列出的文件（如 CHANGELOG、历史说明）不改。
 

@@ -1,4 +1,6 @@
-# Gungnir dsh 插件
+# dk-gungnir dsh 插件
+
+在 DSH 插件列表和技能来源中显示为 `dk-gungnir`。
 
 ## 这是什么
 
@@ -13,14 +15,14 @@
 1. 把插件装进 web profile：
 
    ```sh
-   dsh plugin --profile web add @dikui/gungnir
+   dsh plugin --profile web add dk-gungnir
    ```
 
    该包尚未发布到 npm 之前，用打包出的 tarball 绝对路径代替包名：
 
    ```sh
    (cd dsh-plugin && npm pack)
-   dsh plugin --profile web add "$PWD/dsh-plugin/dikui-gungnir-4.5.10.tgz"
+   dsh plugin --profile web add "$PWD/dsh-plugin/dk-gungnir-4.5.11.tgz"
    ```
 
 2. 启动 dsh：
@@ -34,7 +36,7 @@
 确认插件已挂载：
 
 ```sh
-dsh --profile web --dump-config | grep 'id: gungnir'
+dsh --profile web --dump-config | grep 'id: dk-gungnir'
 ```
 
 ## 构建期改写
@@ -47,7 +49,7 @@ dsh --profile web --dump-config | grep 'id: gungnir'
 
 ## 维护者发布
 
-发布前先登录 npm（账号需有权发布 `@dikui` scope）：
+发布前先登录 npm（账号需有权发布 `dk-gungnir`）：
 
 ```sh
 npm login
@@ -66,7 +68,7 @@ npm whoami
 发布成功后无需 tarball，直接安装：
 
 ```sh
-dsh plugin --profile web add @dikui/gungnir
+dsh plugin --profile web add dk-gungnir
 ```
 
 ## 局限
