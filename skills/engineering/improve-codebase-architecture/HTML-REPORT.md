@@ -1,8 +1,8 @@
-# HTML Report Format
+# HTML 报告格式
 
-Architecture review 渲染为单个 self-contained HTML file，写到 OS temp directory。Tailwind 和 Mermaid 都来自 CDNs。Mermaid 可靠处理 graph-shaped diagrams；手写 divs 和 inline SVG 更适合 editorial visuals（mass diagrams、cross-sections）。两者混用，不要所有内容都依赖 Mermaid，否则会显得 generic。
+架构报告是一个自包含的 HTML 文件，写入操作系统的临时目录。Tailwind 和 Mermaid 都从 CDN 加载。依赖和调用这类图状关系用 Mermaid；剖面图、体量图这类示意图用手写的 div 和内联 SVG。两者混用，不要全部依赖 Mermaid，否则报告会千篇一律。
 
-## Scaffold
+## 骨架
 
 ```html
 <!doctype html>
@@ -33,34 +33,34 @@ Architecture review 渲染为单个 self-contained HTML file，写到 OS temp di
 </html>
 ```
 
-## Header
+## 页头
 
-Repo name、date，以及紧凑 legend：solid box = module，dashed line = seam，red arrow = leakage，thick dark box = deep module。不要 introduction paragraph，直接进入 candidates。
+写仓库名、日期和一行图例：实线框 = module，虚线 = seam，红色箭头 = 泄漏，粗边深色框 = deep module。不写引言，直接进入候选。
 
-## Candidate card
+## 候选卡片
 
-Diagrams 承担主要信息量。Prose 要稀疏、直白，并自然使用 `/codebase-design` skill 中的 glossary terms。
+主要信息由图承担。文字要少而直白，并使用 `/codebase-design` 的术语。
 
-每个 candidate 是一个 `<article>`：
+每个候选是一个 `<article>`：
 
-- **Title** - 简短，命名 deepening（例如 "Collapse the Order intake pipeline"）。
-- **Badge row** - recommendation strength（`Strong` = emerald，`Worth exploring` = amber，`Speculative` = slate），再加 dependency category tag（`in-process`、`local-substitutable`、`ports & adapters`、`mock`）。
-- **Files** - monospace list，`font-mono text-sm`。
-- **Before / After diagram** - 核心内容。两列并排。见下方 patterns。
-- **Problem** - 一句话，说明哪里痛。
-- **Solution** - 一句话，说明什么会改变。
-- **Wins** - bullets，每条不超过 6 words，例如 "Tests hit one interface"、"Pricing logic stops leaking"、"Delete 4 shallow wrappers"。
-- **ADR callout**（如适用）- amber-tinted box 中一行。
+- **标题**：简短，说出要深化什么（如 “Collapse the Order intake pipeline”）。
+- **标签行**：推荐强度（`Strong` 用 emerald，`Worth exploring` 用 amber，`Speculative` 用 slate），加依赖类别（`in-process`、`local-substitutable`、`ports & adapters`、`mock`）。
+- **Files**：等宽字体列表，`font-mono text-sm`。
+- **Before / After 图**：核心内容，两列并排。画法见下文。
+- **Problem**：一句话，说明现在哪里有问题。
+- **Solution**：一句话，说明会改变什么。
+- **Wins**：列表，每条很短，如 “Tests hit one interface”“Pricing logic stops leaking”“Delete 4 shallow wrappers”。
+- **ADR 提示**（适用时）：amber 底色框中的一行。
 
-不要写大段解释。如果 diagram 需要一段话才能懂，就重画 diagram。
+不写大段解释。图需要一段话才能看懂时，重画图。
 
-## Diagram patterns
+## 图的画法
 
-选择适合 candidate 的 pattern，可以混用。不要让每个 diagram 都长得一样——多样性本身就是目的的一部分。
+按候选选择合适的画法，可以混用。不要让每张图都长得一样。
 
-### Mermaid graph（dependencies / call flow 的主力）
+### Mermaid 图（依赖和调用流的主力）
 
-当要表达的是 "X calls Y calls Z, and look at the mess." 时，使用 Mermaid `flowchart` 或 `graph`。把它包在 Tailwind-styled card 中，免得显得是硬塞进来的。用 `classDef` 把 leakage edges 标红，把 deep module 标深色。Sequence diagrams 适合表达 "before: 6 round-trips; after: 1"。
+要表达“X 调 Y 调 Z，一团乱”时，用 Mermaid 的 `flowchart` 或 `graph`。放进带 Tailwind 样式的卡片里。用 `classDef` 把泄漏的边标红，把 deep module 标成深色。时序图适合表达“之前 6 次往返，之后 1 次”。
 
 ```html
 <div class="rounded-lg border border-slate-200 bg-white p-4">
@@ -75,49 +75,49 @@ Diagrams 承担主要信息量。Prose 要稀疏、直白，并自然使用 `/co
 </div>
 ```
 
-### Hand-built boxes-and-arrows（当 Mermaid 的 layout 妨碍表达时）
+### 手写的框和箭头（Mermaid 的布局妨碍表达时）
 
-Modules 用带 border 和 label 的 `<div>`；arrows 用绝对定位在 relative container 上的 inline SVG `<line>` 或 `<path>`。当你希望 "after" diagram 像一个 thick-bordered 的 deep module、internals 灰显时，就用这种方式——Mermaid 无法以合适的视觉分量渲染出那种效果。
+module 用带边框和标签的 `<div>`；箭头用内联 SVG 的 `<line>` 或 `<path>`，绝对定位在相对定位的容器上。想让“之后”的图呈现为一个粗边框的 deep module、内部细节置灰时，用这种画法；Mermaid 画不出这种视觉分量。
 
-### Cross-section（适合 layered shallowness）
+### 剖面图（适合层层转发的浅模块）
 
-用水平 bands（`h-12 border-l-4`）展示一个 call 穿过的 layers。Before：6 个薄 layers，每个几乎不做事。After：1 个厚 band，标注 consolidated responsibility。
+用水平色带（`h-12 border-l-4`）展示一次调用穿过的各层。之前：6 条薄带，每层几乎不做事。之后：1 条厚带，标出合并后的职责。
 
-### Mass diagram（适合表达 "interface as wide as implementation"）
+### 体量图（适合“interface 和 implementation 一样宽”）
 
-每个 module 两个 rectangles：一个代表 interface surface area，一个代表 implementation。Before：interface rectangle 几乎和 implementation rectangle 一样高（shallow）。After：interface rectangle 矮，implementation rectangle 高（deep）。
+每个 module 画两个矩形：一个代表 interface 的大小，一个代表 implementation。之前：interface 几乎和 implementation 一样高（shallow）。之后：interface 矮，implementation 高（deep）。
 
-### Call-graph collapse
+### 调用图折叠
 
-Before：把 function calls tree 渲染为 nested boxes。After：把同一棵 tree collapse 成一个 box，内部 calls 以 faded 状态显示。
+之前：把函数调用树画成嵌套的框。之后：把同一棵树折叠成一个框，内部调用置灰显示。
 
-## Style guidance
+## 样式
 
-- Lean editorial，不要 corporate-dashboard。留足 whitespace。Headings 可选 serif（`font-serif` 与 stone/slate 很搭）。
-- 谨慎用色：一个 accent（emerald 或 indigo），red 用于 leakage，amber 用于 warnings。
-- Diagrams 保持约 320px 高，让 before/after 并排时不需要滚动。
-- Diagram 内 module labels 使用 `text-xs uppercase tracking-wider`；它们应像 schematic，不像 UI。
-- 唯一脚本是 Tailwind CDN 和 Mermaid ESM import。除此之外 report 是 static；不要 app code，不要 Mermaid 自身渲染以外的 interactivity。
+- 偏文章排版，不做成企业仪表盘。多留白。标题可用衬线体（`font-serif` 与 stone/slate 配色相配）。
+- 克制用色：一个强调色（emerald 或 indigo），红色表示泄漏，amber 表示警告。
+- 图高约 320px，使 before/after 并排时不必滚动。
+- 图内的 module 标签用 `text-xs uppercase tracking-wider`，看起来像示意图，不像界面。
+- 脚本只有 Tailwind CDN 和 Mermaid 的 ESM 导入。除此之外报告是静态的：不写应用代码，不加 Mermaid 自身渲染以外的交互。
 
-## Top recommendation section
+## 首选建议一节
 
-一个更大的 card。Candidate name、一句话说明为什么、指向该 card 的 anchor link。仅此而已。
+一张更大的卡片：候选名称、一句话理由、指向该候选卡片的锚点链接。只有这些。
 
-## Tone
+## 用词
 
-Plain English，简洁；但 architectural nouns 和 verbs 必须来自 `/codebase-design` skill。简洁不是术语漂移的借口。
+直白、简洁，但架构名词和动词必须来自 `/codebase-design`。
 
-**Use exactly:** module, interface, implementation, depth, deep, shallow, seam, adapter, leverage, locality.
+**只用这些词：** module、interface、implementation、depth、deep、shallow、seam、adapter、leverage、locality。
 
-**Never substitute:** component, service, unit（当你指 module 时）；API, signature（当你指 interface 时）；boundary（当你指 seam 时）；layer, wrapper（当你指 module 时）。
+**不要换成：** component、service、unit（指 module 时）；API、signature（指 interface 时）；boundary（指 seam 时）；layer、wrapper（指 module 时）。
 
-合适的措辞：
+合适的写法：
 
 - "Order intake module is shallow - interface nearly matches the implementation."
 - "Pricing leaks across the seam."
 - "Deepen: one interface, one place to test."
 - "Two adapters justify the seam: HTTP in prod, in-memory in tests."
 
-**Wins bullets** 要用 glossary terms 命名收益：*"locality: bugs concentrate in one module"*、*"leverage: one interface, N call sites"*、*"interface shrinks; implementation absorbs the wrappers"*。不要写 *"easier to maintain"* 或 *"cleaner code"*；这些词不在 glossary 中，不能挣到自己的位置。
+**Wins** 用上述术语说出收益：*"locality: bugs concentrate in one module"*、*"leverage: one interface, N call sites"*、*"interface shrinks; implementation absorbs the wrappers"*。不写 *"easier to maintain"* 或 *"cleaner code"* 这类说不出具体收益的话。
 
-不要 hedging，不要 throat-clearing，不要 "it's worth noting that..."。一句话如果能变 bullet，就变 bullet。一个 bullet 如果能删，就删。一个 term 不在 `/codebase-design` glossary 中，就先找 glossary 里的词，而不是发明新词。
+不写铺垫和客套。一句话能改成列表项就改；一个列表项能删就删。要用的词不在 `/codebase-design` 的术语里时，先找其中的词，不造新词。

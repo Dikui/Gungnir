@@ -30,9 +30,9 @@ test('list resolves to every well-formed dk- candidates owned by the provider', 
   const candidates = await m.createProvider().list({})
   assert.equal(candidates.length, SKILL_NAMES.length)
   assert.equal(new Set(candidates.map((candidate) => candidate.name)).size, SKILL_NAMES.length)
-  assert.equal(candidates.length, 33)
+  assert.equal(candidates.length, 31)
   const names = new Set(candidates.map((candidate) => candidate.name))
-  for (const name of ['dk-mockup', 'dk-diff-review', 'dk-pr-body', 'dk-safe-push', 'dk-whiteboard']) assert.ok(names.has(name), name)
+  for (const name of ['dk-mockup', 'dk-diff-review', 'dk-pr-body', 'dk-safe-push']) assert.ok(names.has(name), name)
   for (const name of ['dk-code-review', 'dk-pr']) assert.ok(!names.has(name), name)
   for (const candidate of candidates) {
     assert.equal(candidate.provider, PROVIDER_NAME)

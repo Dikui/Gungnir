@@ -1,22 +1,25 @@
-# Skill mechanics
+# 技能的调用方式
 
-[`writing-for-agents`](SKILL.md) 的 skill 专属分支：当文档是一个 skill 时会有什么不同——frontmatter、invocation 选择以及 router skills。关于写作的其他一切都是 `SKILL.md` 中的通用 reference。
+文档是技能时，除 [SKILL.md](SKILL.md) 的写作规则外，还要决定它如何被调用。
 
-## Invocation
+## 两种调用方式
 
-两种选择，交易两种 load：
+- **模型可调用**：保留 `description`，不设 `disable-model-invocation`。代理可以自行加载它，其他技能也可以加载它，用户仍然可以手动调用。代价是简介始终占用上下文。简介要写明触发条件，按 `SKILL.md` 的“写清楚文档入口”编写。
+- **仅用户调用**：设置 `disable-model-invocation: true`。只有用户输入名称才能调用，代理和其他技能都不能加载它。它不占上下文，但用户必须记得它存在。此时 `description` 写给人看：一行摘要，不列触发条件。
 
-- **Model-invoked** skill 保留 `description`，所以 agent 可以自主触发它，其他 skills 也能触达它。你仍然可以手动输入它的名称：model-invocation 总是 _包含_ 用户触达；description 只会增加 agent 发现，从不移除人类的那份。description 是 skill 的顶层 context pointer，被迫始终加载——以永久的 context load 换取可发现性。一个内容全是 reference 的 model-invoked skill 也是 shared reference 的一个归属：另一个 skill 可以调用它，所以被多个 skills 需要的 reference 可以住在同一处。机制：省略 `disable-model-invocation`，并写一个 model-facing description，承载触发 branches（`SKILL.md` 中的 pointer-writing 规则完整适用）。
-- **User-invoked** skill 把 description 从 agent 的触达范围中拿掉：只有人类输入它的名称才能调用它，其他 skill 也不能。零 context load，但它会花 cognitive load——你是那个必须记得它存在的 index。机制：设置 `disable-model-invocation: true`；`description` 变成人类可见的——一行摘要，去掉触发列表。
+代理必须自行加载该技能，或另一个技能必须加载它时，选模型可调用。只会手动触发时，选仅用户调用。
 
-只有当 agent 必须自行触达该 skill、或另一个 skill 必须触达它时，才选 model-invocation。如果它只会被手动触发，就做成 user-invoked，不付 context load。
+多个技能共用的参考内容，放进一个模型可调用的技能，由需要它的技能加载。两个仅用户调用的技能无法互相加载；它们共用的内容放进技能之外的普通文件，各自按路径读取。
 
-两个 user-invoked skills 都需要的 shared reference 放在谁那里都不行——没有 descriptions，谁都触发不了谁。把它推到 skill system 之外的普通文件中：任何 skill 都能指向的 external reference。
+## 何时拆出新技能
 
-## Splitting by invocation
+满足以下任一条件时，才拆出一个模型可调用的技能：
 
-invocation 上的切分（sequence 切分在 `SKILL.md` 中）：当你有一个应独立触发它的 distinct leading word 时——一个你确实在自己的 prompts 里用到的触发词——或另一个 skill 必须触达它时，拆出一个 model-invoked skill。你为新的始终加载的 description 支付 context load，所以那份独立触达必须值得。
+- 有一个你确实会在提示中使用、应单独触发它的词。
+- 另一个技能必须加载它。
 
-## Router skills
+新技能的简介会始终占用上下文，独立调用的收益要超过这份成本。按执行步骤拆分的条件见 `SKILL.md` 的“明确完成条件”。
 
-当 user-invoked skills 多到你记不住时，堆积的 cognitive load 由一个 **router skill** 来治疗：一个 user-invoked skill，负责命名其他 skills 以及何时伸手去取每一份，这样人类只需记住一个 skill，而不是许多个。它只能提示，绝不触发它们：user-invoked skills 没有 description，所以除了人类，没有任何东西能触达它们。
+## 路由技能
+
+仅用户调用的技能多到记不住时，增加一个**路由技能**：它也由用户调用，列出其他技能及各自的使用时机，用户只需记住这一个。它只能推荐，不能加载那些技能。

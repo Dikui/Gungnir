@@ -13,8 +13,6 @@ Skills 按 bucket folder 组织在 `skills/` 下：
 
 主插件技能都允许模型在对话中隐式调用：`SKILL.md` 不设置 `disable-model-invocation`，相邻 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: true`。入口技能通常由用户调用，基础技能通常由入口技能调用；两层及 README 分组只说明谁通常调用谁，不代表调用限制。`user-invocable: false` 仅用于用户不能直接调用的技能。基础技能清单、配置和写法见 [docs/invocation.md](./docs/invocation.md)。
 
-白板技能随主插件发布；外部运行组件仅在使用白板时下载，不作为 Gungnir 必装依赖。
-
 本仓库也是一个单 plugin 的 Claude Code marketplace：`.claude-plugin/marketplace.json` 列出唯一的 `gungnir` plugin，插件根目录是 `skills/`，安装时只复制该目录，仓库其余文件不进安装包。技能不得引用 `skills/` 以外的文件。修改 `skills/.claude-plugin/plugin.json` 或 marketplace manifest 后，运行 `claude plugin validate . --strict` 和 `claude plugin validate skills --strict`。
 
 ## Agent skills

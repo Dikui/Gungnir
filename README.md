@@ -53,7 +53,7 @@ claude plugin install gungnir@gungnir
 
 **从想法到实现**
 
-1. `/grill-with-docs` 访谈打磨想法，把术语和决策写入 `GLOSSARY.md` 与 ADR（没有项目目录时用 `/grill-me`）。
+1. `/grill-me` 访谈打磨想法；在项目仓库中，它把术语和决策写入 `GLOSSARY.md` 与 ADR。
 2. 一次会话能完成的，直接 `/implement`。
 3. 需要多次会话的，`/to-spec` 整理需求，`/to-tickets` 拆成可独立验证的任务，再用 `/implement` 处理整个任务单目录：按依赖分批，同批任务并行开发。
 4. `/implement` 内部用 `/tdd` 驱动实现，用 `/local-test` 做局部测试并沉淀测试，用 `/diff-review` 审查后提交。
@@ -77,8 +77,6 @@ claude plugin install gungnir@gungnir
   用职责表、依赖图和共同修改记录，诊断模块的内聚与耦合问题。
 - **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)**
   通过复现、缩小场景、验证假设和回归测试，诊断棘手缺陷或性能回退。
-- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**
-  通过持续访谈打磨计划或设计，并记录 ADR 和词汇表。
 - **[implement](./skills/engineering/implement/SKILL.md)**
   按任务单实现一份需求或一组任务：无依赖的任务并行开发，局部测试后请用户验收，通过后合入、推送并部署。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**
@@ -130,15 +128,13 @@ claude plugin install gungnir@gungnir
 - **[first-principles](./skills/productivity/first-principles/SKILL.md)**
   从目标和已验证事实重新推导方案，判断当前方向是否成立。
 - **[grill-me](./skills/productivity/grill-me/SKILL.md)**
-  通过持续提问打磨计划或设计。
+  通过持续提问打磨计划或设计；在项目仓库中同时记录词汇表和 ADR。
 - **[handoff](./skills/productivity/handoff/SKILL.md)**
   将当前对话整理成交接文档，供其他代理继续工作。
 - **[occams-razor](./skills/productivity/occams-razor/SKILL.md)**
   把方案的每个组成追溯到需求或证据，找出可以删除的部分。
 - **[wait-what](./skills/productivity/wait-what/SKILL.md)**
   用户没听懂时，补足背景，并按理解情况逐步升级解释方式。
-- **[whiteboard](./skills/productivity/whiteboard/SKILL.md)**
-  让本地或服务器上的 Codex 与人工共同编辑 Excalidraw 白板，并保存、恢复画板文件。
 
 **Skill-invoked**
 
@@ -158,19 +154,6 @@ claude plugin install gungnir@gungnir
 | DeepSeek Harness | 复用 `disable-model-invocation: true` | dsh 插件（`dsh-plugin/index.js`）将其转换为 `invocation.modelInvocable: false`；用户仍可用 `/dk-技能名` 调用 |
 
 这些参数只限制平台的调用机制，模型按路径直接读取 `SKILL.md` 时不受限制。
-
-## 白板
-
-[whiteboard](./skills/productivity/whiteboard/SKILL.md) 随主插件和 dsh 包一起安装，无需单独选装。安装时只复制技能文件，首次使用时才通过 `npx` 下载锁定版本的 `mcp-excalidraw-server@2.1.2`；运行机器需要 Node.js 20 或更高版本。它不会自动注册 MCP 服务，也不会安装上游技能。
-
-| Codex 运行位置 | 白板服务位置 | 用户如何编辑 |
-| --- | --- | --- |
-| 本地电脑 | 同一台电脑 | 浏览器访问本地画板 |
-| 服务器 | 同一台服务器 | 本地浏览器通过 SSH 端口转发访问 |
-
-例如：`$whiteboard 在当前机器启动白板，画出 API、缓存和数据库的关系。` 人工调整后，再让 Codex 读取最新画板并局部修改。
-
-注意：画板和快照只保存在服务内存中，人工编辑不会自动写入项目文件。用完需导出 `.excalidraw`，重启服务后可从该文件恢复。目前不保证多个代理并发修改不冲突。
 
 ## 升级说明
 

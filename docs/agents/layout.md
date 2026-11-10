@@ -18,7 +18,6 @@
 | `.scratch/<feature>/` | 需求和任务单（本地 tracker） | to-spec、to-tickets、wayfinder | 否 | 不清理；任务单全部关闭时做收尾检查 |
 | `.scratch/tasks/<任务号>/` | 执行说明、报告、证据 | 执行者 | 否 | 随意 |
 | `.scratch/prototype/` | 逻辑原型 | prototype | 否 | 结论落地后删除 |
-| `*.excalidraw` | 白板存档 | whiteboard | 否 | 用户自行处理 |
 
 - 目录在第一次用到时创建，不预建。
 - 项目已有同类目录（如 `docs/decisions/`）时，把表中路径改成实际路径，技能按表执行。

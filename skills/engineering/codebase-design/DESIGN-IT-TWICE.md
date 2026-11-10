@@ -1,44 +1,46 @@
-# Design It Twice
+# 设计两次
 
-当用户想为某个 deepening candidate 探索 alternative interfaces 时，使用这个并行 sub-agent pattern。它基于 Ousterhout 的 "Design It Twice"：你的第一个想法很可能不是最好的。
+用户想为某个深化候选比较不同的 interface 时，使用这套并行子代理流程。它来自 Ousterhout 的 “Design It Twice”：第一个想法多半不是最好的。
 
-使用 [SKILL.md](SKILL.md) 中的词汇：**module**、**interface**、**seam**、**adapter**、**leverage**。
+沿用 [SKILL.md](SKILL.md) 的术语：**module**、**interface**、**seam**、**adapter**、**leverage**。
 
-## Process
+## 流程
 
-### 1. Frame the problem space
+### 1. 说明问题
 
-在启动 sub-agents 之前，先为选中的 candidate 写一段面向用户的问题空间说明：
+启动子代理之前，为选中的候选写一段给用户看的说明：
 
-- 新 interface 需要满足的 constraints
-- 它会依赖哪些 dependencies，以及这些 dependencies 属于哪一类（见 [DEEPENING.md](DEEPENING.md)）
-- 一个粗略的 illustrative code sketch，用来让 constraints 具体化；这不是 proposal，只是帮助理解约束
+- 新 interface 必须满足的约束。
+- 它依赖什么，这些依赖属于哪一类（见 [DEEPENING.md](DEEPENING.md)）。
+- 一段粗略的示意代码，让约束具体化。它不是方案，只帮助理解约束。
 
-把这些展示给用户，然后立即进入 Step 2。用户可以一边读一边思考，sub-agents 同时并行工作。
+展示给用户后立即进入第 2 步。用户边读边想，子代理同时工作。
 
-### 2. Spawn sub-agents
+### 2. 派子代理
 
-并行启动 3+ 个 sub-agents。每个都必须为 deepened module 产出一个 **radically different** interface。
+并行启动 3 个以上子代理。每个都要为深化后的 module 给出一个**差别明显**的 interface。
 
-给每个 sub-agent 单独的 technical brief（file paths、coupling details、来自 [DEEPENING.md](DEEPENING.md) 的 dependency category、seam 后面是什么）。这个 brief 独立于 Step 1 的用户-facing problem-space explanation。给每个 agent 不同的 design constraint：
+给每个子代理一份单独的技术说明：文件路径、耦合细节、[DEEPENING.md](DEEPENING.md) 中的依赖类别、seam 后面是什么。这份说明与第 1 步给用户看的说明分开写。给每个子代理不同的设计约束：
 
-- Agent 1: "Minimize the interface - aim for 1-3 entry points max. Maximise leverage per entry point."
-- Agent 2: "Maximise flexibility - support many use cases and extension."
-- Agent 3: "Optimise for the most common caller - make the default case trivial."
-- Agent 4（如适用）: "Design around ports & adapters for cross-seam dependencies."
+- 子代理 1：“interface 最小化：最多 1 到 3 个入口，每个入口的 leverage 最大。”
+- 子代理 2：“灵活性最大化：支持多种用法和扩展。”
+- 子代理 3：“为最常见的调用方优化：默认情况一行就能用。”
+- 子代理 4（适用时）：“针对跨 seam 的依赖，按 ports & adapters 设计。”
 
-Brief 中同时包含 [SKILL.md](SKILL.md) vocabulary 和 `GLOSSARY.md` vocabulary，确保每个 sub-agent 的命名同时符合 architecture language 和项目 domain language。
+说明中同时给出 [SKILL.md](SKILL.md) 的术语和 `GLOSSARY.md` 的术语，使每个子代理的命名既符合架构术语，也符合项目的领域语言。
 
-每个 sub-agent 输出：
+每个子代理输出：
 
-1. Interface（types、methods、params，以及 invariants、ordering、error modes）
-2. Usage example，展示 callers 如何使用它
-3. Implementation 在 seam 后隐藏了什么
-4. Dependency strategy 和 adapters（见 [DEEPENING.md](DEEPENING.md)）
-5. Trade-offs：leverage 哪里高，哪里薄
+1. interface：类型、方法、参数，以及不变量、调用顺序、出错方式。
+2. 用法示例：调用方如何使用它。
+3. implementation 在 seam 后面隐藏了什么。
+4. 依赖策略和 adapter（见 [DEEPENING.md](DEEPENING.md)）。
+5. 取舍：哪里 leverage 高，哪里低。
 
-### 3. Present and compare
+不能派子代理时，当前会话按上述约束依次设计，并说明各方案出自同一上下文。
 
-顺序展示各个 designs，让用户能逐个吸收，然后用 prose 比较。按 **depth**（interface 上的 leverage）、**locality**（change 集中在哪里）和 **seam placement** 对比。
+### 3. 展示并比较
 
-比较后，给出你的推荐：你认为哪个 design 最强，以及为什么。如果不同 designs 的元素可以组合，提出 hybrid。要有观点；用户需要强判断，不是菜单。
+依次展示各方案，让用户逐个看完，再用文字比较。按 **depth**（interface 上的 leverage）、**locality**（改动集中在哪里）和 **seam 的位置**比较。
+
+比较后给出推荐：哪个方案最好，为什么。不同方案的部分可以组合时，提出组合方案。要给出明确判断；用户需要的是结论，不是一份选项清单。

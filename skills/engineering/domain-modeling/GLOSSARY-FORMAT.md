@@ -1,6 +1,6 @@
-# GLOSSARY.md Format
+# GLOSSARY.md 格式
 
-## Structure
+## 结构
 
 ```md
 # {Context Name}
@@ -22,18 +22,18 @@ A person or organization that places orders.
 _Avoid_: Client, buyer, account
 ```
 
-## Rules
+## 规则
 
-- **Be opinionated.** 当多个词指向同一概念时，选出最好的那个，并把其他词列在 `_Avoid_` 下。
-- **Keep definitions tight.** 最多一两句话。定义它是什么，而不是它做什么。
-- **Only include terms specific to this project's context.** 一般编程概念（timeouts、error types、utility patterns）不属于这里，即使项目大量使用它们。添加 term 前先问：这是该 context 独有的概念，还是通用编程概念？只有前者属于这里。
-- **Group terms under subheadings** when natural clusters emerge. 如果所有 terms 都属于一个 cohesive area，平铺列表也可以。
+- **只留一个词。** 多个词指同一概念时，选出最合适的一个，其余列在 `_Avoid_` 下。
+- **定义要短。** 最多一两句话。定义它是什么，不写它做什么。
+- **只收本项目上下文特有的术语。** 通用编程概念（超时、错误类型、工具类写法）不收，即使项目大量使用。添加前先问：这是该上下文独有的概念，还是通用编程概念？只收前者。
+- **术语自然成组时，按小标题分组。** 所有术语同属一个领域时，平铺列表即可。
 
-## Single vs multi-context repos
+## 单上下文与多上下文
 
-**Single context（多数 repos）：** root 下一个 `GLOSSARY.md`。
+**单上下文（多数仓库）：** 根目录一个 `GLOSSARY.md`。
 
-**Multiple contexts：** root 下一个 `GLOSSARY-MAP.md`，列出 contexts、它们的位置和彼此关系：
+**多上下文：** 根目录一个 `GLOSSARY-MAP.md`，列出各上下文、它们的位置和相互关系：
 
 ```md
 # Context Map
@@ -51,10 +51,10 @@ _Avoid_: Client, buyer, account
 - **Ordering -> Billing**: Shared types for `CustomerId` and `Money`
 ```
 
-Skill 会推断应使用哪种结构：
+按以下规则判断使用哪种结构：
 
-- 如果存在 `GLOSSARY-MAP.md`，读取它来找到 contexts
-- 如果只有 root `GLOSSARY.md`，按 single context 处理
-- 如果两者都没有，当第一个 term 被解决时懒创建 root `GLOSSARY.md`
+- 存在 `GLOSSARY-MAP.md` 时，读取它找到各上下文。
+- 只有根目录的 `GLOSSARY.md` 时，按单上下文处理。
+- 两者都没有时，在第一个术语确定时创建根目录的 `GLOSSARY.md`。
 
-存在多个 contexts 时，推断当前主题属于哪一个。如果不清楚，就询问。
+有多个上下文时，判断当前话题属于哪一个；判断不了就询问。

@@ -1,61 +1,61 @@
-# UI Prototype
+# 界面原型
 
-在单一路由上生成**几种差异很大的 UI variations**，并通过浮动底栏切换。用户在浏览器里来回切换 variants，选中一个（或从每个里面偷一部分），然后把其余部分丢掉。
+在同一个路由上做出**几个差别明显的界面方案**，用浮动底栏切换。用户在浏览器里来回比较，选定一个，或从几个方案里各取一部分，其余丢弃。
 
-如果问题是 logic/state，而不是东西应该长什么样，这是错误分支。使用 [LOGIC.md](LOGIC.md)。
+问题是逻辑或状态、不是界面长什么样时，改读 [LOGIC.md](LOGIC.md)。
 
-## When this is the right shape
+## 适用情形
 
-- "What should this page look like?"
-- "I want to see a few options for this dashboard before committing."
-- "Try a different layout for the settings screen."
-- 任何用户原本要花一天在脑子里比较三个模糊 mockups 的情况。
+- “这个页面应该长什么样？”
+- “定下来之前，想先看看这个仪表盘的几种做法。”
+- “给设置页换一种布局试试。”
+- 用户原本要在脑子里比较几个模糊设想的任何情况。
 
-## Two sub-shapes — strongly prefer sub-shape A
+## 两种做法：优先 A
 
-当 UI prototype **贴着应用其他部分运行**时会更容易判断：真实 header、真实 sidebar、真实 data、真实 density。一个独立的 throwaway route 是真空环境；每个 variant 单看都还行。只要有合理的现有页面可以承载 variants，默认选择 sub-shape A。只有 prototype 确实没有附近归宿时，才使用 sub-shape B。
+界面原型**放在应用的其他部分旁边**才好判断：真实的页头、侧栏、数据和信息密度。独立的临时路由是真空环境，每个方案单看都还行。只要有合适的现有页面能放方案，就用做法 A；确实没有地方放时才用做法 B。
 
-### Sub-shape A — adjustment to an existing page (preferred)
+### 做法 A：改现有页面（首选）
 
-路由已经存在。Variants 渲染在**同一路由**上，通过 `?variant=` URL search param gate。现有 data fetching、params、auth 都保留；只替换 rendering。这是默认选择，除非有明确理由不用。
+路由已经存在。各方案渲染在**同一个路由**上，由 URL 查询参数 `?variant=` 选择。原有的数据获取、参数和鉴权都保留，只替换渲染部分。
 
-如果 prototype 的东西还没有页面，但*自然会存在于某个页面内部*（dashboard 新 section、settings screen 新 card、现有 flow 的新 step），仍然算 sub-shape A。把 variants mount 到 host page 内。
+要做的东西还没有页面，但*本来就属于某个页面*（仪表盘的新区块、设置页的新卡片、现有流程的新步骤）时，仍算做法 A：把方案挂到那个页面里。
 
-### Sub-shape B — a new page (last resort)
+### 做法 B：新页面（最后的选择）
 
-只有被 prototype 的东西确实没有现有页面可放时才用，例如全新的顶层 surface，或无法合理嵌入任何地方的 flow。
+只有要做的东西确实没有现有页面可放时才用，例如全新的顶层页面，或嵌不进任何地方的流程。
 
-按照项目现有 routing convention 创建一个 **throwaway route**；不要发明新的顶层结构。命名要明显是 prototype（例如在 path 或 filename 中包含 `prototype`）。同样使用 `?variant=` pattern。
+按项目已有的路由约定创建一个**临时路由**，不新增顶层结构。名称要能看出是原型（路径或文件名中带 `prototype`）。同样使用 `?variant=`。
 
-在决定 sub-shape B 前 sanity-check：真的没有现有页面可以嵌入吗？空路由会隐藏 populated page 才能暴露的 design problems。
+决定用做法 B 之前再确认一次：真的没有现有页面可以放吗？空路由会掩盖只有在有内容的页面上才暴露的设计问题。
 
-两种 sub-shapes 都使用相同的浮动底栏。
+两种做法使用同一个浮动底栏。
 
-## Process
+## 步骤
 
-### 1. State the question and pick N
+### 1. 写下问题，确定方案数
 
-默认做 **3 variants**。超过 5 个就不再是 radically different，而是 noise；最多 5 个。
+默认做 **3 个方案**，最多 5 个；再多就不是差别明显，而是干扰。
 
-在 prototype 所在位置或文件顶部 comment 写一行计划：
+在原型所在位置或文件顶部的注释里写一行计划：
 
-> "Three variants of the settings page, switchable via `?variant=`, on the existing `/settings` route."
+> “设置页的三个方案，在现有 `/settings` 路由上用 `?variant=` 切换。”
 
-无论用户是否在旁边反馈，这都有效。
+用户是否在场，这一行都有用。
 
-### 2. Generate radically different variants
+### 2. 做出差别明显的方案
 
-起草每个 variant，并要求它们满足：
+每个方案都要：
 
-- 符合页面目的和可访问数据。
-- 符合项目 component library / styling system（TailwindCSS、shadcn、MUI、plain CSS 等）。
-- 有清晰 exported component name，例如 `VariantA`、`VariantB`、`VariantC`。
+- 符合页面用途和能拿到的数据。
+- 使用项目的组件库和样式体系（TailwindCSS、shadcn、MUI、纯 CSS 等）。
+- 导出清楚的组件名，如 `VariantA`、`VariantB`、`VariantC`。
 
-Variants 必须**结构不同**：不同 layout、不同 information hierarchy、不同 primary affordance，而不只是颜色不同。三个稍微调过的 card grids 不是 UI prototype，是 wallpaper。如果两个 drafts 太像，明确要求 “do not use a card grid” 后重做其中一个。
+方案之间必须**结构不同**：不同的布局、信息层级和主要操作入口，不只是颜色不同。三个略有调整的卡片网格不算界面原型。两个草稿太像时，明确要求“不用卡片网格”，重做其中一个。
 
-### 3. Wire them together
+### 3. 接到一起
 
-在路由上创建一个 switcher component：
+在路由上放一个切换组件：
 
 ```tsx
 // pseudo-code — adapt to the project's framework
@@ -70,43 +70,43 @@ return (
 );
 ```
 
-对 sub-shape A（existing page）：保留 switcher 上方所有 existing data fetching；只有 rendered subtree 随 variant 改变。
+做法 A：切换组件上方原有的数据获取全部保留，只有渲染的子树随方案变化。
 
-对 sub-shape B（new page）：`/prototype/<name>` 下的 throwaway route mount 同一个 switcher。
+做法 B：`/prototype/<name>` 下的临时路由挂同一个切换组件。
 
-### 4. Build the floating switcher
+### 4. 做浮动底栏
 
-屏幕底部居中的 fixed-position 小 bar，包含三部分：
+固定在屏幕底部居中的一条小栏，包含三部分：
 
-- **Left arrow** — 切到上一个 variant（循环）。
-- **Variant label** — 显示当前 variant key；如果 variant export 了 name，也一起显示。例如 `B — Sidebar layout`。
-- **Right arrow** — 切到下一个 variant（循环）。
+- **左箭头**：切到上一个方案，循环。
+- **方案标签**：显示当前方案的键；方案导出了名称时一起显示，如 `B — Sidebar layout`。
+- **右箭头**：切到下一个方案，循环。
 
-Behaviour：
+行为：
 
-- 点击 arrow 更新 URL search param（使用 framework router：Next 用 `router.replace`，React Router 用 `navigate` 等），让 variant 可分享且 reload-stable。
-- Keyboard：`←` 和 `→` arrow keys 也能切换。当 focus 在 `<input>`、`<textarea>` 或 `[contenteditable]` 内时不要拦截 arrow keys。
-- 视觉上要和页面区分开（例如 high-contrast pill、subtle shadow），让它明显不是被评估设计的一部分。
-- 在 production builds 中隐藏；用 `process.env.NODE_ENV !== 'production'` 或等价检查 gate，避免 stray prototype merge 把 bar 发给用户。
+- 点击箭头更新 URL 查询参数（用框架的路由：Next 用 `router.replace`，React Router 用 `navigate` 等），使方案可以分享，刷新后保持不变。
+- 键盘的 `←` 和 `→` 也能切换。焦点在 `<input>`、`<textarea>` 或 `[contenteditable]` 内时不拦截方向键。
+- 外观要和页面区分开（如高对比度的胶囊形、淡阴影），一眼能看出它不属于被评估的设计。
+- 生产构建中隐藏：用 `process.env.NODE_ENV !== 'production'` 或等价的判断，避免遗漏的原型把底栏带给用户。
 
-把 switcher 放进单个 shared component，让两种 sub-shapes 都能复用。放在项目 shared UI 所在位置。
+底栏做成一个共用组件，两种做法都用它，放在项目存放共用界面组件的位置。
 
-### 5. Hand it over
+### 5. 交给用户
 
-给出 URL（以及 `?variant=` keys）。用户会在方便时切换。最有价值的反馈通常是 **"I want the header from B with the sidebar from C"**，那才是他们真正想要的设计。
+给出 URL 和可用的 `?variant=` 值，用户会在方便时切换比较。最有价值的反馈往往是“我要 B 的页头配 C 的侧栏”，那才是用户真正想要的设计。
 
-### 6. Capture the answer and clean up
+### 6. 记录结论并清理
 
-一旦某个 variant 胜出，capture answer（哪个胜出以及为什么），再按 [SKILL](SKILL.md) 描述的方式 capture prototype。把 winner 折进真实 code，其余内容移到 throwaway branch，不要进入 main：
+某个方案胜出后，记下选了哪个、为什么，并按 [SKILL.md](SKILL.md) 的“保留结论和依据”处理。把选定的方案在真实代码中重新实现，其余从代码中移除，原型不提交：
 
-- **Sub-shape A** — 把 winner 折进 existing page；从 main 中移除 losing variants 和 switcher。
-- **Sub-shape B** — 把 winning variant 提升为 real route；从 main 中移除 throwaway route 和 switcher。
+- **做法 A**：选定的方案并入现有页面；移除落选方案和底栏。
+- **做法 B**：选定的方案改为正式路由；移除临时路由和底栏。
 
-完整 variants 集合是 primary source，应进入 throwaway branch，而不是垃圾桶；留在 main branch 的 variant components 和 switcher 会迅速腐烂并误导下一位读者。
+留在代码里的落选方案和底栏会很快过时，并误导后来的读者。
 
-## Anti-patterns
+## 应避免的做法
 
-- **Variants 只在颜色或文案上不同。** 那是 tweak，不是 prototype。真正的 variants 会在结构上互相不同意。
-- **Variants 之间共享太多代码。** 共享 `<Header>` 可以；共享 `<Layout>` 会破坏目的。每个 variant 都应该可以扔掉 layout。
-- **把 variants 接到真实 mutations。** Read-only prototypes 没问题。如果某个 variant 需要 mutate，指向 stub；问题是 “what should this look like”，不是 “does the backend work”。
-- **直接把 prototype 提升到 production。** Variant code 是在 prototype constraints 下写的（无 tests、最少 error handling）。折进真实实现时要重新正确实现。
+- **方案只在颜色或文案上不同。** 那是微调，不是原型。真正的方案在结构上互不相同。
+- **方案之间共用太多代码。** 共用 `<Header>` 可以；共用 `<Layout>` 就失去了意义，每个方案都应能换掉布局。
+- **把方案接到真实的写操作。** 只读的原型没有问题。方案需要写数据时接到桩上；要回答的是“应该长什么样”，不是“后端能不能用”。
+- **把原型代码直接用于生产。** 方案代码是按原型的要求写的：没有测试，错误处理极少。并入真实实现时要重新按正式标准实现。

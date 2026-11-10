@@ -27,8 +27,8 @@
 
 | 输入 | 期望 |
 | --- | --- |
-| `/grill-me 我计划周末迁移数据库` | 加载 `grilling` 并开始一轮编号提问 |
-| `/grill-with-docs 梳理订单领域` | 加载 `grilling` 和 `domain-modeling` |
+| `/grill-me 我计划周末迁移数据库`（不在项目仓库中） | 加载 `grilling` 并开始一轮编号提问 |
+| `/grill-me 梳理订单领域`（在项目仓库中） | 加载 `grilling` 和 `domain-modeling` |
 | `/implement`（附一份小需求） | 加载 `tdd`，实现后加载 `local-test`，再加载 `diff-review` |
 
 ## C. 用户直接调用

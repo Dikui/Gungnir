@@ -58,7 +58,7 @@ Tracker 是项目存放任务的地方。`to-tickets`、`triage`、`to-spec` 等
 
 ### D. 文档布局与 `.gitignore`
 
-按 [layout.md](./layout.md) 生成 `docs/agents/layout.md`。项目已有不同的目录名时，把表中路径替换为实际路径。向 `.gitignore` 只追加表中缺失的不提交路径（`design/`、`docs/research/`、`docs/experiments/`、`.out-of-scope/`、`.scratch/`、`*.excalidraw`，按实际路径替换），不改动已有行。
+按 [layout.md](./layout.md) 生成 `docs/agents/layout.md`。项目已有不同的目录名时，把表中路径替换为实际路径。向 `.gitignore` 只追加表中缺失的不提交路径（`design/`、`docs/research/`、`docs/experiments/`、`.out-of-scope/`、`.scratch/`，按实际路径替换），不改动已有行。
 
 用 `git ls-files` 检查这些路径下已跟踪的文件。有则列出，说明 `.gitignore` 不会停止跟踪，询问是否执行 `git rm --cached -- <路径>`；本地文件保留，远端历史中仍有原内容。用户同意后才执行。
 

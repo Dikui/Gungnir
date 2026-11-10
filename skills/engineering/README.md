@@ -9,7 +9,6 @@
 - **[ablation](./ablation/SKILL.md)**
 - **[ask-dikui](./ask-dikui/SKILL.md)**
 - **[cohesion-coupling](./cohesion-coupling/SKILL.md)**
-- **[grill-with-docs](./grill-with-docs/SKILL.md)**
 - **[triage](./triage/SKILL.md)**
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)**
 - **[setup-dikui-skills](./setup-dikui-skills/SKILL.md)**

@@ -8,15 +8,15 @@ description: 审查指定基准之后的代码变更，分别报告编码规范�
 - **Standards（编码规范）**：代码是否遵守仓库的编码规范？
 - **Spec（需求）**：代码是否实现来源 issue 或需求文档中的要求？
 
-两个子代理并行审查，各自形成结论。最后分别呈现结果，避免一类问题掩盖另一类问题。
+两个子代理并行审查，各自形成结论。最后分别呈现结果，避免一类问题掩盖另一类问题。不能派子代理时，当前会话依次审查两条轴线，先 Standards 后 Spec，并在报告中写明“两条轴线在同一上下文中审查”。
 
-从 `docs/agents/issue-tracker.md` 读取 issue tracker 配置。文件缺失时，告知用户先显式运行 `/setup-dikui-skills`。
+从 `docs/agents/issue-tracker.md` 读取 issue tracker 配置。文件缺失时，不从 tracker 获取 issue 内容，其余步骤照常，并在报告中写明。
 
 ## 审查步骤
 
 ### 1. 确定比较基准
 
-基准可以是提交 SHA、分支名、标签、`main` 或 `HEAD~5`。用户未指定时，先询问。
+基准可以是提交 SHA、分支名、标签、`main` 或 `HEAD~5`。调用方或用户都未指定时，用默认分支（有远端时用它的远端引用），并在报告中写明所用基准。
 
 用 `git rev-parse --verify '<fixed-point>^{commit}'` 和 `git rev-parse --verify 'HEAD^{commit}'` 分别取得基准与目标提交 SHA，再用 `git merge-base <base-sha> <head-sha>` 取得共同祖先。记录这三个 SHA，后续统一使用它们，不再解析可能移动的分支名或 `HEAD`。
 

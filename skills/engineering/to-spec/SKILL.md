@@ -5,7 +5,7 @@ description: "将当前讨论整理为需求文档，发布到项目 issue track
 
 根据当前对话和代码库生成需求文档。**不要**访谈用户，只整理已讨论的内容。
 
-使用已有的 tracker 和分流标签配置。缺失时，告知用户先显式运行 `/setup-dikui-skills`。
+使用已有的 tracker 和分流标签配置。缺失时，按本地 Markdown 约定继续：需求文档保存为 `.scratch/<feature-slug>/spec.md`，顶部写 `Status: ready-for-agent`；在最终验收单中写明用了默认约定。
 
 ## 流程
 

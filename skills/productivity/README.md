@@ -12,7 +12,6 @@
 - **[handoff](./handoff/SKILL.md)**
 - **[occams-razor](./occams-razor/SKILL.md)**
 - **[wait-what](./wait-what/SKILL.md)**
-- **[whiteboard](./whiteboard/SKILL.md)**
 
 ## Skill-invoked
 

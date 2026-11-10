@@ -2,7 +2,7 @@
 
 ## 这是什么
 
-本插件包把 Gungnir 仓库中 `skills/engineering/` 和 `skills/productivity/` 的技能（包括白板），打包为 DeepSeek Harness（dsh）插件。白板运行组件在首次使用时下载。
+本插件包把 Gungnir 仓库中 `skills/engineering/` 和 `skills/productivity/` 的技能打包为 DeepSeek Harness（dsh）插件。
 
 技能以 `dk-<name>` 命名，并以 `/dk-<name>` 调用，例如 `/dk-grilling`。
 

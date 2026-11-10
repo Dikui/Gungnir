@@ -66,6 +66,18 @@ for (const s of skills) {
   else if (implicit !== 'true') fail(`${s.path}/agents/openai.yaml`, 'policy.allow_implicit_invocation must be true')
   if (s.meta.description?.includes(DESCRIPTION_GATE)) fail(file, 'description must not prohibit implicit invocation')
   if (s.body.trimStart().startsWith('加载条件：')) fail(file, 'body must not start with "加载条件："')
+  if (s.body.includes('须手动调用')) fail(file, 'body must not restrict a skill to manual invocation')
+}
+
+// Every caller listed in docs/invocation.md must actually reference the skill.
+for (const [, name, callers] of invocationDoc.matchAll(/^\| `([^`]+)` \| ([^|]+) \|/gm)) {
+  for (const caller of callers.split('、').map((c) => c.trim())) {
+    const s = skills.find((skill) => skill.name === caller)
+    if (!s) fail('docs/invocation.md', `${name}: unknown caller ${caller}`)
+    else if (!new RegExp(`/${name}(?![A-Za-z0-9-])`).test(s.body)) {
+      fail('docs/invocation.md', `${name}: ${caller} does not reference /${name}`)
+    }
+  }
 }
 
 // Entry skills must be discoverable through ask-dikui.

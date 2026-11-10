@@ -1,37 +1,37 @@
-# Deepening
+# 深化模块
 
-在已知 dependencies 的情况下，安全地深化一组 shallow modules。本文件假设你已经使用 [SKILL.md](SKILL.md) 中的词汇：**module**、**interface**、**seam**、**adapter**。
+在依赖已知的情况下，安全地深化一组浅模块。本文件沿用 [SKILL.md](SKILL.md) 的术语：**module**、**interface**、**seam**、**adapter**。
 
-## Dependency categories
+## 依赖分类
 
-评估 deepening candidate 时，先分类它的 dependencies。分类决定 deepened module 如何跨 seam 测试。
+评估要深化的候选时，先给它的依赖分类。类别决定深化后的 module 如何跨 seam 测试。
 
 ### 1. In-process
 
-纯计算、内存状态、无 I/O。总是可以 deepen：合并 modules，并直接通过新的 interface 测试。不需要 adapter。
+纯计算、内存状态、没有 I/O。总是可以深化：合并 module，直接通过新 interface 测试。不需要 adapter。
 
 ### 2. Local-substitutable
 
-有本地 test stand-ins 的 dependencies（例如 Postgres 的 PGLite、in-memory filesystem）。如果 stand-in 存在，就可以 deepen。Deepened module 在 test suite 中带着 stand-in 一起测试。seam 是 internal 的；module external interface 上不需要 port。
+有本地测试替身的依赖（如替代 Postgres 的 PGLite、内存文件系统）。有替身就可以深化。深化后的 module 在测试中带着替身一起测。这个 seam 在内部，module 的对外 interface 上不需要 port。
 
-### 3. Remote but owned (Ports & Adapters)
+### 3. Remote but owned（Ports & Adapters）
 
-你拥有的跨网络服务（microservices、internal APIs）。在 seam 上定义 **port**（interface）。Deep module 拥有 logic；transport 作为 **adapter** 注入。Tests 使用 in-memory adapter。Production 使用 HTTP/gRPC/queue adapter。
+自己拥有的跨网络服务（微服务、内部 API）。在 seam 上定义 **port**（一个 interface）。deep module 拥有逻辑，传输方式作为 **adapter** 注入。测试用内存 adapter，生产用 HTTP、gRPC 或队列 adapter。
 
-推荐形状：*"Define a port at the seam, implement an HTTP adapter for production and an in-memory adapter for testing, so the logic sits in one deep module even though it's deployed across a network."*
+推荐的形态：在 seam 上定义 port，生产用 HTTP adapter 实现，测试用内存 adapter 实现；这样逻辑虽然跨网络部署，仍集中在一个 deep module 里。
 
-### 4. True external (Mock)
+### 4. True external（Mock）
 
-你无法控制的第三方服务（Stripe、Twilio 等）。Deepened module 把外部 dependency 作为 injected port；tests 提供 mock adapter。
+自己无法控制的第三方服务（Stripe、Twilio 等）。深化后的 module 把这个外部依赖作为注入的 port；测试提供 mock adapter。
 
-## Seam discipline
+## Seam 的原则
 
-- **One adapter means a hypothetical seam. Two adapters means a real one.** 除非至少有两个 adapters 合理存在（通常是 production + test），否则不要引入 port。单 adapter seam 只是 indirection。
-- **Internal seams vs external seams。** Deep module 可以有 internal seams（implementation 私有，供自身 tests 使用），也可以有 interface 上的 external seam。不要只因为 tests 使用 internal seams，就把它们暴露到 interface。
+- **一个 adapter 说明 seam 只是假设，两个 adapter 才是真实的 seam。** 至少有两个 adapter 合理存在（通常是生产和测试各一个）时，才引入 port。只有一个 adapter 的 seam 只是多一层间接。
+- **内部 seam 与外部 seam。** deep module 可以有内部 seam（implementation 私有，供自身测试使用），也可以有 interface 上的外部 seam。不要因为测试用到内部 seam，就把它暴露到 interface 上。
 
-## Testing strategy: replace, don't layer
+## 测试策略：替换，不叠加
 
-- 一旦 deepened module interface 上有了 tests，旧的 shallow modules unit tests 就变成 waste，删除它们。
-- 在 deepened module 的 interface 上写新 tests。**Interface is the test surface**。
-- Tests 通过 interface 断言 observable outcomes，而不是 internal state。
-- Tests 应能承受 internal refactors；它们描述 behavior，不描述 implementation。若 implementation 改动会迫使 test 改动，那就是在越过 interface 测试。
+- 深化后的 module 在 interface 上有了测试，旧浅模块的单元测试就成了多余，删除它们。
+- 新测试写在深化后 module 的 interface 上。**interface 就是测试面。**
+- 测试通过 interface 断言可观察的结果，不断言内部状态。
+- 测试应在内部重构后仍然通过：它描述行为，不描述实现。实现一改测试就得改，说明测试越过了 interface。

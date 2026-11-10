@@ -1,10 +1,10 @@
-# ADR Format
+# ADR 格式
 
-ADRs 位于 `docs/adr/`，使用连续编号：`0001-slug.md`、`0002-slug.md` 等。
+ADR 放在 `docs/adr/`，连续编号：`0001-slug.md`、`0002-slug.md`，依此类推。
 
-按需懒创建 `docs/adr/` 目录：只有第一个 ADR 需要出现时才创建。
+`docs/adr/` 目录在需要写第一个 ADR 时才创建。
 
-## Template
+## 模板
 
 ```md
 # {Short title of the decision}
@@ -12,36 +12,36 @@ ADRs 位于 `docs/adr/`，使用连续编号：`0001-slug.md`、`0002-slug.md` �
 {1-3 sentences: what's the context, what did we decide, and why.}
 ```
 
-就这些。ADR 可以只有一个段落。价值在于记录 *做出了某个决定* 以及 *为什么*，而不是填满章节。
+只需要这些。ADR 可以只有一段。价值在于记下*做了某个决定*和*为什么*，不在于填满章节。
 
-## Optional sections
+## 可选章节
 
-只有在真正增加价值时才包含这些。多数 ADRs 不需要。
+确实有用时才写，多数 ADR 不需要：
 
-- **Status** frontmatter（`proposed | accepted | deprecated | superseded by ADR-NNNN`）- 当 decisions 会被重新审视时有用
-- **Considered Options** - 只有被拒绝的 alternatives 值得记住时才写
-- **Consequences** - 只有需要指出非显而易见的下游影响时才写
+- **Status** frontmatter（`proposed | accepted | deprecated | superseded by ADR-NNNN`）：决定以后会被重新审视时有用。
+- **Considered Options**：被否决的方案值得记住时才写。
+- **Consequences**：有不明显的后续影响需要指出时才写。
 
-## Numbering
+## 编号
 
-扫描 `docs/adr/` 中已有的最高编号并递增一。
+找出 `docs/adr/` 中已有的最大编号，加一。
 
-## When to offer an ADR
+## 何时提议写 ADR
 
 以下三项必须全部成立：
 
-1. **Hard to reverse** - 之后改变主意的成本有意义
-2. **Surprising without context** - 未来读者看到代码会疑惑 "why on earth did they do it this way?"
-3. **The result of a real trade-off** - 确实存在替代方案，而你基于具体理由选择了其中一个
+1. **难以逆转**：以后改变主意有明显成本。
+2. **没有背景就看不懂**：以后的读者看到代码会疑惑为什么这样做。
+3. **经过真实取舍**：确实有替代方案，并基于具体理由选了其中一个。
 
-如果决定很容易反转，就跳过；你会直接反转它。如果它不意外，就没人会问为什么。如果没有真正 alternative，就没有超过 "we did the obvious thing" 的内容可记录。
+容易逆转的决定不记，要改时直接改。不让人意外的决定不记，没人会问为什么。没有真正替代方案的决定不记，除了“做了显而易见的事”没有可写的内容。
 
-### What qualifies
+### 哪些值得记
 
-- **Architectural shape.** "We're using a monorepo." "The write model is event-sourced, the read model is projected into Postgres."
-- **Integration patterns between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
-- **Technology choices that carry lock-in.** Database、message bus、auth provider、deployment target。不是每个 library，只有那些替换要花一个季度的。
-- **Boundary and scope decisions.** "Customer data is owned by the Customer context; other contexts reference it by ID only." 明确的 no 和 yes 一样有价值。
-- **Deliberate deviations from the obvious path.** "We're using manual SQL instead of an ORM because X." 任何合理读者会默认相反方案的地方，都值得记录，避免下一个 engineer 把 deliberate choice "修掉"。
-- **Constraints not visible in the code.** "We can't use AWS because of compliance requirements." "Response times must be under 200ms because of the partner API contract."
-- **Rejected alternatives when the rejection is non-obvious.** 如果你考虑过 GraphQL，却因为微妙原因选择 REST，就记录；否则六个月后还会有人再提 GraphQL。
+- **架构形态。** 如“使用 monorepo”“写模型用事件溯源，读模型投影到 Postgres”。
+- **上下文之间的集成方式。** 如“Ordering 和 Billing 通过领域事件通信，不用同步 HTTP”。
+- **会造成锁定的技术选型。** 数据库、消息总线、认证服务、部署目标。不是每个库都记，只记替换起来要花一个季度的。
+- **边界和范围的决定。** 如“客户数据归 Customer 上下文所有，其他上下文只按 ID 引用”。明确的“不做”和“做”同样有价值。
+- **有意偏离常规做法。** 如“因为 X，使用手写 SQL 而不用 ORM”。读者会默认采用相反做法的地方都值得记，避免下一位工程师把有意的选择“修掉”。
+- **代码里看不出的约束。** 如“因合规要求不能使用 AWS”“因合作方 API 约定，响应时间必须低于 200ms”。
+- **理由不明显的否决。** 如考虑过 GraphQL，却因细微原因选了 REST；不记的话，半年后还会有人再提 GraphQL。

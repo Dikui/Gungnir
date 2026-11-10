@@ -13,12 +13,12 @@
 
 | 技能 | 由哪些技能调用 | 用户能否直接调用 |
 | --- | --- | --- |
-| `grilling` | grill-me、grill-with-docs、triage、wayfinder、improve-codebase-architecture | 否，从 `/grill-me` 或 `/grill-with-docs` 进入 |
-| `domain-modeling` | grill-with-docs、triage、wayfinder、improve-codebase-architecture | 能 |
-| `codebase-design` | improve-codebase-architecture、tdd | 能 |
+| `grilling` | grill-me、triage、wayfinder、improve-codebase-architecture | 否，从 `/grill-me` 进入 |
+| `domain-modeling` | grill-me、triage、wayfinder、improve-codebase-architecture | 能 |
+| `codebase-design` | improve-codebase-architecture、tdd、cohesion-coupling | 能 |
 | `writing-for-agents` | retro | 能 |
 | `tdd` | implement | 能 |
-| `diff-review` | implement、tdd | 能 |
+| `diff-review` | implement、tdd、cohesion-coupling | 能 |
 | `local-test` | implement、trial | 能 |
 | `research` | wayfinder | 能 |
 | `prototype` | wayfinder | 能 |

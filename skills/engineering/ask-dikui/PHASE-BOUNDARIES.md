@@ -1,55 +1,43 @@
-# Phase boundaries
+# 阶段边界
 
-**phase** 是 session 内的一段工作——grilling、implementation、QA。这个定义刻意模糊：当你冒出 "行，这个做完了" 的想法时，一个 phase 就结束了。
+**阶段**是会话内的一段工作，如访谈、实现、验证。你觉得“这部分做完了”时，一个阶段就结束了。
 
-**phase boundary** 是两个 phase 之间的间隙，也是这个决定唯一该出现的地方。phase 中途没有决定要做——要么继续，要么把剩余的工作拆成 subagents。在 phase 中途 compact 会让 agent 丢失线索。
+**阶段边界**是两个阶段之间的间隙。只在这里决定如何继续。阶段中途不做这个决定：继续当前工作，或把剩余部分交给子代理。阶段中途压缩上下文，代理会丢失线索。
 
-## The five options
+## 决策顺序
 
-| Option       | What it does                                                    |
-| ------------ | --------------------------------------------------------------- |
-| **Continue** | Stay in the session. No context switch at all.                    |
-| **`/clear`** | Empty the context window and start from nothing.                  |
-| **`/handoff`** | Write a portable markdown file and seed a session anywhere with it. |
-| **Subagent** | Send the task to its own context window and get a report back.     |
-| **`/compact`** | Compress this context and seed a fresh session with the summary.  |
+在阶段边界从上到下判断，第一个回答“是”的选项胜出。
 
-## The tree
+1. **能在当前会话继续吗？** 满足任一条件就继续：下一阶段需要当前阶段的原始内容；或剩余的 smart zone（约 150k token）装得下下一阶段。访谈之后接实现是典型情况：实现需要逐字的推理过程，摘要不够。继续没有成本，也不丢信息，所以先判断它。
 
-在 boundary 处从上到下工作。第一个 **yes** 胜出。
+2. **当前上下文对下一步已无用吗？** 探索、决定和走不通的路都可以丢弃时，用 `/clear`。它不花时间，并还回整个上下文窗口；旧会话仍可恢复。判断错的代价很高：清掉仍有用的上下文，就丢了决定背后的原因，回读 diff 找不回来。
 
-**1. 你能在这个 会话 里继续吗？** 有两个条件让答案为 yes：下一 阶段 需要当前 阶段 作为 **primary source**，或者你还有足够的 smart zone（约 150k tokens）让下一 阶段 装得下。访谈 → 实现 是标准的 yes：实现 想要的是逐字的推理过程，而不是它的 摘要。继续 不花成本也不丢任何东西，所以先排除它。
+3. **需要交接吗？** 只有以下情况使用 `/handoff`：
 
-**2. 这个 context 对接下来要做的事无关紧要吗？** 这个 session 里的一切——探索、决定、死胡同——都可以丢弃吗？如果是，**`/clear`**。它是整张棋盘上最便宜的一步：不花时间，把整个 window 还给你。`/clear` 也不是终局——旧 session 仍然可以恢复。
+   - 换代理运行环境（如 Claude 换到 Codex）。
+   - 换目录或仓库。
+   - 把工作交给其他人。
+   - 阶段中途分出旁支任务，又不想打断当前工作。
 
-选错这一步的代价是单向的。清掉一个 *relevant* 的 context，你就失去了你构建之物背后的 **why**，再怎么回读 diff 也要不回来。
+   `/handoff` 的作用是产出一份可带走的文件。没有东西要移动时不需要它。
 
-**3. 你需要 hand off 吗？** `/handoff` 很窄。只有以下情况才需要它：
+4. **任务能无人值守完成吗？** 范围足够明确、运行中不需要你介入时，交给子代理，当前会话保持不变。自动审查是典型情况：代理读 diff 并报告。
 
-- 换到 **new harness**（Claude -> Codex），
-- 移到 **new directory** 或 repo，
-- 把工作交给 **colleague**，
-- 或者在 **phase 中途** 分叉一个 side task，而不打乱你正在做的事。
+5. **否则用 `/compact`。** 上下文仍有用、运行环境和目录不变、你还要参与时，落在这里。给它一条指令（如 `/compact 接下来要验证这一块`），让摘要保留下一阶段需要的内容。
 
-这个列表就是全部条款。`/handoff` 买到的是 **portability**——一份能随行移动的文件。如果没有东西在移动，你就不需要它。
+`/compact` 是兜底选项，不是首选：前四个选项成本更低或更准确。直接从它开始的常见后果是，新会话对摘要中被压掉的决定给出自信的错误答案。
 
-**4. 这个 task 能否 AFK 完成？** 它的 scope 是否足够紧，能在你离开键盘、不做任何 steering 的情况下运行？如果是，就把它发给 **subagent**，让这个 session 保持原样。自动化 review 是标准场景：agent 读 diff 并报告，期间不需要你。
+## 原始内容与摘要
 
-**5. 否则，`/compact`。** Relevant context、同一 harness、同一 directory，而且你需要留在 loop 中——树的落点就在这里，而且经常落在这里。给它一条指令（`/compact we're going to QA this area`），让 summary 保留下一 phase 需要的东西。
+除了继续当前会话，其余选项都用摘要替换原始内容：
 
-`/compact` 是 **default，不是最先伸手可及的选择**。它位于树底，是因为上面四个问题的成本都更低或更精确。人们从这里开始时典型的 failure mode 是：一个 fresh session 对 summary 压扁过的决定自信地给出错误答案。
+| 来源 | 信息 | 噪声 | 剩余空间 |
+| --- | --- | --- | --- |
+| 原始内容（继续） | 完整 | 多 | 少 |
+| 摘要（`/compact`、`/handoff`） | 有损 | 少 | 多 |
 
-## Primary and secondary sources
+所以第 1 项排在最前：只有腾出的空间比丢失的信息更值时，才接受有损。
 
-除了 **Continue**，每个动作都会把 **primary source** 变成 **secondary source**——以 summary 取而代之正在发生的 session。权衡的形状总是一样的：
+## 这些是判断题
 
-| Source                            | Information | Noise | Room to move |
-| --------------------------------- | ----------- | ----- | ------------ |
-| Primary (Continue)                | Full        | Lots  | Little       |
-| Secondary (`/compact`, `/handoff`) | Lossy       | Less  | Lots         |
-
-这就是为什么问题 1 排在最前。只有留在原地比省下更多时，你才付 lossiness 的代价。
-
-## These are judgement calls
-
-这些问题不是客观的——每个都掺着品味，同一个 boundary 昨天和今天可能走两个方向。价值在于**按顺序**、在 boundary 而不是工作中途提出它们。
+每一项都没有客观答案，同一个边界在不同时候可能得出不同结论。要点是按顺序判断，并且只在阶段边界判断。

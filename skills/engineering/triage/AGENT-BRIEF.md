@@ -1,42 +1,44 @@
-# Writing Agent Briefs
+# 编写任务简报
 
-Agent brief 是 GitHub issue 或 PR 移动到 `ready-for-agent` 时发布在其上的结构化 comment。它是 AFK agent 后续工作的权威 spec。原始 body 和讨论是 context；agent brief 是 contract。
+任务简报（agent brief）是 issue 或 PR 转入 `ready-for-agent` 时发布在其上的结构化评论。它是代理后续独立工作的权威依据：原始正文和讨论只是背景，任务简报才是约定。
 
-Brief 说明 **agent 应该做什么**，这延伸到两种 surface：对 issue，是从零构建 change；对 PR，是*在现有 diff 上*还剩什么要做——完成它、补齐缺口、处理 review 意见。两种情况原则相同；下面的 PR 示例展示了差异。
+简报说明**代理应该做什么**。对 issue，是从零完成改动；对 PR，是在现有 diff 上还剩什么要做：补完它、补齐缺口、处理审查意见。两种情况原则相同，下面的 PR 示例展示了差别。
 
-## Principles
+模板和示例使用英文；实际发布时使用该 tracker 的语言。
 
-### Durability over precision
+## 原则
 
-Issue 可能会在 `ready-for-agent` 中停留数天或数周。期间 codebase 会变化。写 brief 时要让它在文件被重命名、移动或 refactor 后仍然有用。
+### 耐久优先于精确
 
-- **Do** 描述 interfaces、types 和 behavioral contracts
-- **Do** 命名 agent 应该查找或修改的具体 types、function signatures 或 config shapes
-- **Don't** 引用 file paths；它们会过期
-- **Don't** 引用 line numbers
-- **Don't** 假设当前 implementation structure 会保持不变
+issue 可能在 `ready-for-agent` 状态停留数天或数周，期间代码会变化。简报要在文件被重命名、移动或重构后仍然可用。
 
-### Behavioral, not procedural
+- **要**描述接口、类型和行为约定。
+- **要**写出代理应查找或修改的具体类型、函数签名或配置结构。
+- **不要**引用文件路径，它们会过期。
+- **不要**引用行号。
+- **不要**假设当前的实现结构保持不变。
 
-描述系统应该做**什么**，而不是**如何**实现。Agent 会重新探索 codebase，并做出自己的 implementation decisions。
+### 描述行为，不描述步骤
 
-- **Good:** "The `SkillConfig` type should accept an optional `schedule` field of type `CronExpression`"
-- **Bad:** "Open src/types/skill.ts and add a schedule field on line 42"
-- **Good:** "When a user runs `/triage` with no arguments, they should see a summary of issues needing attention"
-- **Bad:** "Add a switch statement in the main handler function"
+说明系统应该做**什么**，不说明**如何**实现。代理会重新探索代码，自行决定实现方式。
 
-### Complete acceptance criteria
+- **好：** "The `SkillConfig` type should accept an optional `schedule` field of type `CronExpression`"
+- **差：** "Open src/types/skill.ts and add a schedule field on line 42"
+- **好：** "When a user runs `/triage` with no arguments, they should see a summary of issues needing attention"
+- **差：** "Add a switch statement in the main handler function"
 
-Agent 需要知道什么时候算完成。每个 agent brief 都必须有具体、可测试的 acceptance criteria。每条 criterion 都应该能独立验证。
+### 完整的验收标准
 
-- **Good:** "Running `gh issue list --label needs-triage` returns issues that have been through initial classification"
-- **Bad:** "Triage should work correctly"
+代理需要知道什么时候算完成。每份简报都必须有具体、可测试的验收标准，每条都能独立验证。
 
-### Explicit scope boundaries
+- **好：** "Running `gh issue list --label needs-triage` returns issues that have been through initial classification"
+- **差：** "Triage should work correctly"
 
-说明什么不在范围内。这可以防止 agent gold-plating 或对相邻功能做假设。
+### 写明范围边界
 
-## Template
+说明什么不在范围内，防止代理做多余的工作，或对相邻功能做假设。
+
+## 模板
 
 ```markdown
 ## Agent Brief
@@ -67,9 +69,9 @@ Be specific about edge cases and error conditions.
 - Adjacent feature that might seem related but is separate
 ```
 
-## Examples
+## 示例
 
-### Good agent brief (bug)
+### 好的任务简报（缺陷）
 
 ```markdown
 ## Agent Brief
@@ -104,7 +106,7 @@ and append "..." to indicate truncation.
 - Multi-line description support
 ```
 
-### Good agent brief (enhancement)
+### 好的任务简报（改进）
 
 ```markdown
 ## Agent Brief
@@ -145,9 +147,9 @@ checked for matches.
 - Bug reports (only enhancement rejections go to `.out-of-scope/`)
 ```
 
-### Good agent brief (PR)
+### 好的任务简报（PR）
 
-对 PR 而言，“Current behavior” 描述的是 diff 的状态，brief 要求 agent 完成或修复它，而不是从零构建。
+对 PR，“Current behavior” 描述的是 diff 的现状；简报要求代理补完或修复它，不是从零完成。
 
 ```markdown
 ## Agent Brief
@@ -182,7 +184,7 @@ is untouched when the flag is absent.
 - Changing the JSON shape of the success payload the PR already defined
 ```
 
-### Bad agent brief
+### 差的任务简报
 
 ```markdown
 ## Agent Brief
@@ -198,11 +200,11 @@ The function around line 150 has the issue.
 - src/types.ts (line 42)
 ```
 
-它不好，因为：
+它的问题：
 
-- 没有 category
-- 描述含糊（“the triage thing is broken”）
-- 引用了会过期的 file paths 和 line numbers
-- 没有 acceptance criteria
-- 没有 scope boundaries
-- 没有说明 current vs desired behavior
+- 没有分类。
+- 描述含糊（“the triage thing is broken”）。
+- 引用了会过期的文件路径和行号。
+- 没有验收标准。
+- 没有范围边界。
+- 没有区分当前行为和期望行为。

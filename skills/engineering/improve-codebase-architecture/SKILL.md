@@ -38,7 +38,7 @@ description: 查找可用小接口封装复杂行为的模块，生成可视化�
 
 - **Files**：涉及的文件和模块。
 - **Problem**：当前结构造成什么问题。
-- **Solution**：用直白英文说明拟议变更。
+- **Solution**：用直白的语言说明拟议变更。
 - **Benefits**：以 locality、leverage 和测试改进说明收益。
 - **Before / After diagram**：并排展示浅模块与深化后的结构。
 - **Recommendation strength**：使用 `Strong`、`Worth exploring` 或 `Speculative` 标签。

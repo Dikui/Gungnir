@@ -26,7 +26,6 @@
     "./engineering/cohesion-coupling",
     "./engineering/diagnosing-bugs",
     "./engineering/domain-modeling",
-    "./engineering/grill-with-docs",
     "./engineering/implement",
     "./engineering/improve-codebase-architecture",
     "./engineering/local-test",
@@ -50,7 +49,6 @@
     "./productivity/handoff",
     "./productivity/occams-razor",
     "./productivity/wait-what",
-    "./productivity/whiteboard",
     "./productivity/writing-for-agents"
   ]
 }
