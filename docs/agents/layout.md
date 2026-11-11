@@ -9,8 +9,8 @@
 | `AGENTS.md`、`CLAUDE.md` | 规则文件 | setup-dikui-skills | 是 | 不清理 |
 | `docs/agents/` | 技能配置 | setup-dikui-skills、safe-push | 是 | 不清理 |
 | `GLOSSARY.md`、`GLOSSARY-MAP.md`、`docs/adr/` | 术语、架构决策 | domain-modeling | 是 | 不清理 |
-| `tests/<模块>/` | 单元测试和性质测试，按模块一个测试文件 | local-test | 是 | 契约改变或代码删除时更新或删除 |
-| `tests/cases/<功能>/` | 场景和回归用例，一个用例一个文件 | local-test | 是 | 同上 |
+| `scripts/test-<对象>.sh` | 技能脚本和钩子的测试，一个被测对象一个脚本，用例写在脚本里 | local-test | 是 | 契约改变或代码删除时更新或删除 |
+| `dsh-plugin/tests/` | dsh 插件的单元测试，按模块一个测试文件 | local-test | 是 | 同上 |
 | `design/` | 界面设计稿 | mockup | 否 | 不清理 |
 | `docs/research/` | 调研结论 | research | 否 | 不清理 |
 | `docs/experiments/` | 实验记录 | ablation、trial | 否 | 不清理 |
