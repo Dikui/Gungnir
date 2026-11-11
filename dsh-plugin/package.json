@@ -1,7 +1,7 @@
 {
   "name": "dk-gungnir",
-  "version": "4.5.11",
-  "description": "Gungnir 简体中文技能的 DeepSeek Harness 插件包：以 dk- 前缀暴露全部可用技能。",
+  "version": "4.5.12",
+  "description": "Gungnir 简体中文技能的 DeepSeek Harness 插件包，保留技能原名。",
   "private": false,
   "publishConfig": { "access": "public" },
   "type": "module",

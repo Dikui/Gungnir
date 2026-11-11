@@ -1,25 +1,21 @@
 /**
  * Build the dsh-plugin skill tree: copy every skill from the source buckets
- * into a flat `dsh-plugin/skills/` directory, prefix each frontmatter `name:`,
- * and rewrite cross-skill references to their `dk-` prefixed form.
+ * into a flat `dsh-plugin/skills/` directory, preserving names and contents.
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs'
 import { cpSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { DEFAULT_PREFIX, DSH_BUCKETS, SKILL_NAMES, rewriteReferences } from './rewrite-references.mjs'
+import { BUCKETS } from '../../scripts/skills.mjs'
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const PLUGIN_DIR = dirname(SCRIPT_DIR)
 const REPO_ROOT = dirname(PLUGIN_DIR)
 
-const BUCKETS = DSH_BUCKETS
-
 const sourceRoot = resolve(process.env.SKILLS_SRC ?? join(REPO_ROOT, 'skills'))
 const outputRoot = resolve(process.env.SKILLS_OUT ?? join(PLUGIN_DIR, 'skills'))
-const prefix = process.env.SKILL_PREFIX ?? DEFAULT_PREFIX
 
 console.log(`sourceRoot: ${sourceRoot}`)
 console.log(`outputRoot: ${outputRoot}`)
@@ -70,46 +66,6 @@ const copied = []
 for (const [name, bucket] of owners) {
   cpSync(join(sourceRoot, bucket, name), join(outputRoot, name), { recursive: true })
   copied.push(name)
-}
-
-/**
- * Prefix the `name:` value inside the leading frontmatter block.
- *
- * @param {string} text - Markdown file contents.
- * @returns {string} Contents with the frontmatter name prefixed.
- */
-function prefixFrontmatterName(text) {
-  const match = text.match(/^(---\r?\n)([\s\S]*?)(\r?\n---)/)
-  if (!match) return text
-  const frontmatter = match[2].replace(
-    /^(name:[ \t]*)(.*)$/m,
-    (_full, key, value) => `${key}${prefix}${value}`
-  )
-  if (frontmatter === match[2]) return text
-  return match[1] + frontmatter + match[3] + text.slice(match[0].length)
-}
-
-/**
- * Yield every regular file under a directory, recursively.
- *
- * @param {string} dir - Directory to walk.
- * @returns {Generator<string>} Absolute file paths.
- */
-function* walkFiles(dir) {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, entry.name)
-    if (entry.isDirectory()) yield* walkFiles(full)
-    else if (entry.isFile()) yield full
-  }
-}
-
-for (const file of walkFiles(outputRoot)) {
-  if (!file.endsWith('.md')) continue
-  const original = readFileSync(file, 'utf8')
-  let text = original
-  if (file.endsWith('SKILL.md')) text = prefixFrontmatterName(text)
-  const rewritten = rewriteReferences(text, SKILL_NAMES, prefix)
-  if (rewritten !== original) writeFileSync(file, rewritten)
 }
 
 console.log(`copied ${copied.length} skills to ${outputRoot}`)

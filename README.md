@@ -27,11 +27,33 @@ claude plugin install gungnir@gungnir
 | Claude Code（推荐） | 插件市场，见上方快速开始 | `/gungnir:ask-dikui` |
 | Codex | `codex plugin marketplace add Dikui/Gungnir`<br>`codex plugin add gungnir@gungnir` | `$ask-dikui` |
 | Grok | `grok plugin install Dikui/Gungnir#skills --trust` | — |
-| DeepSeek Harness | 见 [dsh 插件说明](./dsh-plugin/README.md) | `/dk-ask-dikui` |
+| DeepSeek Harness | [安装到 DSH skills](#安装到-dsh-skills) | `/ask-dikui` |
 | 其他代理（平铺安装） | `npx skills@latest add Dikui/Gungnir` | 技能原名 |
 
 - 插件安装只复制 `skills/` 目录。Claude Code 插件技能带 `gungnir:` 前缀，不会与其他来源的技能重名；平铺安装使用技能原名，可能重名。
 - Grok 必须用 `#skills` 指定插件目录。
+
+### 安装到 DSH skills
+
+在本仓库根目录运行以下命令，将各个技能链接到 `${DSH_HOME:-$HOME/.dsh}/skills/`。技能名称和内部引用保持原名，可用 `/ask-dikui` 调用。
+
+```sh
+dsh_skills="${DSH_HOME:-$HOME/.dsh}/skills"
+mkdir -p "$dsh_skills"
+for skill in "$PWD"/skills/engineering/* "$PWD"/skills/productivity/*; do
+  [ -f "$skill/SKILL.md" ] || continue
+  target="$dsh_skills/$(basename "$skill")"
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    printf '已存在，跳过 %s\n' "$target"
+    continue
+  fi
+  ln -s "$skill" "$target"
+done
+```
+
+DSH 只扫描技能目录的直接子项，因此逐个链接 `engineering/` 和 `productivity/` 下的技能。已有同名条目会跳过。
+
+链接依赖当前仓库路径，更新仓库后 DSH 即可读取新内容。安装后在 DSH 中用 `/ask-dikui` 验证加载。
 
 ### 本地打包
 
@@ -151,7 +173,7 @@ claude plugin install gungnir@gungnir
 | --- | --- | --- |
 | Claude Code | `SKILL.md` frontmatter 中 `disable-model-invocation: true` | 描述不进入模型上下文，模型和其他技能都不能通过 Skill 工具调用；用户仍可用 `/技能名` 调用 |
 | Codex | `agents/openai.yaml` 中 `policy.allow_implicit_invocation: false` | 模型不会根据描述自动选用；用户仍可用 `$技能名` 调用 |
-| DeepSeek Harness | 复用 `disable-model-invocation: true` | dsh 插件（`dsh-plugin/index.js`）将其转换为 `invocation.modelInvocable: false`；用户仍可用 `/dk-技能名` 调用 |
+| DeepSeek Harness | `SKILL.md` frontmatter 中 `disable-model-invocation: true` | DSH 的目录加载器将其转换为 `invocation.modelInvocable: false`；用户仍可用 `/技能名` 调用 |
 
 这些参数只限制平台的调用机制，模型按路径直接读取 `SKILL.md` 时不受限制。
 

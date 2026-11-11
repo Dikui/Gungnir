@@ -1,6 +1,6 @@
 /**
  * Verify the generated dsh-plugin skill tree: presence, count, frontmatter
- * prefix and description, no unprefixed references, no retired directories,
+ * name and description, no retired directories,
  * and a resolvable bundle patch path declared by package.json.
  */
 
@@ -8,11 +8,12 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { DEFAULT_PREFIX, SKILL_NAMES, findUnrewrittenReferences } from './rewrite-references.mjs'
+import { listSkills } from '../../scripts/skills.mjs'
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const PLUGIN_DIR = dirname(SCRIPT_DIR)
 
+const SKILL_NAMES = listSkills().map((skill) => skill.name)
 const EXPECTED_SKILLS = SKILL_NAMES.length
 const FORBIDDEN_DIRS = ['translate-skill']
 
@@ -60,8 +61,8 @@ for (const file of skillFiles) {
     fail(`missing leading frontmatter: ${file}`)
   }
   const nameMatch = frontmatter.match(/^name:[ \t]*(.*)$/m)
-  if (!nameMatch || !nameMatch[1].startsWith(DEFAULT_PREFIX)) {
-    fail(`frontmatter name is missing the '${DEFAULT_PREFIX}' prefix: ${file}`)
+  if (!nameMatch || nameMatch[1] !== basename(dirname(file)) || !SKILL_NAMES.includes(nameMatch[1])) {
+    fail(`frontmatter name must match the source skill and directory: ${file}`)
   }
   const descriptionMatch = frontmatter.match(/^description:[ \t]*(.*)$/m)
   if (!descriptionMatch || descriptionMatch[1].trim() === '') {
@@ -86,12 +87,6 @@ function* walk(dir) {
 for (const entry of walk(skillsDir)) {
   if (entry.isDirectory && FORBIDDEN_DIRS.includes(basename(entry.path))) {
     fail(`forbidden directory present: ${entry.path}`)
-  }
-  if (!entry.isDirectory && entry.path.endsWith('.md')) {
-    const found = findUnrewrittenReferences(readFileSync(entry.path, 'utf8'), SKILL_NAMES)
-    if (found.length > 0) {
-      fail(`unrewritten skill reference(s) in ${entry.path}: ${[...new Set(found)].join(', ')}`)
-    }
   }
 }
 
