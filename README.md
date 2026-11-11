@@ -40,7 +40,7 @@ claude plugin install gungnir@gungnir
 ```sh
 dsh_skills="${DSH_HOME:-$HOME/.dsh}/skills"
 mkdir -p "$dsh_skills"
-for skill in "$PWD"/skills/engineering/* "$PWD"/skills/productivity/*; do
+for skill in "$PWD"/skills/*; do
   [ -f "$skill/SKILL.md" ] || continue
   target="$dsh_skills/$(basename "$skill")"
   if [ -e "$target" ] || [ -L "$target" ]; then
@@ -51,7 +51,7 @@ for skill in "$PWD"/skills/engineering/* "$PWD"/skills/productivity/*; do
 done
 ```
 
-DSH 只扫描技能目录的直接子项，因此逐个链接 `engineering/` 和 `productivity/` 下的技能。已有同名条目会跳过。
+逐个链接 `skills/` 下的技能，已有同名条目会跳过。
 
 链接依赖当前仓库路径，更新仓库后 DSH 即可读取新内容。安装后在 DSH 中用 `/ask-dikui` 验证加载。
 
@@ -71,7 +71,7 @@ claude plugin install gungnir@gungnir
 
 ## 常用流程
 
-完整的选择指南在 [ask-dikui](./skills/engineering/ask-dikui/SKILL.md) 中，这里只列主干。
+完整的选择指南在 [ask-dikui](./skills/ask-dikui/SKILL.md) 中，这里只列主干。
 
 **从想法到实现**
 
@@ -81,88 +81,78 @@ claude plugin install gungnir@gungnir
 4. `/implement` 内部用 `/tdd` 驱动实现，用 `/local-test` 做局部测试并沉淀测试，用 `/diff-review` 审查后提交。
 5. 推送前 `/safe-push` 检查不应入库的内容；需要 PR 正文时用 `/pr-body`；结束后可用 `/retro` 复盘。
 
-其他起点（缺陷积压、棘手缺陷、大任务规划、方案复查、实现比较、架构诊断）见 [ask-dikui](./skills/engineering/ask-dikui/SKILL.md)。
+其他起点（缺陷积压、棘手缺陷、大任务规划、方案复查、实现比较、架构诊断）见 [ask-dikui](./skills/ask-dikui/SKILL.md)。
 
 ## 技能索引
 
 技能分两层：**User-invoked** 入口技能通常由用户调用，**Skill-invoked** 基础技能通常由入口技能在执行中加载。分组只说明谁通常调用谁，不限制调用：所有技能都允许模型隐式调用，除 `grilling` 外用户也都能直接调用。详见[调用规则](./docs/invocation.md)。
 
-### Engineering
+### User-invoked
 
-**User-invoked**
-
-- **[ablation](./skills/engineering/ablation/SKILL.md)**
+- **[ablation](./skills/ablation/SKILL.md)**
   逐个去掉机制并测量，确定收益来自哪个机制。
-- **[ask-dikui](./skills/engineering/ask-dikui/SKILL.md)**
+- **[adversarial-review](./skills/adversarial-review/SKILL.md)**
+  让独立攻击方寻找计划、需求或代码的反例，核实后报告成立的反例。
+- **[ask-dikui](./skills/ask-dikui/SKILL.md)**
   根据当前任务推荐合适的技能及使用顺序。
-- **[cohesion-coupling](./skills/engineering/cohesion-coupling/SKILL.md)**
+- **[cohesion-coupling](./skills/cohesion-coupling/SKILL.md)**
   用职责表、依赖图和共同修改记录，诊断模块的内聚与耦合问题。
-- **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)**
+- **[diagnosing-bugs](./skills/diagnosing-bugs/SKILL.md)**
   通过复现、缩小场景、验证假设和回归测试，诊断棘手缺陷或性能回退。
-- **[implement](./skills/engineering/implement/SKILL.md)**
+- **[first-principles](./skills/first-principles/SKILL.md)**
+  从目标和已验证事实重新推导方案，判断当前方向是否成立。
+- **[grill-me](./skills/grill-me/SKILL.md)**
+  通过持续提问打磨计划或设计；在项目仓库中同时记录词汇表和 ADR。
+- **[handoff](./skills/handoff/SKILL.md)**
+  将当前对话整理成交接文档，供其他代理继续工作。
+- **[implement](./skills/implement/SKILL.md)**
   按任务单实现一份需求或一组任务：无依赖的任务并行开发，局部测试后请用户验收，通过后合入、推送并部署。
-- **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**
+- **[improve-codebase-architecture](./skills/improve-codebase-architecture/SKILL.md)**
   查找可用小接口封装复杂行为的模块，生成可视化架构报告，再与用户讨论选中的方案。
-- **[mockup](./skills/engineering/mockup/SKILL.md)**
+- **[mockup](./skills/mockup/SKILL.md)**
   生成并维护长期保留的 HTML 界面设计稿，作为前端开发的参照。
-- **[pr-body](./skills/engineering/pr-body/SKILL.md)**
+- **[occams-razor](./skills/occams-razor/SKILL.md)**
+  把方案的每个组成追溯到需求或证据，找出可以删除的部分。
+- **[pr-body](./skills/pr-body/SKILL.md)**
   编写 PR 正文时使用。
-- **[retro](./skills/engineering/retro/SKILL.md)**
+- **[retro](./skills/retro/SKILL.md)**
   复盘一次编码会话。
-- **[safe-push](./skills/engineering/safe-push/SKILL.md)**
+- **[safe-push](./skills/safe-push/SKILL.md)**
   检查不应入库的内容，默认升修订号，提交并推送代码。
-- **[setup-dikui-skills](./skills/engineering/setup-dikui-skills/SKILL.md)**
+- **[setup-dikui-skills](./skills/setup-dikui-skills/SKILL.md)**
   初始化仓库：配置规则文件、issue tracker、分流标签、领域文档、文档布局、测试命令和 pre-push 钩子。
-- **[to-spec](./skills/engineering/to-spec/SKILL.md)**
+- **[to-spec](./skills/to-spec/SKILL.md)**
   将当前讨论整理为需求文档，发布到项目 issue tracker。
-- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**
+- **[to-tickets](./skills/to-tickets/SKILL.md)**
   将计划、需求文档或当前讨论拆成可独立验证的任务，注明依赖后发布到项目 tracker。
-- **[trial](./skills/engineering/trial/SKILL.md)**
-  在真实后端代码中并行实现两到三个方案，用同一组测试和测量比较，选定一版并删除其余。
-- **[triage](./skills/engineering/triage/SKILL.md)**
+- **[triage](./skills/triage/SKILL.md)**
   对 issue 和范围内的外部 PR 分类、验证并更新处理状态，整理出可交给代理的任务说明。
-- **[wayfinder](./skills/engineering/wayfinder/SKILL.md)**
+- **[trial](./skills/trial/SKILL.md)**
+  在真实后端代码中并行实现两到三个方案，用同一组测试和测量比较，选定一版并删除其余。
+- **[wait-what](./skills/wait-what/SKILL.md)**
+  用户没听懂时，补足背景，并按理解情况逐步升级解释方式。
+- **[wayfinder](./skills/wayfinder/SKILL.md)**
   为一次会话无法规划清楚的大任务建立决策地图，逐项解决问题，直到实施路径明确。
 
-**Skill-invoked**
+### Skill-invoked
 
-- **[codebase-design](./skills/engineering/codebase-design/SKILL.md)**
+- **[codebase-design](./skills/codebase-design/SKILL.md)**
   用深模块原则设计接口、选择可替换位置，并提高代码的可测试性和可维护性。
-- **[diff-review](./skills/engineering/diff-review/SKILL.md)**
+- **[diff-review](./skills/diff-review/SKILL.md)**
   审查指定基准之后的代码变更，分别报告编码规范问题和需求实现问题。
-- **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)**
+- **[domain-modeling](./skills/domain-modeling/SKILL.md)**
   维护项目的领域术语和模型，并记录重要架构决策。
-- **[local-test](./skills/engineering/local-test/SKILL.md)**
-  只测试改动影响的范围，必要时构造场景测试，再筛选值得长期保留的测试写入项目。
-- **[prototype](./skills/engineering/prototype/SKILL.md)**
-  用临时原型验证一个设计问题：逻辑和状态是否合理，或界面应该是什么样。
-- **[research](./skills/engineering/research/SKILL.md)**
-  基于一手来源调研问题，并将结论和引用保存为仓库中的 Markdown 文件。
-- **[tdd](./skills/engineering/tdd/SKILL.md)**
-  先写测试，再开发功能或修复缺陷的 red-green 循环。
-
-### Productivity
-
-**User-invoked**
-
-- **[adversarial-review](./skills/productivity/adversarial-review/SKILL.md)**
-  让独立攻击方寻找计划、需求或代码的反例，核实后报告成立的反例。
-- **[first-principles](./skills/productivity/first-principles/SKILL.md)**
-  从目标和已验证事实重新推导方案，判断当前方向是否成立。
-- **[grill-me](./skills/productivity/grill-me/SKILL.md)**
-  通过持续提问打磨计划或设计；在项目仓库中同时记录词汇表和 ADR。
-- **[handoff](./skills/productivity/handoff/SKILL.md)**
-  将当前对话整理成交接文档，供其他代理继续工作。
-- **[occams-razor](./skills/productivity/occams-razor/SKILL.md)**
-  把方案的每个组成追溯到需求或证据，找出可以删除的部分。
-- **[wait-what](./skills/productivity/wait-what/SKILL.md)**
-  用户没听懂时，补足背景，并按理解情况逐步升级解释方式。
-
-**Skill-invoked**
-
-- **[grilling](./skills/productivity/grilling/SKILL.md)**
+- **[grilling](./skills/grilling/SKILL.md)**
   围绕计划、决策或想法持续访谈的方法。
-- **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)**
+- **[local-test](./skills/local-test/SKILL.md)**
+  只测试改动影响的范围，必要时构造场景测试，再筛选值得长期保留的测试写入项目。
+- **[prototype](./skills/prototype/SKILL.md)**
+  用临时原型验证一个设计问题：逻辑和状态是否合理，或界面应该是什么样。
+- **[research](./skills/research/SKILL.md)**
+  基于一手来源调研问题，并将结论和引用保存为仓库中的 Markdown 文件。
+- **[tdd](./skills/tdd/SKILL.md)**
+  先写测试，再开发功能或修复缺陷的 red-green 循环。
+- **[writing-for-agents](./skills/writing-for-agents/SKILL.md)**
   编写或精简供代理阅读的技能、AGENTS.md、CLAUDE.md 和参考文档。
 
 ## 禁止隐式调用

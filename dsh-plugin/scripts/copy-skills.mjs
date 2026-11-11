@@ -1,14 +1,12 @@
 /**
- * Build the dsh-plugin skill tree: copy every skill from the source buckets
- * into a flat `dsh-plugin/skills/` directory, preserving names and contents.
+ * Build the dsh-plugin skill tree: copy every skill from the repo's
+ * `skills/` into `dsh-plugin/skills/`, preserving names and contents.
  */
 
-import { existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
 import { cpSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-
-import { BUCKETS } from '../../scripts/skills.mjs'
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const PLUGIN_DIR = dirname(SCRIPT_DIR)
@@ -37,35 +35,22 @@ if (!outputRoot.includes('/dsh-plugin/')) {
   fail(`outputRoot must be inside a /dsh-plugin/ directory, got ${outputRoot}`)
 }
 
-/** @type {Map<string, string>} child skill name -> owning bucket */
-const owners = new Map()
-
-for (const bucket of BUCKETS) {
-  const bucketDir = join(sourceRoot, bucket)
-  if (!existsSync(bucketDir) || !statSync(bucketDir).isDirectory()) {
-    fail(`missing source bucket directory: ${bucketDir}`)
+/** @type {string[]} */
+const names = []
+// Dot directories (.claude-plugin) are plugin metadata, not skills.
+for (const entry of readdirSync(sourceRoot, { withFileTypes: true })) {
+  if (!entry.isDirectory() || entry.name.startsWith('.')) continue
+  if (!existsSync(join(sourceRoot, entry.name, 'SKILL.md'))) {
+    fail(`skill directory has no SKILL.md: ${join(sourceRoot, entry.name)}`)
   }
-  for (const entry of readdirSync(bucketDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue
-    const skillDir = join(bucketDir, entry.name)
-    if (!existsSync(join(skillDir, 'SKILL.md'))) {
-      fail(`skill directory has no SKILL.md: ${skillDir}`)
-    }
-    if (owners.has(entry.name)) {
-      fail(`duplicate skill name '${entry.name}' in buckets '${owners.get(entry.name)}' and '${bucket}'`)
-    }
-    owners.set(entry.name, bucket)
-  }
+  names.push(entry.name)
 }
 
 rmSync(outputRoot, { recursive: true, force: true })
 mkdirSync(outputRoot, { recursive: true })
 
-/** @type {string[]} */
-const copied = []
-for (const [name, bucket] of owners) {
-  cpSync(join(sourceRoot, bucket, name), join(outputRoot, name), { recursive: true })
-  copied.push(name)
+for (const name of names) {
+  cpSync(join(sourceRoot, name), join(outputRoot, name), { recursive: true })
 }
 
-console.log(`copied ${copied.length} skills to ${outputRoot}`)
+console.log(`copied ${names.length} skills to ${outputRoot}`)

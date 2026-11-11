@@ -12,7 +12,7 @@ await mkdir(plugin, { recursive: false }).catch(async e => {
 })
 // Publish every skill registered in the Claude manifest.
 for (const path of original.skills) {
-  if (!/^\.\/(engineering|productivity)\/[^/]+$/.test(path)) throw new Error('非法公开 skill 路径：' + path)
+  if (!/^\.\/[^/]+$/.test(path)) throw new Error('非法公开 skill 路径：' + path)
   await cp(join(root, 'skills', path), join(plugin, 'skills', path.split('/').at(-1)), { recursive: true })
 }
 await cp(join(root, 'LICENSE'), join(plugin, 'LICENSE'))

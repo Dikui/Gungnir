@@ -1,6 +1,6 @@
 # 技能压力场景
 
-检查技能被加载后，代理在压力下是否仍按规则执行。方法见 [writing-for-agents](../skills/productivity/writing-for-agents/SKILL.md) 的"测试行为"；技能能否被触发见[调用分层实测](./invocation-tests.md)。
+检查技能被加载后，代理在压力下是否仍按规则执行。方法见 [writing-for-agents](../skills/writing-for-agents/SKILL.md) 的"测试行为"；技能能否被触发见[调用分层实测](./invocation-tests.md)。
 
 ## 运行方式
 

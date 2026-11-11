@@ -13,9 +13,10 @@ zero=0000000000000000000000000000000000000000
 
 newest() { ls -d "$@" 2>/dev/null | sort -V | tail -n 1; }
 scan=$SAFE_PUSH_SCAN
-[ -n "$scan" ] || scan=$(newest "$HOME"/.claude/plugins/cache/*/gungnir/*/engineering/safe-push/scripts/scan.sh)
-[ -n "$scan" ] || scan=$(newest "$HOME"/.codex/plugins/cache/*/gungnir/*/engineering/safe-push/scripts/scan.sh)
-[ -n "$scan" ] || scan=$(newest "$HOME"/.grok/installed-plugins/*/skills/engineering/safe-push/scripts/scan.sh)
+# 每处同时找平铺布局和旧版的 engineering/ 布局，sort -V 取版本最新的一个。
+[ -n "$scan" ] || scan=$(newest "$HOME"/.claude/plugins/cache/*/gungnir/*/safe-push/scripts/scan.sh "$HOME"/.claude/plugins/cache/*/gungnir/*/engineering/safe-push/scripts/scan.sh)
+[ -n "$scan" ] || scan=$(newest "$HOME"/.codex/plugins/cache/*/gungnir/*/safe-push/scripts/scan.sh "$HOME"/.codex/plugins/cache/*/gungnir/*/engineering/safe-push/scripts/scan.sh)
+[ -n "$scan" ] || scan=$(newest "$HOME"/.grok/installed-plugins/*/skills/safe-push/scripts/scan.sh "$HOME"/.grok/installed-plugins/*/skills/engineering/safe-push/scripts/scan.sh)
 if [ -z "$scan" ] || [ ! -f "$scan" ]; then
   echo "pre-push：找不到 safe-push 扫描脚本，跳过扫描；安装 Gungnir 插件或在钩子里设置 SAFE_PUSH_SCAN" >&2
 else

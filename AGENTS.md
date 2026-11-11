@@ -1,15 +1,12 @@
 # 仓库指南
 
-Skills 按 bucket folder 组织在 `skills/` 下：
-
-- `engineering/` - 日常代码工作
-- `productivity/` - 日常非代码工作流工具
+Skills 平铺在 `skills/` 下，每个技能一个目录：`skills/<名称>/SKILL.md`，不分子目录。
 
 `skills/` 中的每个技能都必须在顶层 `README.md` 中有引用，并在 `skills/.claude-plugin/plugin.json` 中有条目；这些技能都随主插件公开。
 
 顶层 `README.md` 中的每个 skill 条目都必须把 skill 名称链接到对应的 `SKILL.md`。
 
-每个 bucket folder 都有一个 `README.md`，列出该 bucket 中的所有 skills，只写名称并链接到对应的 `SKILL.md`，描述以 `SKILL.md` 的 `description` 为准。Bucket `README.md` 和顶层 `README.md` 按调用方式分为 **User-invoked** 和 **Skill-invoked** 两组。
+顶层 `README.md` 的技能索引按调用方式分为 **User-invoked** 和 **Skill-invoked** 两组。
 
 主插件技能都允许模型在对话中隐式调用：`SKILL.md` 不设置 `disable-model-invocation`，相邻 `agents/openai.yaml` 设置 `policy.allow_implicit_invocation: true`。入口技能通常由用户调用，基础技能通常由入口技能调用；两层及 README 分组只说明谁通常调用谁，不代表调用限制。`user-invocable: false` 仅用于用户不能直接调用的技能。基础技能清单、配置和写法见 [docs/invocation.md](./docs/invocation.md)。
 

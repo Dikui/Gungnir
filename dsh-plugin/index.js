@@ -18,7 +18,7 @@ import { parse } from 'yaml'
 const PROVIDER_NAME = 'dk-gungnir'
 /** Bundled-provider rank, matching `BUNDLED_SKILL_RANK` in `dsh-skill`. */
 const RANK = 600
-/** Origin bucket for skills shipped inside this package. */
+/** Origin label for skills shipped inside this package. */
 const SOURCE = 'bundled'
 /** Absolute path of the generated skill tree. */
 const skillsRoot = fileURLToPath(new URL('./skills/', import.meta.url))

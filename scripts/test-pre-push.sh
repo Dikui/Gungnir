@@ -2,7 +2,7 @@
 # 自检 setup-dikui-skills/pre-push.sh：safe-push 扫描有阻断项时拒绝推送；只有默认分支上版本号前两位变化时才运行全量测试。
 set -eu
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-HOOK="$REPO/skills/engineering/setup-dikui-skills/pre-push.sh"
+HOOK="$REPO/skills/setup-dikui-skills/pre-push.sh"
 T=$(mktemp -d); trap 'rm -rf "$T"' EXIT
 git init -q --bare "$T/remote.git"
 git init -q -b main "$T/work"; cd "$T/work"
@@ -10,7 +10,7 @@ git config user.email t@example.com; git config user.name t
 git remote add origin "$T/remote.git"
 mkdir -p .githooks; git config core.hooksPath .githooks
 sed -e "s|^FULL_TEST=.*|FULL_TEST='echo run >> \"$T/ran\"; [ ! -f \"$T/fail\" ]'|" \
-  -e "s|^SAFE_PUSH_SCAN=.*|SAFE_PUSH_SCAN='$REPO/skills/engineering/safe-push/scripts/scan.sh'|" "$HOOK" > .githooks/pre-push
+  -e "s|^SAFE_PUSH_SCAN=.*|SAFE_PUSH_SCAN='$REPO/skills/safe-push/scripts/scan.sh'|" "$HOOK" > .githooks/pre-push
 chmod +x .githooks/pre-push
 
 ver() { printf '{\n  "name": "x",\n  "version": "%s"\n}\n' "$1" > package.json; git add package.json; git commit -qm "v$1"; }

@@ -6,7 +6,7 @@ DSH 的推荐安装方式见[安装到 DSH skills](../README.md#安装到-dsh-sk
 
 ## 这是什么
 
-本插件包把 Gungnir 仓库中 `skills/engineering/` 和 `skills/productivity/` 的技能打包为 DeepSeek Harness（dsh）插件。
+本插件包把 Gungnir 仓库中 `skills/` 的技能打包为 DeepSeek Harness（dsh）插件。
 
 技能保留原名，以 `/<name>` 调用，例如 `/grill-me`。
 
@@ -43,7 +43,7 @@ dsh --profile web --dump-config | grep 'id: dk-gungnir'
 
 ## 构建
 
-构建时将 `skills/engineering/` 和 `skills/productivity/` 下的技能目录平铺复制到插件的 `skills/`，保留名称、正文、内部引用和附带资源。
+构建时将 `skills/` 下的技能目录复制到插件的 `skills/`，保留名称、正文、内部引用和附带资源。
 
 技能清单在构建时从仓库 `skills/` 目录生成。
 

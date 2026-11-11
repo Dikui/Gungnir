@@ -1,9 +1,9 @@
 // Check the repo invariants from AGENTS.md and docs/invocation.md:
 // implicit invocation, documented tiers, plugin manifest, README indexes and version sync.
-import { readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-import { BUCKETS, ROOT, listSkills } from './skills.mjs'
+import { ROOT, listSkills } from './skills.mjs'
 
 const DESCRIPTION_GATE = '不要根据对话内容自行加载'
 
@@ -14,10 +14,11 @@ function fail(file, msg) {
 }
 const read = (rel) => readFileSync(join(ROOT, rel), 'utf8')
 
-// Reject unregistered buckets instead of silently omitting their skills.
+// Reject stray directories instead of silently omitting them from the checks below.
 for (const entry of readdirSync(join(ROOT, 'skills'), { withFileTypes: true })) {
-  if (entry.isDirectory() && entry.name !== '.claude-plugin' && !BUCKETS.includes(entry.name)) {
-    fail(`skills/${entry.name}`, `unexpected bucket; allowed: ${BUCKETS.join(', ')}`)
+  if (!entry.isDirectory() || entry.name === '.claude-plugin') continue
+  if (!existsSync(join(ROOT, 'skills', entry.name, 'SKILL.md'))) {
+    fail(`skills/${entry.name}`, 'missing SKILL.md; skills sit directly under skills/')
   }
 }
 
@@ -81,7 +82,7 @@ for (const [, name, callers] of invocationDoc.matchAll(/^\| `([^`]+)` \| ([^|]+)
 }
 
 // Entry skills must be discoverable through ask-dikui.
-const askDikuiFile = 'skills/engineering/ask-dikui/SKILL.md'
+const askDikuiFile = 'skills/ask-dikui/SKILL.md'
 const askDikui = read(askDikuiFile)
 for (const s of skills) {
   if (s.name === 'ask-dikui' || s.group !== 'User-invoked' || s.meta['user-invocable'] === 'false') continue
@@ -109,21 +110,6 @@ for (const s of skills) {
 }
 for (const name of top.keys()) {
   if (!skills.some((s) => s.name === name)) fail('README.md', `lists unknown skill ${name}`)
-}
-
-// Each bucket README indexes its own skills under their invocation groups.
-for (const bucket of BUCKETS) {
-  const file = `skills/${bucket}/README.md`
-  const entries = indexEntries(read(file))
-  for (const s of skills.filter((s) => s.bucket === bucket)) {
-    const entry = entries.get(s.name)
-    if (!entry) fail(file, `missing index entry for ${s.name}`)
-    else if (entry.link !== `./${s.name}/SKILL.md`) fail(file, `${s.name} should link to ./${s.name}/SKILL.md`)
-    else if (s.group && entry.group !== s.group) fail(file, `${s.name} should be listed under ${s.group}`)
-  }
-  for (const name of entries.keys()) {
-    if (!skills.some((s) => s.bucket === bucket && s.name === name)) fail(file, `lists unknown skill ${name}`)
-  }
 }
 
 // The dsh package ships the same version as the Claude plugin.

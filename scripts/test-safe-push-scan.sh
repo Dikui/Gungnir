@@ -3,7 +3,7 @@
 set -u
 export LC_ALL=C
 repo_root=$(cd "$(dirname "$0")/.." && pwd) || exit 2
-scanner="$repo_root/skills/engineering/safe-push/scripts/scan.sh"
+scanner="$repo_root/skills/safe-push/scripts/scan.sh"
 tmp=$(mktemp -d "${TMPDIR:-/tmp}/test-safe-push.XXXXXX") || exit 2
 trap 'rm -rf "$tmp"' EXIT
 trap 'exit 2' HUP INT TERM

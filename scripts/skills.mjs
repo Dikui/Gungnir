@@ -4,9 +4,6 @@ import { fileURLToPath } from 'node:url'
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
-// Repository skill buckets; every skill ships with the Claude Code plugin.
-export const BUCKETS = ['engineering', 'productivity']
-
 /**
  * Parse the flat `key: value` frontmatter used by this repo's SKILL.md files.
  *
@@ -28,16 +25,14 @@ export function parseSkill(text) {
  * Read one skill directory.
  *
  * @param {string} dir - Absolute skill directory containing SKILL.md.
- * @param {string} bucket - Bucket name, or another label for skills outside `skills/`.
  */
-export function readSkill(dir, bucket) {
+export function readSkill(dir) {
   const name = dir.split('/').at(-1)
   const text = readFileSync(join(dir, 'SKILL.md'), 'utf8')
   const parsed = parseSkill(text)
   const yamlPath = join(dir, 'agents/openai.yaml')
   return {
     name,
-    bucket,
     dir,
     path: dir.slice(ROOT.length + 1),
     meta: parsed?.meta ?? null,
@@ -47,20 +42,15 @@ export function readSkill(dir, bucket) {
 }
 
 /**
- * List every skill under `skills/<bucket>/<name>/SKILL.md`, sorted by name.
+ * List every skill under `skills/<name>/SKILL.md`, sorted by name.
  *
- * @param {string[]} [buckets] - Buckets to scan; defaults to all of them.
- * @param {string} [root] - Directory containing the bucket folders.
+ * @param {string} [root] - Directory containing the skill folders.
  */
-export function listSkills(buckets = BUCKETS, root = join(ROOT, 'skills')) {
+export function listSkills(root = join(ROOT, 'skills')) {
   const skills = []
-  for (const bucket of buckets) {
-    const bucketDir = join(root, bucket)
-    if (!existsSync(bucketDir)) continue
-    for (const entry of readdirSync(bucketDir, { withFileTypes: true })) {
-      if (entry.isDirectory() && existsSync(join(bucketDir, entry.name, 'SKILL.md'))) {
-        skills.push(readSkill(join(bucketDir, entry.name), bucket))
-      }
+  for (const entry of readdirSync(root, { withFileTypes: true })) {
+    if (entry.isDirectory() && existsSync(join(root, entry.name, 'SKILL.md'))) {
+      skills.push(readSkill(join(root, entry.name)))
     }
   }
   return skills.sort((a, b) => a.name.localeCompare(b.name))
