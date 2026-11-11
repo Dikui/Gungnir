@@ -24,7 +24,7 @@ DSH 的推荐安装方式见[安装到 DSH skills](../README.md#安装到-dsh-sk
 
    ```sh
    (cd dsh-plugin && npm pack)
-   dsh plugin --profile web add "$PWD/dsh-plugin/dk-gungnir-4.5.13.tgz"
+   dsh plugin --profile web add "$PWD/dsh-plugin/dk-gungnir-4.5.14.tgz"
    ```
 
 2. 启动 dsh：
