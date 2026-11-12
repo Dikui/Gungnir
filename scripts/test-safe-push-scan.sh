@@ -15,11 +15,11 @@ cloud=$(printf '%s%s%s' 'AK' 'IA' '0123456789ABCDEF')
 : > "$tmp/all-output"
 pass() { passes=$((passes+1)); printf 'PASS %s\n' "$1"; }
 fail() { failures=$((failures+1)); printf 'FAIL %s\n' "$1"; }
-newrepo() {
-    serial=$((serial+1))
-    fixture="$tmp/case-$serial"
+# Build the baseline fixture and its bare remote once; each case gets its own copy.
+maketemplate() {
+    fixture="$tmp/template"
     mkdir -p "$fixture" || exit 2
-    git init --bare -q "$tmp/remote-$serial.git" || exit 2
+    git init --bare -q "$tmp/template.git" || exit 2
     cd "$fixture" || exit 2
     git init -q || exit 2
     git symbolic-ref HEAD refs/heads/main || exit 2
@@ -31,10 +31,18 @@ newrepo() {
     printf 'baseline\n' > readme.txt
     git add -- readme.txt
     git commit -qm baseline || exit 2
-    git remote add origin "$tmp/remote-$serial.git"
+    git remote add origin "$tmp/template.git"
     git push -q -u origin main || exit 2
     git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
     git checkout -qb topic --track origin/main || exit 2
+}
+newrepo() {
+    serial=$((serial+1))
+    fixture="$tmp/case-$serial"
+    cp -Rp "$tmp/template.git" "$tmp/remote-$serial.git" || exit 2
+    cp -Rp "$tmp/template" "$fixture" || exit 2
+    cd "$fixture" || exit 2
+    git config remote.origin.url "$tmp/remote-$serial.git" || exit 2
 }
 scan() {
     "$BASH" "$scanner" --remote origin --target topic "$@" > "$tmp/out" 2> "$tmp/err"
@@ -45,6 +53,7 @@ has() { awk -F '\t' -v level="$1" -v category="$2" '$1==level && $2==category { 
 assert_has() { if has "$2" "$3"; then pass "$1"; else fail "$1"; fi; }
 assert_code() { if [ "$result" -eq "$2" ]; then pass "$1"; else fail "$1"; fi; }
 rules() { mkdir -p docs/agents; cat > docs/agents/push-rules.md; }
+maketemplate
 newrepo
 printf 'normal change\n' >> readme.txt
 git add -- readme.txt
