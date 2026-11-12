@@ -4,22 +4,33 @@ set -u
 export LC_ALL=C
 repo_root=$(cd "$(dirname "$0")/.." && pwd) || exit 2
 scanner="$repo_root/skills/safe-push/scripts/scan.sh"
-tmp=$(mktemp -d "${TMPDIR:-/tmp}/test-safe-push.XXXXXX") || exit 2
-trap 'rm -rf "$tmp"' EXIT
+base=$(mktemp -d "${TMPDIR:-/tmp}/test-safe-push.XXXXXX") || exit 2
+tmp=$base
+# On an early exit, stop the unfinished case jobs before removing their directories.
+trap '[ -z "$pids" ] || kill $pids 2>/dev/null; wait; rm -rf "$base"' EXIT
 trap 'exit 2' HUP INT TERM
-passes=0 failures=0 serial=0
+passes=0 failures=0 jobs=0 pids=
 # Credential-shaped values exist only at runtime. No complete literal in source.
 key=$(printf '%s%s%s' 'gh' 'p_' 'abcdefghijklmnopqrstuvwxyz0123456789ABCD')
 generic=$(printf '%s%s' 'synthetic_' 'password_value')
 cloud=$(printf '%s%s%s' 'AK' 'IA' '0123456789ABCDEF')
-: > "$tmp/all-output"
-pass() { passes=$((passes+1)); printf 'PASS %s\n' "$1"; }
-fail() { failures=$((failures+1)); printf 'FAIL %s\n' "$1"; }
+pass() { printf 'PASS %s\n' "$1"; }
+fail() { printf 'FAIL %s\n' "$1"; }
+# Cases are independent, so each runs as a background job in its own directory.
+# Usage: start; { ...case... } > "$tmp/log" & pids="$pids $!"
+# Results are printed and counted in case order once the jobs finish.
+start() {
+    jobs=$((jobs+1))
+    tmp="$base/job-$jobs"
+    serial=0
+    mkdir -p "$tmp" || exit 2
+    : > "$tmp/all-output"
+}
 # Build the baseline fixture and its bare remote once; each case gets its own copy.
 maketemplate() {
-    fixture="$tmp/template"
+    fixture="$base/template"
     mkdir -p "$fixture" || exit 2
-    git init --bare -q "$tmp/template.git" || exit 2
+    git init --bare -q "$base/template.git" || exit 2
     cd "$fixture" || exit 2
     git init -q || exit 2
     git symbolic-ref HEAD refs/heads/main || exit 2
@@ -31,7 +42,7 @@ maketemplate() {
     printf 'baseline\n' > readme.txt
     git add -- readme.txt
     git commit -qm baseline || exit 2
-    git remote add origin "$tmp/template.git"
+    git remote add origin "$base/template.git"
     git push -q -u origin main || exit 2
     git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
     git checkout -qb topic --track origin/main || exit 2
@@ -39,8 +50,8 @@ maketemplate() {
 newrepo() {
     serial=$((serial+1))
     fixture="$tmp/case-$serial"
-    cp -Rp "$tmp/template.git" "$tmp/remote-$serial.git" || exit 2
-    cp -Rp "$tmp/template" "$fixture" || exit 2
+    cp -Rp "$base/template.git" "$tmp/remote-$serial.git" || exit 2
+    cp -Rp "$base/template" "$fixture" || exit 2
     cd "$fixture" || exit 2
     git config remote.origin.url "$tmp/remote-$serial.git" || exit 2
 }
@@ -54,12 +65,15 @@ assert_has() { if has "$2" "$3"; then pass "$1"; else fail "$1"; fi; }
 assert_code() { if [ "$result" -eq "$2" ]; then pass "$1"; else fail "$1"; fi; }
 rules() { mkdir -p docs/agents; cat > docs/agents/push-rules.md; }
 maketemplate
+start; {
 newrepo
 printf 'normal change\n' >> readme.txt
 git add -- readme.txt
 scan --staged --unpushed
 if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass 'clean change: code 0 and no output'; else fail 'clean change'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'value = %s\n' "$key" > secret.txt
 git add -- secret.txt
@@ -72,8 +86,10 @@ git add -- cloud.txt
 scan --staged
 assert_has 'category 1 cloud prefix' block 1
 if grep -F "$key" "$tmp/out" "$tmp/err" >/dev/null || grep -F "$cloud" "$tmp/out" "$tmp/err" >/dev/null; then fail 'redaction stdout and stderr'; else pass 'redaction stdout and stderr'; fi
+} > "$tmp/log" & pids="$pids $!"
 
 # small/spec，来源：safe-push-trim 任务单。旧规则块连同非法内容一起忽略。
+start; {
 newrepo
 rules <<'RULES'
 ```safe-push-deny
@@ -91,17 +107,21 @@ printf 'REAL_CUSTOMER_EXPORT\nINTERNAL_CODENAME\n' > unrelated-file.txt
 git add -- unrelated-file.txt
 scan --staged
 if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ] && [ ! -s "$tmp/err" ]; then pass 'legacy rule blocks are ignored without error or findings'; else fail 'legacy rule blocks'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 mkdir -p docs/tasks/run
 printf 'agent report\n' > docs/tasks/run/report.md
 git add -- docs/tasks/run/report.md
 scan --staged
 assert_has 'category 3 agent artifact blocks' block 3
+} > "$tmp/log" & pids="$pids $!"
 
 # Check each path independently, including nested project directories.
 for prefix in '' 'packages/a/'; do
     for path in '.claude/settings.json' '.claude/CLAUDE.md' '.claude/skills/x/SKILL.md' '.claude/agents/a.md' '.claude/commands/c.md' '.claude/hooks/h.sh' '.claude/output-styles/s.md' '.claude/custom/file' '.agents/skills/x/SKILL.md'; do
+        start; {
         newrepo
         path="$prefix$path"
         mkdir -p "$(dirname "$path")"
@@ -109,8 +129,10 @@ for prefix in '' 'packages/a/'; do
         git add -- "$path"
         scan --staged
         if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass "shared path has no category 3 or other findings: $path"; else fail "shared path: $path"; fi
+        } > "$tmp/log" & pids="$pids $!"
     done
     for path in '.claude/settings.local.json' 'CLAUDE.local.md'; do
+        start; {
         newrepo
         path="$prefix$path"
         mkdir -p "$(dirname "$path")"
@@ -118,8 +140,10 @@ for prefix in '' 'packages/a/'; do
         git add -- "$path"
         scan --staged
         if [ "$result" -eq 0 ] && awk -F '\t' -v path="$path" 'NF!=5 || $1!="warn" || $2!=10 || $3!=path { bad=1 } END { exit (bad || NR!=1) }' "$tmp/out"; then pass "local file has only category 10 warning: $path"; else fail "local file: $path"; fi
+        } > "$tmp/log" & pids="$pids $!"
     done
     for path in '.claude/worktrees/x/file' '.claude/projects/p/s.jsonl' '.claude/todos/t.json' '.claude/shell-snapshots/s.sh' '.claude/file-history/f/file' '.claude/statsig/state.json' '.agents/other/file' '.agents/skills-extra/file' '.agents/file' '.agents/skills/x/.agents/other/file' '.agents/skills/x/.claude/projects/p/file'; do
+        start; {
         newrepo
         path="$prefix$path"
         mkdir -p "$(dirname "$path")"
@@ -127,7 +151,9 @@ for prefix in '' 'packages/a/'; do
         git add -- "$path"
         scan --staged
         if [ "$result" -eq 1 ] && has block 3; then pass "local agent path blocks category 3: $path"; else fail "local agent path: $path"; fi
+        } > "$tmp/log" & pids="$pids $!"
     done
+    start; {
     newrepo
     path="$prefix.claude/.credentials.json"
     mkdir -p "$(dirname "$path")"
@@ -135,7 +161,9 @@ for prefix in '' 'packages/a/'; do
     git add -- "$path"
     scan --staged
     if [ "$result" -eq 1 ] && has block 1 && ! has block 3 && ! has warn 3; then pass "login credential filename blocks only category 1: $path"; else fail "login credential filename: $path"; fi
+    } > "$tmp/log" & pids="$pids $!"
 
+    start; {
     newrepo
     path="$prefix.claude/settings.json"
     mkdir -p "$(dirname "$path")"
@@ -143,16 +171,20 @@ for prefix in '' 'packages/a/'; do
     git add -- "$path"
     scan --staged
     if [ "$result" -eq 1 ] && has block 1 && ! has block 3 && ! has warn 3; then pass "shared settings still block credential content: $path"; else fail "shared settings credential content: $path"; fi
+    } > "$tmp/log" & pids="$pids $!"
 done
 
+start; {
 newrepo
 printf '%s\n' '/Users/fixture/work/file' > paths.txt
 git add -- paths.txt
 scan --staged
 assert_has 'category 4 personal path warns' warn 4
+} > "$tmp/log" & pids="$pids $!"
 
 # small/regression，来源：safe-push-trim 任务单。邮箱豁免只作用于地址本身。
 for content in 'noreply@anthropic.com' 'build-noreply@example.invalid' '123+name@users.noreply.github.com' 'NOREPLY@EXAMPLE.INVALID'; do
+    start; {
     newrepo
     printf '%s\n' "$content" > contact.txt
     git add -- contact.txt
@@ -161,8 +193,10 @@ for content in 'noreply@anthropic.com' 'build-noreply@example.invalid' '123+name
     git commit -qm "Co-Authored-By: Fixture <$content>"
     scan --unpushed
     if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass "noreply commit has no category 12: $content"; else fail "noreply commit: $content"; fi
+    } > "$tmp/log" & pids="$pids $!"
 done
 for content in 'private@example.invalid' 'noreply@anthropic.com private@example.invalid' 'private@example.invalid noreply@anthropic.com' 'noreply@anthropic.com /Users/fixture/work/file' 'noreply@anthropic.com /home/fixture/work/file' 'noreply@anthropic.com C:\Users\fixture\work' 'noreply@anthropic.com 192.168.1.2' 'noreply-user@example.invalid' '123+name@users.noreply.github.com.example.invalid'; do
+    start; {
     newrepo
     printf '%s\n' "$content" > contact.txt
     git add -- contact.txt
@@ -171,21 +205,27 @@ for content in 'private@example.invalid' 'noreply@anthropic.com private@example.
     git commit -qm "$content"
     scan --unpushed
     assert_has "other personal commit still warns category 12: $content" warn 12
+    } > "$tmp/log" & pids="$pids $!"
 done
 
+start; {
 newrepo
 mkdir -p dist
 printf 'generated\n' > dist/output.txt
 git add -- dist/output.txt
 scan --staged
 assert_has 'category 6 build artifact warns' warn 6
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'console.log("debug");\n' > code.js
 git add -- code.js
 scan --staged
 assert_has 'category 7 debug output warns' warn 7
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf '<<<<<<< topic\n=======\n>>>>>>> main\n' > conflict.txt
 git add -- conflict.txt
@@ -196,7 +236,9 @@ chmod 755 readme.txt
 git add -- readme.txt
 scan --staged
 assert_has 'category 8 mode 644 to 755 warns' warn 8
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 # small/regression，来源：safe-push-trim 任务单。回环地址不再视为本地开关。
 printf 'http://localhost:3000\nhttp://127.0.0.1:3000\n' > config.txt
@@ -209,7 +251,9 @@ for content in 'debug=true' 'mock=true'; do
     scan --staged
     assert_has "category 10 local switch still warns: $content" warn 10
 done
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'ignored.txt\n' > .gitignore
 printf 'local\n' > ignored.txt
@@ -217,7 +261,9 @@ git add -- .gitignore
 git add -f -- ignored.txt
 scan --staged
 assert_has 'category 11 forced ignored file blocks' block 11
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'tracked baseline\n' > ignored.txt
 git add -- ignored.txt
@@ -230,14 +276,18 @@ git add -- .gitignore ignored.txt
 scan --staged --unpushed
 assert_has 'category 11 tracked before ignore warns' warn 11
 if has block 11; then fail 'old tracked ignored file has no block'; else pass 'old tracked ignored file has no block'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'normal\n' >> readme.txt
 git add -- readme.txt
 git commit -qm 'fix: path /home/fixture/project/file'
 scan --unpushed
 assert_has 'category 12 commit personal path warns' warn 12
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 "$BASH" "$scanner" --staged --remote other --target topic > "$tmp/out" 2> "$tmp/err"
 result=$?
@@ -253,7 +303,9 @@ done
 result=$?
 cat "$tmp/out" "$tmp/err" >> "$tmp/all-output"
 if [ "$result" -eq 0 ] && has warn 13 && grep 'force requested' "$tmp/out" >/dev/null; then pass 'category 13 force still warns'; else fail 'force warning'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'value=%s\n' "$key" > history.txt
 git add -- history.txt
@@ -275,7 +327,9 @@ assert_has 'no upstream still scans unpushed history' block 1
 assert_code 'no upstream scan exit code 1' 1
 scan --unpushed --base origin/main
 assert_has 'explicit base scans each commit' block 1
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 rules <<'RULES'
 ```safe-push-deny
@@ -292,8 +346,10 @@ if has block 5 || has block 7; then fail 'legacy deny changes findings'; else pa
 assert_has 'legacy deny leaves credential block' block 1
 assert_code 'legacy deny leaves credential exit code 1' 1
 if [ ! -s "$tmp/err" ]; then pass 'legacy deny has no downgrade diagnostic'; else fail 'legacy deny diagnostic'; fi
+} > "$tmp/log" & pids="$pids $!"
 
 # small/spec，来源：safe-push-trim 任务单。旧规则不影响后续 allow。
+start; {
 newrepo
 rules <<'RULES'
 ```safe-push-deny
@@ -325,7 +381,9 @@ RULES
     scan --staged
     if [ "$result" -eq 2 ] && [ -s "$tmp/err" ]; then pass 'invalid single/global allow rejected with diagnostic'; else fail 'invalid allow'; fi
 done
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 # Limits use binary zero data, so Git emits a compact binary diff.
 dd if=/dev/zero of=medium.bin bs=1048576 count=1 2>/dev/null
@@ -340,52 +398,68 @@ git add -- large.bin
 scan --staged
 assert_has 'over 50 MiB blocks' block 6
 assert_code 'over 50 MiB exit code 1' 1
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'console.log("debug");\n' > 'space name.js'
 printf 'console.log("debug");\n' > '中文.js'
 git add -- 'space name.js' '中文.js'
 scan --staged
 if [ "$result" -eq 0 ] && grep -F 'space name.js' "$tmp/out" >/dev/null && grep -F '中文.js' "$tmp/out" >/dev/null; then pass 'space and Chinese filenames preserved'; else fail 'space and Chinese filenames'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'safe\n' >> readme.txt
 git add -- readme.txt
 git commit -qm "fix: $key"
 scan --unpushed
 assert_has 'credential in commit message blocks category 12' block 12
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 git checkout -qb "topic-$key"
 scan --staged
 assert_has 'credential in branch name blocks category 12' block 12
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'ordinary value\n' > "$key.txt"
 git add -- "$key.txt"
 scan --staged
 assert_has 'credential-shaped filename blocks and redacts' block 1
 if grep -F "$key" "$tmp/out" "$tmp/err" >/dev/null; then fail 'credential filename redaction'; else pass 'credential filename redaction'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf '{"password": "%s"}\n' "$generic" > data.json
 git add -- data.json
 scan --staged
 assert_has 'generic credential in JSON blocks' block 1
 if grep -F "$generic" "$tmp/out" "$tmp/err" >/dev/null; then fail 'generic credential redaction'; else pass 'generic credential redaction'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'const token = process.env.APP_TOKEN;\n' > code.js
 git add -- code.js
 scan --staged
 if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass 'environment lookup is not a credential literal'; else fail 'environment lookup'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 # A gitlink need not have its object available in the superproject.
 git update-index --add --cacheinfo 160000,0123456789012345678901234567890123456789,submodule
 scan --staged
 assert_has 'category 9 gitlink without local object warns' warn 9
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 printf 'safe placeholder\n' > .env
 git add -- .env
@@ -395,7 +469,9 @@ git fetch -q origin
 git rm -q -- .env
 scan --staged
 if [ "$result" -eq 0 ] && [ ! -s "$tmp/out" ]; then pass 'deleting existing credential filename permits cleanup'; else fail 'deletion cleanup'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 rules <<'RULES'
 ```safe-push-allow
@@ -406,7 +482,9 @@ scan --staged
 assert_code 'invalid allow ERE exits 2' 2
 scan --base missing-revision --unpushed
 assert_code 'invalid revision exits 2' 2
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 newrepo
 mkdir -p .scratch/tasks/x
 printf 'report\n' > .scratch/tasks/x/report.md
@@ -419,11 +497,31 @@ printf 'issue\n' > .scratch/feat/issues/01-a.md
 git add -- .scratch/feat/issues/01-a.md
 scan --staged
 if awk -F '\t' '$2==3 { f=1 } END { exit f }' "$tmp/out"; then pass '.scratch/<feature>/issues has no category 3'; else fail '.scratch/<feature>/issues has no category 3'; fi
+} > "$tmp/log" & pids="$pids $!"
 
+start; {
 mkdir -p "$tmp/not-git"
 cd "$tmp/not-git" || exit 2
 scan --staged
 if [ "$result" -eq 2 ] && grep 'not inside a git repository' "$tmp/err" >/dev/null; then pass 'outside Git: code 2 and clear error'; else fail 'outside Git'; fi
-if grep -F "$key" "$tmp/all-output" >/dev/null || grep -F "$cloud" "$tmp/all-output" >/dev/null || grep -F "$generic" "$tmp/all-output" >/dev/null; then fail 'all output redacts complete generated credentials'; else pass 'all output redacts complete generated credentials'; fi
+} > "$tmp/log" & pids="$pids $!"
+
+# Collect in case order. A job that stopped early is a fixture error.
+job=0
+: > "$base/all-output"
+for pid in $pids; do
+    job=$((job+1))
+    wait "$pid" || { cat "$base/job-$job/log"; printf 'case job %s stopped early\n' "$job" >&2; exit 2; }
+    cat "$base/job-$job/log"
+    cat "$base/job-$job/all-output" >> "$base/all-output"
+done
+pids=
+[ "$job" -eq "$jobs" ] || exit 2
+tmp=$base
+cat "$base"/job-*/log > "$base/log"
+if grep -F "$key" "$tmp/all-output" >/dev/null || grep -F "$cloud" "$tmp/all-output" >/dev/null || grep -F "$generic" "$tmp/all-output" >/dev/null; then fail 'all output redacts complete generated credentials'; else pass 'all output redacts complete generated credentials'; fi >> "$base/log"
+tail -n 1 "$base/log"
+passes=$(grep -c '^PASS ' "$base/log")
+failures=$(grep -c '^FAIL ' "$base/log")
 printf 'Summary: %s PASS, %s FAIL\n' "$passes" "$failures"
 [ "$failures" -eq 0 ]
