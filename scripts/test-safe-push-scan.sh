@@ -7,9 +7,9 @@ scanner="$repo_root/skills/safe-push/scripts/scan.sh"
 base=$(mktemp -d "${TMPDIR:-/tmp}/test-safe-push.XXXXXX") || exit 2
 tmp=$base
 # On an early exit, stop the unfinished case jobs before removing their directories.
-trap '[ -z "$pids" ] || kill $pids 2>/dev/null; wait; rm -rf "$base"' EXIT
+trap 'kill $(jobs -p) 2>/dev/null; wait; rm -rf "$base"' EXIT
 trap 'exit 2' HUP INT TERM
-passes=0 failures=0 jobs=0 pids=
+started=0 pids=
 # Credential-shaped values exist only at runtime. No complete literal in source.
 key=$(printf '%s%s%s' 'gh' 'p_' 'abcdefghijklmnopqrstuvwxyz0123456789ABCD')
 generic=$(printf '%s%s' 'synthetic_' 'password_value')
@@ -20,8 +20,8 @@ fail() { printf 'FAIL %s\n' "$1"; }
 # Usage: start; { ...case... } > "$tmp/log" & pids="$pids $!"
 # Results are printed and counted in case order once the jobs finish.
 start() {
-    jobs=$((jobs+1))
-    tmp="$base/job-$jobs"
+    started=$((started+1))
+    tmp="$base/job-$started"
     serial=0
     mkdir -p "$tmp" || exit 2
     : > "$tmp/all-output"
@@ -508,19 +508,17 @@ if [ "$result" -eq 2 ] && grep 'not inside a git repository' "$tmp/err" >/dev/nu
 
 # Collect in case order. A job that stopped early is a fixture error.
 job=0
+: > "$base/log"
 : > "$base/all-output"
 for pid in $pids; do
     job=$((job+1))
     wait "$pid" || { cat "$base/job-$job/log"; printf 'case job %s stopped early\n' "$job" >&2; exit 2; }
+    cat "$base/job-$job/log" >> "$base/log"
     cat "$base/job-$job/log"
     cat "$base/job-$job/all-output" >> "$base/all-output"
 done
-pids=
-[ "$job" -eq "$jobs" ] || exit 2
-tmp=$base
-cat "$base"/job-*/log > "$base/log"
-if grep -F "$key" "$tmp/all-output" >/dev/null || grep -F "$cloud" "$tmp/all-output" >/dev/null || grep -F "$generic" "$tmp/all-output" >/dev/null; then fail 'all output redacts complete generated credentials'; else pass 'all output redacts complete generated credentials'; fi >> "$base/log"
-tail -n 1 "$base/log"
+[ "$job" -eq "$started" ] || exit 2
+if grep -F "$key" "$base/all-output" >/dev/null || grep -F "$cloud" "$base/all-output" >/dev/null || grep -F "$generic" "$base/all-output" >/dev/null; then fail 'all output redacts complete generated credentials'; else pass 'all output redacts complete generated credentials'; fi | tee -a "$base/log"
 passes=$(grep -c '^PASS ' "$base/log")
 failures=$(grep -c '^FAIL ' "$base/log")
 printf 'Summary: %s PASS, %s FAIL\n' "$passes" "$failures"
