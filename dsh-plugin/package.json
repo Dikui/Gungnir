@@ -1,6 +1,6 @@
 {
   "name": "dk-gungnir",
-  "version": "4.5.15",
+  "version": "4.5.16",
   "description": "Gungnir 简体中文技能的 DeepSeek Harness 插件包，保留技能原名。",
   "private": false,
   "publishConfig": { "access": "public" },
