@@ -115,6 +115,8 @@ claude plugin install gungnir@gungnir
   把方案的每个组成追溯到需求或证据，找出可以删除的部分。
 - **[pr-body](./skills/pr-body/SKILL.md)**
   编写 PR 正文时使用。
+- **[pursue](./skills/pursue/SKILL.md)**
+  围绕一个可测量的目标自主迭代：约定评测命令和达标线后，按评测结果在分析、调研、实现和补评测之间切换，达标或预算用完后请用户验收。
 - **[retro](./skills/retro/SKILL.md)**
   复盘一次编码会话。
 - **[safe-push](./skills/safe-push/SKILL.md)**

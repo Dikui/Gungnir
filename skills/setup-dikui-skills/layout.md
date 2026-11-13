@@ -15,7 +15,7 @@
 | `docs/research/` | 调研结论 | research | 否 | 不清理 |
 | `docs/experiments/` | 实验记录 | ablation、trial | 否 | 不清理 |
 | `.out-of-scope/` | 拒绝记录 | triage | 否 | 重新考虑时删除或更新 |
-| `.scratch/<feature>/` | 需求和任务单（本地 tracker） | to-spec、to-tickets、wayfinder | 否 | 不清理；任务单全部关闭时做收尾检查 |
+| `.scratch/<feature>/` | 需求和任务单（本地 tracker）；目标约定和进展记录 | to-spec、to-tickets、wayfinder、pursue | 否 | 不清理；任务单全部关闭时做收尾检查 |
 | `.scratch/tasks/<任务号>/` | 执行说明、报告、证据 | 执行者 | 否 | 随意 |
 | `.scratch/prototype/` | 逻辑原型 | prototype | 否 | 结论落地后删除 |
 

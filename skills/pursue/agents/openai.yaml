@@ -1,0 +1,5 @@
+interface:
+  display_name: "Pursue"
+  short_description: "围绕一个可测量的目标自主迭代：先与用户约定评测命令和达标线，再按评测结果在分析、调研、实现和补评测之间切换，达标或预算用完后请用户验收。"
+policy:
+  allow_implicit_invocation: true

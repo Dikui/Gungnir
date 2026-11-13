@@ -17,10 +17,10 @@
 | `domain-modeling` | grill-me、triage、wayfinder、improve-codebase-architecture | 能 |
 | `codebase-design` | improve-codebase-architecture、tdd、cohesion-coupling | 能 |
 | `writing-for-agents` | retro | 能 |
-| `tdd` | implement | 能 |
-| `diff-review` | implement、tdd、cohesion-coupling | 能 |
-| `local-test` | implement、trial | 能 |
-| `research` | wayfinder | 能 |
+| `tdd` | implement、pursue | 能 |
+| `diff-review` | implement、tdd、cohesion-coupling、pursue | 能 |
+| `local-test` | implement、trial、pursue | 能 |
+| `research` | wayfinder、pursue | 能 |
 | `prototype` | wayfinder | 能 |
 
 基础技能通常由入口技能在执行中加载，也允许模型在对话中隐式调用。除 `grilling` 外，用户也可以直接调用。

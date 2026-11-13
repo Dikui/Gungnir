@@ -30,6 +30,7 @@
 | `/grill-me 我计划周末迁移数据库`（不在项目仓库中） | 加载 `grilling` 并开始一轮编号提问 |
 | `/grill-me 梳理订单领域`（在项目仓库中） | 加载 `grilling` 和 `domain-modeling` |
 | `/implement`（附一份小需求） | 加载 `tdd`，实现后加载 `local-test`，再加载 `diff-review` |
+| `/pursue`（附一个能用命令测量的目标） | 写出目标约定并停下等用户确认；确认前不改代码 |
 
 ## C. 用户直接调用
 
